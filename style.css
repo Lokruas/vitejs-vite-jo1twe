@@ -1,13 +1,8 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    background-color: #007bff; /* Blauer Hintergrund */
 }
 
+/* Anpassung für weiße Container- und Editorbereiche auf blauem Hintergrund */
 .container {
     background-color: white;
     padding: 20px;
@@ -15,6 +10,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 1200px;
+    margin-top: 20px;
 }
 
 .editor {
@@ -72,6 +68,8 @@ body {
     justify-content: center;
     text-align: center;
 }
+
+/* Der Stil für die Button für das Hinzufügen */
 .add-card-button {
     margin-top: 20px;
     padding: 10px 20px;
@@ -86,6 +84,7 @@ body {
     background-color: #0056b3;
 }
 
+/* Der Stil für den Kartenverlauf */
 .history {
     position: fixed;
     bottom: 20px;
@@ -107,3 +106,4 @@ body {
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
 }
+
