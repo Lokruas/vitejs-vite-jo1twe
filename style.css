@@ -86,9 +86,16 @@ body {
     background-color: #0056b3;
 }
 
-/* Der Stil für den Kartenverlauf */
 .history {
-    margin-top: 20px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .tab-view {
@@ -97,8 +104,6 @@ body {
 }
 
 .card-history {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
 }
