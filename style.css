@@ -16,11 +16,13 @@ body {
 }
 
 .editor {
-    max-width: 600px;
+    max-width: 800px;
+    width: 100%;
 }
 
 .toolbar {
     margin-bottom: 10px;
+    text-align: center;
 }
 
 .toolbar select,
@@ -32,23 +34,25 @@ body {
 
 .card {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .card-side {
-    border: 1px solid #ccc;
-    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
     margin-bottom: 10px;
-    min-height: 100px;
     background-color: #fff;
-}
-
-.large-card {
-    width: 400px;
-    height: 250px;
-    margin: 20px 0;
-    font-size: 1.5em;
+    min-width: 45%;
+    min-height: 200px;
+    margin: 10px;
+    font-size: 1.2em;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    max-width: 100%;
+    word-wrap: break-word;
 }
