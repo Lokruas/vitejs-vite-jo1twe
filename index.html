@@ -18,8 +18,14 @@
                     <option value="Courier New">Courier New</option>
                 </select>
                 <button onclick="execCmd('bold')"><b>B</b></button>
-                <button onclick="execCmd('foreColor', '#FF0000')">Rot</button>
-                <button onclick="execCmd('foreColor', '#0000FF')">Blau</button>
+                <button onclick="execCmd('italic')"><i>I</i></button>
+                <button onclick="execCmd('underline')"><u>U</u></button>
+                <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
+                <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
+                <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+                <button onclick="execCmd('insertUnorderedList')">• Liste</button>
+                <button onclick="execCmd('insertOrderedList')">1. Liste</button>
+                <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
             </div>
             <div class="card">
                 <div contenteditable="true" id="front" class="card-side">Vorderseite</div>
