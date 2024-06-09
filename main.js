@@ -5,4 +5,3 @@ document.getElementById('fontSelect').addEventListener('change', function() {
 function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
-
