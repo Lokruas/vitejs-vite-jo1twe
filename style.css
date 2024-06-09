@@ -30,6 +30,20 @@ body {
     margin-right: 5px;
     padding: 5px;
     cursor: pointer;
+    border: none;
+    background: #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.toolbar button:hover {
+    background: #d0d0d0;
+}
+
+.toolbar select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 .card {
