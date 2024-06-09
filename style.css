@@ -61,15 +61,14 @@ body {
     border-radius: 10px;
     padding: 20px;
     background-color: #fff;
-    width: 48%;
-    height: 500px;
+    width: 45%; /* 45% damit es in einer Reihe passt */
+    height: auto; /* Die Höhe passt sich automatisch an den Text an */
     font-size: 1.2em;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     word-wrap: break-word;
-    text-align: left;
-    display: block;
-    margin: 0 auto;
-    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
-
