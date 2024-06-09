@@ -1,13 +1,32 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karteneditor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="editor">
+            <h2>Karteneditor</h2>
+            <div class="toolbar">
+                <select id="fontSelect">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+                <button onclick="execCmd('bold')"><b>B</b></button>
+                <button onclick="execCmd('foreColor', '#FF0000')">Rot</button>
+                <button onclick="execCmd('foreColor', '#0000FF')">Blau</button>
+            </div>
+            <div class="card">
+                <div contenteditable="true" id="front" class="card-side">Vorderseite</div>
+                <div contenteditable="true" id="back" class="card-side">Rückseite</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
 </html>
