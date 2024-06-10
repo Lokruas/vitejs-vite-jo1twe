@@ -1,101 +1,12 @@
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #006994; /* Hintergrundfarbe des Körpers in Meeresblau */
-    color: white; /* Textfarbe des Körpers in Weiß für besseren Kontrast */
+    background-color: #006994;
+    color: white;
     margin: 0;
     padding: 20px;
 }
 
-.container {
-    display: flex;
-    justify-content: center; /* Zentriert den Inhalt */
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.editor, .history {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 48%;
-    color: black; /* Textfarbe innerhalb von .editor und .history */
-}
-
-
-.toolbar button {
-    margin: 5px;
-    padding: 10px 15px;
-    background-color: #006994; /* Hintergrundfarbe in Meeresblau */
-    color: white; /* Textfarbe */
-    border: none;
-    border-radius: 4px; /* Rundung der Ecken */
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.toolbar button:hover {
-    background-color: #004d73; /* Dunklerer Meeresblau beim Hover */
-}
-
-.card-container {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.card-side {
-    width: 48%; /* Gleichmäßige Verteilung des Platzes */
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    color: black;
-    margin-right: 10px;
-    text-align: center; /* Zentriert den Text */
-}
-
-.add-card-button {
-    margin-top: 20px;
-    padding: 10px 15px;
-    background-color: #006994; /* Hintergrundfarbe in Meeresblau */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.add-card-button:hover {
-    background-color: #004d73; /* Dunklerer Meeresblau beim Hover */
-}
-
-.history .card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f9f9f9; /* Hellgrau für bessere Lesbarkeit */
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    color: black; /* Textfarbe in Schwarz */
-}
-
-.history .delete-button {
-    background-color: #ff4d4d; /* Rot für Lösch-Schaltfläche */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: background-color 0.3s;
-}
-
-.history .delete-button:hover {
-    background-color: #cc0000; /* Dunkleres Rot beim Hover */
-}
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -104,39 +15,56 @@ body {
     margin-bottom: 20px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column; /* Spaltenlayout */
-    align-items: center; /* Zentrieren */
-}
-
-.editor {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 70%; /* Breiteres Eingabefeld */
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    color: black;
-    margin-bottom: 20px;
-}
-.selected-card-details {
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-
-}
-
-.add-card-button {
-    margin-top: 20px;
+.toolbar button, .toolbar .toolbar-add-button {
+    margin: 5px;
     padding: 10px 15px;
-    background-color: #006994;
+    background-color: #4da6ff; /* Hellblauer Hintergrund */
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toolbar .toolbar-add-button {
+    background-color: #4da6ff; /* Hellblauer Hintergrund */
+}
+
+.toolbar button:hover, .toolbar .toolbar-add-button:hover {
+    background-color: #004d73;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Ermöglicht Umbruch bei kleineren Bildschirmen */
+}
+
+.card-editor {
+    display: flex;
+    justify-content: space-between;
+    width: 70%; /* Breiteres Eingabefeld */
+    margin-bottom: 20px;
+}
+
+.card-side-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 48%; /* Gleichmäßige Verteilung des Platzes */
+    color: black;
+    margin: 10px;
+}
+
+.card-side {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: black;
+    min-height: 200px; /* Mindesthöhe für bessere Lesbarkeit */
 }
 
 .history-scroll-container {
@@ -146,11 +74,10 @@ body {
     background-color: #f0f0f0;
     border-radius: 8px;
     gap: 10px;
-    max-width: 80%; /* Breite angepasst */
-    margin: 0 auto; /* Zentrieren */
+    max-width: 80%;
+    margin: 0 auto;
 }
 
-/* Jede Karte im Verlauf */
 .history-card {
     min-width: 150px;
     background-color: #ffffff;
@@ -161,8 +88,9 @@ body {
     cursor: pointer;
     transition: transform 0.3s;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Textfeld und Inhalt in einer Spalte */
 }
+
 .history-card textarea {
     resize: none; /* Keine Größenänderung erlaubt */
     border: none;
@@ -172,12 +100,9 @@ body {
     font-size: 14px;
     margin-bottom: 10px;
 }
+
 .history-card:hover {
     transform: scale(1.05);
-}
-
-.history-card:active {
-    background-color: #e0e0e0;
 }
 
 .history-card:active {
