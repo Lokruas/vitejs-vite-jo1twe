@@ -68,28 +68,35 @@ function addCard() {
 }
 // Die Funktion, um den Kartenverlauf zu aktualisieren
 function updateCardList() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = ''; // Bestehenden Verlauf leeren
-
+    const cardListContainer = document.querySelector('.history-scroll-container');
+    cardListContainer.innerHTML = ''; // Clear existing card list
     cardHistory.forEach((card, index) => {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('history-card');
-        cardDiv.textContent = `Karte ${index + 1}: ${card.front}`;
-        cardDiv.onclick = () => loadCard(index); // Klick-Event für das Laden der Karte
-        historyContainer.appendChild(cardDiv);
+        
+        // Erstellen eines Textfelds für die Vorderseite
+        const frontTextArea = document.createElement('textarea');
+        frontTextArea.value = card.front;
+        frontTextArea.readOnly = true; // Nur-Lese-Modus
+        cardDiv.appendChild(frontTextArea);
+        
+        // OnClick-Event für das Laden der Karte
+        cardDiv.onclick = () => loadCard(index);
+        
+        cardListContainer.appendChild(cardDiv);
     });
 }
 
-// Die Funktion, um eine Karte aus dem Verlauf zu laden
 function loadCard(index) {
     const selectedCard = cardHistory[index];
     document.getElementById('front').innerText = selectedCard.front;
     document.getElementById('back').innerText = selectedCard.back;
 }
-// Die Funktion, um eine Karte aus dem Verlauf zu löschen
+
 function deleteCard(index) {
-    // Entfernen der Karte aus dem Kartenverlauf
     cardHistory.splice(index, 1);
+    updateCardList();
+}
     // Aktualisieren der Kartenliste
     updateCardList();
 }
