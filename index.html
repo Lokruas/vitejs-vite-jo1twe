@@ -4,40 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karteneditor</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="toolbar">
+        <select id="fontSelect">
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+        </select>
+        <button onclick="execCmd('bold')"><b>B</b></button>
+        <button onclick="execCmd('italic')"><i>I</i></button>
+        <button onclick="execCmd('underline')"><u>U</u></button>
+        <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
+        <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
+        <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+        <button onclick="execCmd('insertUnorderedList')">• Liste</button>
+        <button onclick="execCmd('insertOrderedList')">1. Liste</button>
+        <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
+    </div>
     <div class="container">
         <div class="editor">
-            <h2>Karteneditor</h2>
-            <div class="toolbar">
-                <select id="fontSelect" onchange="execCmd('fontName', this.value)">
-                    <option value="Arial">Arial</option>
-                    <option value="Verdana">Verdana</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                </select>
-                <button onclick="execCmd('bold')"><b>B</b></button>
-                <button onclick="execCmd('italic')"><i>I</i></button>
-                <button onclick="execCmd('underline')"><u>U</u></button>
-                <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
-                <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
-                <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-                <button onclick="execCmd('insertUnorderedList')">• Liste</button>
-                <button onclick="execCmd('insertOrderedList')">1. Liste</button>
-                <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
-            </div>
             <div class="card-container">
                 <div contenteditable="true" id="front" class="card-side">Vorderseite</div>
                 <div contenteditable="true" id="back" class="card-side">Rückseite</div>
             </div>
             <button onclick="addCard()" class="add-card-button">Hinzufügen</button>
         </div>
-        <div class="history">
+        <div class="history-dropdown">
             <h2>Kartenverlauf</h2>
-            <div class="tab-view">
-                <!-- Hier werden die Kartenverlaufstabellen eingefügt -->
-            </div>
+            <select id="cardHistoryDropdown" onchange="showSelectedCard()">
+                <!-- Hier werden die Kartenverlaufsoptionen eingefügt -->
+            </select>
+        </div>
+        <div class="selected-card-details">
+            <div id="selectedFront" class="card-side"></div>
+            <div id="selectedBack" class="card-side"></div>
         </div>
     </div>
     <script src="main.js"></script>
