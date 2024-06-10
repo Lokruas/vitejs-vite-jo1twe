@@ -26,6 +26,7 @@ body {
 
 .toolbar {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
@@ -35,6 +36,13 @@ body {
     border-radius: 8px;
 }
 
+.toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .toolbar-left {
     display: flex;
     gap: 5px; /* Enger zusammen */
@@ -42,12 +50,12 @@ body {
 }
 
 .toolbar-center {
-    flex-grow: 1;
     text-align: center;
 }
 
 .toolbar button,
-.toolbar .toolbar-add-button {
+.toolbar .toolbar-add-button,
+.toolbar .toolbar-stack-select {
     margin: 5px;
     padding: 8px 10px;
     background-color: #007bff;
@@ -62,11 +70,17 @@ body {
     background: linear-gradient(to bottom, #0066cc, #004a99);
     font-size: 14px;
     padding: 10px 20px;
+    margin-top: 10px; /* Abstand zur ersten Reihe */
 }
 
-.toolbar button:hover,
 .toolbar .toolbar-add-button:hover {
     background-color: #0056b3;
+}
+
+.toolbar .toolbar-stack-select {
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 10px;
 }
 
 .container {
@@ -101,6 +115,24 @@ body {
     border-radius: 4px;
     color: black;
     min-height: 200px;
+    position: relative;
+}
+
+.card-side::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #888;
+    pointer-events: none;
+}
+
+.card-side:empty::before {
+    display: block;
+}
+
+.card-side:empty:focus::before {
+    display: none;
 }
 
 .history-scroll-container {
