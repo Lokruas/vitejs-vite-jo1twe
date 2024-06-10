@@ -1,27 +1,15 @@
-document.getElementById('fontSelect').addEventListener('change', function() {
-    execCmd('fontName', this.value);
-});
-
-function execCmd(command, value = null) {
-    document.execCommand(command, false, value);
-}
-
 document.getElementById('addCardButton').addEventListener('click', addCard);
 
 function addCard() {
-    const frontContent = document.getElementById('front').innerText;
-    const backContent = document.getElementById('back').innerText;
+    const frontContent = document.getElementById('front').innerText.trim();
+    const backContent = document.getElementById('back').innerText.trim();
     
-    if (frontContent.trim() === '' || backContent.trim() === '') {
+    if (!frontContent || !backContent) {
         alert('Bitte füllen Sie sowohl die Vorder- als auch die Rückseite der Karte aus.');
         return;
     }
     
-    const newCard = {
-        front: frontContent,
-        back: backContent
-    };
-    
+    const newCard = { front: frontContent, back: backContent };
     cardHistory.push(newCard);
     updateCardList();
     
@@ -31,8 +19,15 @@ function addCard() {
 
 document.querySelectorAll('.card-side').forEach(side => {
     side.addEventListener('focus', function() {
-        if (this.innerText === '') {
+        if (this.innerText === this.dataset.placeholder) {
             this.innerText = '';
+            this.dataset.empty = false;
+        }
+    });
+    side.addEventListener('blur', function() {
+        if (this.innerText.trim() === '') {
+            this.innerText = this.dataset.placeholder;
+            this.dataset.empty = true;
         }
     });
     side.addEventListener('input', function() {
@@ -41,11 +36,10 @@ document.querySelectorAll('.card-side').forEach(side => {
 });
 
 document.querySelectorAll('.card-side').forEach(side => {
-    side.addEventListener('blur', function() {
-        if (this.innerText === '') {
-            this.dataset.empty = true;
-        }
-    });
+    if (side.innerText.trim() === '') {
+        side.innerText = side.dataset.placeholder;
+        side.dataset.empty = true;
+    }
 });
 
 const cardHistory = [];
@@ -99,4 +93,8 @@ function confirmDeleteCard(index) {
 function deleteCard(index) {
     cardHistory.splice(index, 1);
     updateCardList();
+}
+
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
 }
