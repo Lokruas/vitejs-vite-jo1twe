@@ -3,28 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karteneditor</title>
+    <title>Karteneditor - Memorify</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="toolbar">
-        <select id="fontSelect">
-            <option value="Arial">Arial</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Courier New">Courier New</option>
-        </select>
-        <button onclick="execCmd('bold')"><b>B</b></button>
-        <button onclick="execCmd('italic')"><i>I</i></button>
-        <button onclick="execCmd('underline')"><u>U</u></button>
-        <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
-        <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
-        <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-        <button onclick="execCmd('insertUnorderedList')">• Liste</button>
-        <button onclick="execCmd('insertOrderedList')">1. Liste</button>
-        <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
-        <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button> <!-- Button hinzugefügt -->
+    <div class="header">
+        <h1>Memorify</h1>
+        <p>Dein Kompass im Labyrinth des Lernens</p>
     </div>
+
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <select id="fontSelect">
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+            </select>
+            <button onclick="execCmd('bold')"><b>B</b></button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
+            <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
+            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button onclick="execCmd('insertUnorderedList')">• Liste</button>
+            <button onclick="execCmd('insertOrderedList')">1. Liste</button>
+            <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
+        </div>
+        <div class="toolbar-center">
+            <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
@@ -35,9 +45,11 @@
             </div>
         </div>
     </div>
+
     <div class="history-scroll-container" id="historyContainer">
         <!-- Karten werden hier dynamisch eingefügt -->
     </div>
+
     <script src="main.js"></script>
 </body>
 </html>
