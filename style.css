@@ -48,6 +48,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     color: black; /* Textfarbe in Schwarz */
+    margin-bottom: 10px;
 }
 
 .add-card-button {
@@ -95,17 +96,23 @@ body {
     justify-content: space-between;
     padding: 10px;
     background-color: #f0f0f0;
+    margin-bottom: 20px;
 }
 
 .container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-top: 20px;
+    flex-direction: column; /* Spaltenlayout */
+    align-items: center; /* Zentrieren */
 }
 
 .editor {
-    width: 30%;
+    width: 50%; /* Größer und zentriert */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: black;
+    margin-bottom: 20px; /* Abstand für den Verlauf */
 }
 .selected-card-details {
     width: 30%;
@@ -124,15 +131,15 @@ body {
     cursor: pointer;
 }
 
-/* Container für den Kartenverlauf */
 .history-scroll-container {
     display: flex;
     overflow-x: auto;
     padding: 10px;
     background-color: #f0f0f0;
-    margin-top: 20px;
     border-radius: 8px;
     gap: 10px;
+    max-width: 80%; /* Breite angepasst */
+    margin: 0 auto; /* Zentrieren */
 }
 
 /* Jede Karte im Verlauf */
@@ -149,6 +156,10 @@ body {
 
 .history-card:hover {
     transform: scale(1.05);
+}
+
+.history-card:active {
+    background-color: #e0e0e0;
 }
 
 .history-card:active {
