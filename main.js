@@ -29,44 +29,24 @@ document.getElementById('fontSelect').addEventListener('change', function() {
     }
 });
 
-// Diese Variable speichert den Kartenverlauf
 let cardHistory = [];
 
 function addCard() {
     const frontText = document.getElementById('front').innerText;
     const backText = document.getElementById('back').innerText;
-    const newCard = { front: frontText, back: backText };
-    cardHistory.push(newCard);
-    document.getElementById('front').innerText = '';
-    document.getElementById('back').innerText = '';
-    updateCardList(); // Call the function to update the card list
+    if (frontText && backText) {
+        const newCard = { front: frontText, back: backText };
+        cardHistory.push(newCard);
+        document.getElementById('front').innerText = '';
+        document.getElementById('back').innerText = '';
+        updateCardList();
+    } else {
+        alert("Bitte sowohl Vorder- als auch Rückseite ausfüllen.");
+    }
 }
 
-function updateCardList() {
-    const cardListContainer = document.querySelector('.card-list-container');
-    cardListContainer.innerHTML = ''; // Clear existing card list
-    cardHistory.forEach((card, index) => {
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('card');
-        cardDiv.textContent = `Karte ${index + 1}: Frage - ${card.front}, Antwort - ${card.back}`;
-        cardListContainer.appendChild(cardDiv);
-    });
-}
+document.getElementById('addCardButton').addEventListener('click', addCard);
 
-// Die Funktion, um eine neue Karte hinzuzufügen
-// Die Funktion, um eine neue Karte hinzuzufügen
-function addCard() {
-    const frontText = document.getElementById('front').innerText;
-    const backText = document.getElementById('back').innerText;
-    const newCard = { front: frontText, back: backText };
-    cardHistory.push(newCard);
-    // Leeren der Eingabefelder für die nächste Karte
-    document.getElementById('front').innerText = '';
-    document.getElementById('back').innerText = '';
-    // Aktualisieren der Kartenliste
-    updateCardList();
-}
-// Die Funktion, um den Kartenverlauf zu aktualisieren
 function updateCardList() {
     const cardListContainer = document.querySelector('.history-scroll-container');
     cardListContainer.innerHTML = ''; // Clear existing card list
@@ -95,8 +75,5 @@ function loadCard(index) {
 
 function deleteCard(index) {
     cardHistory.splice(index, 1);
-    updateCardList();
-}
-    // Aktualisieren der Kartenliste
     updateCardList();
 }
