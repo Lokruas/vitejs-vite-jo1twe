@@ -60,6 +60,16 @@ function updateCardList() {
         frontTextArea.readOnly = true; // Nur-Lese-Modus
         cardDiv.appendChild(frontTextArea);
         
+         // Löschbutton hinzufügen
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'X';
+        deleteButton.onclick = (e) => {
+            e.stopPropagation(); // Verhindert das Laden der Karte bei Klick auf Löschen
+            confirmDeleteCard(index);
+        };
+        cardDiv.appendChild(deleteButton);
+        
         // OnClick-Event für das Laden der Karte
         cardDiv.onclick = () => loadCard(index);
         
@@ -71,6 +81,12 @@ function loadCard(index) {
     const selectedCard = cardHistory[index];
     document.getElementById('front').innerText = selectedCard.front;
     document.getElementById('back').innerText = selectedCard.back;
+}
+
+function confirmDeleteCard(index) {
+    if (confirm("Möchten Sie diese Karte wirklich löschen?")) {
+        deleteCard(index);
+    }
 }
 
 function deleteCard(index) {
