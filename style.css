@@ -120,12 +120,6 @@ body {
 
 }
 
-.card-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .add-card-button {
     margin-top: 20px;
     padding: 10px 15px;
@@ -136,10 +130,4 @@ body {
     cursor: pointer;
 }
 
-.history-dropdown select {
-    width: calc(30% - 20px); /* 30% der Bildschirmbreite mit ein wenig Platz an den Seiten */
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+
