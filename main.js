@@ -60,7 +60,7 @@ function updateCardList() {
         frontTextArea.readOnly = true; // Nur-Lese-Modus
         cardDiv.appendChild(frontTextArea);
         
-         // Löschbutton hinzufügen
+        // Löschbutton hinzufügen
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-button');
         deleteButton.textContent = 'X';
