@@ -90,3 +90,66 @@ body {
 .history .delete-button:hover {
     background-color: #cc0000; /* Dunkleres Rot beim Hover */
 }
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.editor {
+    width: 48%;
+}
+
+.history-dropdown {
+    width: 20%;
+}
+
+.selected-card-details {
+    width: 30%;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card-side {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-card-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #006994;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.history-dropdown select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.selected-card-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.selected-card-details .card-side {
+    flex: 0 0 48%;
+}
