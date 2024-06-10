@@ -27,7 +27,6 @@ body {
 .toolbar {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     padding: 10px;
     background-color: #003e73;
@@ -38,49 +37,53 @@ body {
 
 .toolbar-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     width: 100%;
+    margin: 5px 0;
 }
 
 .toolbar-left {
     display: flex;
-    gap: 5px; /* Enger zusammen */
+    gap: 10px;
     flex-wrap: wrap;
-}
-
-.toolbar-center {
-    text-align: center;
+    justify-content: center;
 }
 
 .toolbar button,
 .toolbar .toolbar-add-button,
 .toolbar .toolbar-stack-select {
     margin: 5px;
-    padding: 8px 10px;
+    padding: 10px 15px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 14px;
+}
+
+.toolbar button i {
+    font-size: 18px;
+}
+
+.toolbar button:hover,
+.toolbar .toolbar-add-button:hover,
+.toolbar .toolbar-stack-select:hover {
+    background-color: #0056b3;
 }
 
 .toolbar .toolbar-add-button {
     background: linear-gradient(to bottom, #0066cc, #004a99);
-    font-size: 14px;
-    padding: 10px 20px;
-    margin-top: 10px; /* Abstand zur ersten Reihe */
+    font-size: 16px;
+    padding: 15px 30px;
 }
 
-.toolbar .toolbar-add-button:hover {
-    background-color: #0056b3;
-}
-
-.toolbar .toolbar-stack-select {
-    padding: 10px;
-    font-size: 14px;
-    margin-top: 10px;
+.toolbar-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .container {
@@ -116,6 +119,7 @@ body {
     color: black;
     min-height: 200px;
     position: relative;
+    overflow: hidden;
 }
 
 .card-side::before {
@@ -125,13 +129,14 @@ body {
     left: 10px;
     color: #888;
     pointer-events: none;
-}
-
-.card-side:empty::before {
     display: block;
 }
 
-.card-side:empty:focus::before {
+.card-side:focus::before {
+    display: none;
+}
+
+.card-side:not(:empty)::before {
     display: none;
 }
 
@@ -143,7 +148,7 @@ body {
     border-radius: 8px;
     gap: 10px;
     max-width: 80%;
-    margin: 0 auto 20px auto; /* Abstand von unten */
+    margin: 0 auto 20px auto;
 }
 
 .history-card {
@@ -190,6 +195,8 @@ body {
     height: 20px;
     cursor: pointer;
     font-size: 12px;
-    line-height: 20px;
-    text-align: center;
+}
+
+.delete-button:hover {
+    background-color: darkred;
 }
