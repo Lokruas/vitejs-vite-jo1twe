@@ -66,7 +66,26 @@ function addCard() {
     // Aktualisieren der Kartenliste
     updateCardList();
 }
+// Die Funktion, um den Kartenverlauf zu aktualisieren
+function updateCardList() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = ''; // Bestehenden Verlauf leeren
 
+    cardHistory.forEach((card, index) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.classList.add('history-card');
+        cardDiv.textContent = `Karte ${index + 1}: ${card.front}`;
+        cardDiv.onclick = () => loadCard(index); // Klick-Event für das Laden der Karte
+        historyContainer.appendChild(cardDiv);
+    });
+}
+
+// Die Funktion, um eine Karte aus dem Verlauf zu laden
+function loadCard(index) {
+    const selectedCard = cardHistory[index];
+    document.getElementById('front').innerText = selectedCard.front;
+    document.getElementById('back').innerText = selectedCard.back;
+}
 // Die Funktion, um eine Karte aus dem Verlauf zu löschen
 function deleteCard(index) {
     // Entfernen der Karte aus dem Kartenverlauf
