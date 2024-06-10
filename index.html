@@ -22,9 +22,9 @@
                     <option value="Times New Roman">Times New Roman</option>
                     <option value="Courier New">Courier New</option>
                 </select>
-                <button onclick="execCmd('bold')"><b>B</b></button>
-                <button onclick="execCmd('italic')"><i>I</i></button>
-                <button onclick="execCmd('underline')"><u>U</u></button>
+                <button onclick="execCmd('bold')"><i class="fas fa-bold"></i></button>
+                <button onclick="execCmd('italic')"><i class="fas fa-italic"></i></button>
+                <button onclick="execCmd('underline')"><i class="fas fa-underline"></i></button>
                 <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;"><i class="fas fa-font"></i></button>
                 <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;"><i class="fas fa-font"></i></button>
                 <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))"><i class="fas fa-link"></i></button>
@@ -33,16 +33,14 @@
                 <button onclick="execCmd('removeFormat')"><i class="fas fa-eraser"></i></button>
             </div>
         </div>
-        <div class="toolbar-row">
-            <div class="toolbar-center">
-                <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
-                <select id="stackSelect" class="toolbar-stack-select">
-                    <option value="default">Stapelwahl</option>
-                    <option value="stack1">Stapel 1</option>
-                    <option value="stack2">Stapel 2</option>
-                    <option value="stack3">Stapel 3</option>
-                </select>
-            </div>
+        <div class="toolbar-row toolbar-center">
+            <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
+            <select id="stackSelect" class="toolbar-stack-select">
+                <option value="default">Stapelwahl</option>
+                <option value="stack1">Stapel 1</option>
+                <option value="stack2">Stapel 2</option>
+                <option value="stack3">Stapel 3</option>
+            </select>
         </div>
     </div>
 
