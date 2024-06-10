@@ -5,6 +5,7 @@ document.getElementById('fontSelect').addEventListener('change', function() {
 function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
+
 let currentCard = null;
 
 document.querySelectorAll('.card-side').forEach(card => {
@@ -27,6 +28,7 @@ document.getElementById('fontSelect').addEventListener('change', function() {
         execCmd('fontName', this.value);
     }
 });
+
 // Diese Variable speichert den Kartenverlauf
 let cardHistory = [];
 
@@ -53,6 +55,24 @@ function updateCardHistory() {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('card-history');
         cardDiv.textContent = `Karte ${index + 1}: Frage - ${card.front}, Antwort - ${card.back}`;
+
+        // Lösch-Schaltfläche erstellen
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Löschen';
+        deleteButton.classList.add('delete-button');
+        deleteButton.addEventListener('click', () => {
+            deleteCard(index);
+        });
+
+        cardDiv.appendChild(deleteButton);
         tabView.appendChild(cardDiv);
     });
+}
+
+// Die Funktion, um eine Karte aus dem Verlauf zu löschen
+function deleteCard(index) {
+    // Entfernen der Karte aus dem Kartenverlauf
+    cardHistory.splice(index, 1);
+    // Aktualisieren des Kartenverlaufs
+    updateCardHistory();
 }
