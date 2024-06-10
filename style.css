@@ -126,13 +126,6 @@ body {
     gap: 10px;
 }
 
-.card-side {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
 .add-card-button {
     margin-top: 20px;
     padding: 10px 15px;
