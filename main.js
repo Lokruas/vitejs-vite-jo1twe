@@ -98,3 +98,10 @@ function deleteCard(index) {
 function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
+
+function insertImage() {
+    const imageUrl = prompt('Bitte geben Sie die Bild-URL ein:', 'http://');
+    if (imageUrl) {
+        execCmd('insertImage', imageUrl);
+    }
+}
