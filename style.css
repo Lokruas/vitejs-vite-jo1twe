@@ -1,116 +1,41 @@
 body {
-    background-color: #007bff; /* Blauer Hintergrund */
     font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 20px;
 }
-
-/* Anpassung für weiße Container- und Editorbereiche auf blauem Hintergrund */
 .container {
+    display: flex;
+    justify-content: space-between;
+}
+.editor, .history {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 1200px;
-    margin-top: 20px;
+    width: 48%;
 }
-
-.editor {
-    max-width: 1000px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.toolbar {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.toolbar select,
 .toolbar button {
-    margin-right: 5px;
-    padding: 5px;
-    cursor: pointer;
-    border: none;
-    background: #e0e0e0;
-    border-radius: 4px;
-    font-size: 16px;
+    margin: 5px;
 }
-
-.toolbar button:hover {
-    background: #d0d0d0;
-}
-
-.toolbar select {
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
 .card-container {
-    display: flex;
-    justify-content: space-between;
     margin-top: 20px;
-    gap: 20px;
-}
-
-.card-side {
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #fff;
-    width: 45%; /* 45% damit es in einer Reihe passt */
-    height: auto; /* Die Höhe passt sich automatisch an den Text an */
-    font-size: 1.2em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    word-wrap: break-word;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-/* Der Stil für die Button für das Hinzufügen */
-.add-card-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.add-card-button:hover {
-    background-color: #0056b3;
-}
-
-/* Der Stil für den Kartenverlauf */
-.history {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.tab-view {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
-
-.card-history {
-    border-bottom: 1px solid #ccc;
-    padding: 5px 0;
+.card-side {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
-
+.add-card-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
