@@ -23,12 +23,16 @@
         <button onclick="execCmd('insertUnorderedList')">• Liste</button>
         <button onclick="execCmd('insertOrderedList')">1. Liste</button>
         <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
+        <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button> <!-- Button hinzugefügt -->
     </div>
     <div class="container">
-        <div class="editor">
-            <div class="card-side" contenteditable="true" id="front">Vorderseite</div>
-            <div class="card-side" contenteditable="true" id="back">Rückseite</div>
-            <button onclick="addCard()" class="add-card-button">Hinzufügen</button>
+        <div class="card-editor">
+            <div class="card-side-container">
+                <div class="card-side" contenteditable="true" id="front">Vorderseite</div>
+            </div>
+            <div class="card-side-container">
+                <div class="card-side" contenteditable="true" id="back">Rückseite</div>
+            </div>
         </div>
     </div>
     <div class="history-scroll-container" id="historyContainer">
