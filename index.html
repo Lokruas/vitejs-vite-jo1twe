@@ -3,50 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karteneditor</title>
+    <title>Karteneditor - Memorify</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="header">
         <h1>Memorify</h1>
         <p>Dein Kompass im Labyrinth des Lernens</p>
     </div>
-    
+
     <div class="toolbar">
-        <div class="toolbar-left">
-            <select id="fontSelect">
-                <option value="Arial">Arial</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-            </select>
-            <button onclick="execCmd('bold')"><b>B</b></button>
-            <button onclick="execCmd('italic')"><i>I</i></button>
-            <button onclick="execCmd('underline')"><u>U</u></button>
-            <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
-            <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
-            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-            <button onclick="execCmd('insertUnorderedList')">• Liste</button>
-            <button onclick="execCmd('insertOrderedList')">1. Liste</button>
-            <button onclick="execCmd('removeFormat')">Formatierung entfernen</button>
+        <div class="toolbar-row">
+            <div class="toolbar-left">
+                <select id="fontSelect">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+                <button onclick="execCmd('bold')"><b>B</b></button>
+                <button onclick="execCmd('italic')"><i>I</i></button>
+                <button onclick="execCmd('underline')"><u>U</u></button>
+                <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;"><i class="fas fa-font"></i></button>
+                <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;"><i class="fas fa-font"></i></button>
+                <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))"><i class="fas fa-link"></i></button>
+                <button onclick="execCmd('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                <button onclick="execCmd('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                <button onclick="execCmd('removeFormat')"><i class="fas fa-eraser"></i></button>
+            </div>
         </div>
-        <div class="toolbar-center">
-            <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
+        <div class="toolbar-row">
+            <div class="toolbar-center">
+                <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
+                <select id="stackSelect" class="toolbar-stack-select">
+                    <option value="default">Stapelwahl</option>
+                    <option value="stack1">Stapel 1</option>
+                    <option value="stack2">Stapel 2</option>
+                    <option value="stack3">Stapel 3</option>
+                </select>
+            </div>
         </div>
     </div>
+
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="front">Vorderseite</div>
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
             </div>
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="back">Rückseite</div>
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
             </div>
         </div>
     </div>
+
     <div class="history-scroll-container" id="historyContainer">
         <!-- Karten werden hier dynamisch eingefügt -->
     </div>
+
     <script src="main.js"></script>
 </body>
 </html>
