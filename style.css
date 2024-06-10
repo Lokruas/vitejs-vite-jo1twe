@@ -8,7 +8,9 @@ body {
 
 .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Zentriert den Inhalt */
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .editor, .history {
@@ -19,6 +21,7 @@ body {
     width: 48%;
     color: black; /* Textfarbe innerhalb von .editor und .history */
 }
+
 
 .toolbar button {
     margin: 5px;
@@ -43,12 +46,14 @@ body {
 }
 
 .card-side {
-    background-color: #f9f9f9; /* Hellgrau für bessere Lesbarkeit */
+    width: 48%; /* Gleichmäßige Verteilung des Platzes */
+    background-color: #f9f9f9;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    color: black; /* Textfarbe in Schwarz */
-    margin-bottom: 10px;
+    color: black;
+    margin-right: 10px;
+    text-align: center; /* Zentriert den Text */
 }
 
 .add-card-button {
@@ -106,13 +111,16 @@ body {
 }
 
 .editor {
-    width: 50%; /* Größer und zentriert */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 70%; /* Breiteres Eingabefeld */
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: black;
-    margin-bottom: 20px; /* Abstand für den Verlauf */
+    margin-bottom: 20px;
 }
 .selected-card-details {
     width: 30%;
@@ -152,8 +160,18 @@ body {
     text-align: center;
     cursor: pointer;
     transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
 }
-
+.history-card textarea {
+    resize: none; /* Keine Größenänderung erlaubt */
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
 .history-card:hover {
     transform: scale(1.05);
 }
