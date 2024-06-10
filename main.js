@@ -29,44 +29,36 @@ document.getElementById('fontSelect').addEventListener('change', function() {
     }
 });
 
-unction updateCardHistory() {
+// Diese Variable speichert den Kartenverlauf
+let cardHistory = [];
+
+// Die Funktion, um eine neue Karte hinzuzufügen
+function addCard() {
+    const frontText = document.getElementById('front').innerText;
+    const backText = document.getElementById('back').innerText;
+    const newCard = { front: frontText, back: backText };
+    cardHistory.push(newCard);
+    // Leeren der Eingabefelder für die nächste Karte
+    document.getElementById('front').innerText = '';
+    document.getElementById('back').innerText = '';
+    // Aktualisieren des Kartenverlaufs
+    updateCardHistoryDropdown();
+}
+
+// Die Funktion, um den Kartenverlauf im Dropdown-Menü anzuzeigen
+function updateCardHistoryDropdown() {
     const dropdown = document.getElementById('cardHistoryDropdown');
-    const tabView = document.querySelector('.tab-view');
-    // Leeren der Dropdown-Liste und Tab-Ansicht, um Aktualisierungen vorzunehmen
+    // Zuerst alle vorhandenen Optionen löschen
     dropdown.innerHTML = '';
-    tabView.innerHTML = '';
-    // Durchlaufen des Kartenverlaufs und Hinzufügen zur Dropdown-Liste und Tab-Ansicht
+    // Durchlaufen des Kartenverlaufs und Hinzufügen zur Dropdown-Liste
     cardHistory.forEach((card, index) => {
         const option = document.createElement('option');
         option.text = `Karte ${index + 1}`;
         dropdown.add(option);
-        
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('card-history');
-        cardDiv.textContent = `Karte ${index + 1}: Frage - ${card.front}, Antwort - ${card.back}`;
-
-        // Lösch-Schaltfläche erstellen
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Löschen';
-        deleteButton.classList.add('delete-button');
-        deleteButton.addEventListener('click', () => {
-            deleteCard(index);
-        });
-
-        cardDiv.appendChild(deleteButton);
-        tabView.appendChild(cardDiv);
     });
 }
 
-// Funktion zum Löschen einer Karte aus dem Verlauf
-function deleteCard(index) {
-    // Entfernen der Karte aus dem Kartenverlauf
-    cardHistory.splice(index, 1);
-    // Aktualisieren des Kartenverlaufs und Dropdown-Menüs
-    updateCardHistory();
-}
-
-// Funktion zum Anzeigen der ausgewählten Karte
+// Die Funktion, um die ausgewählte Karte anzuzeigen
 function showSelectedCard() {
     const selectedIndex = document.getElementById('cardHistoryDropdown').selectedIndex;
     const selectedCard = cardHistory[selectedIndex];
@@ -74,12 +66,6 @@ function showSelectedCard() {
         document.getElementById('selectedFront').innerText = selectedCard.front;
         document.getElementById('selectedBack').innerText = selectedCard.back;
     }
-}
-
-// Initialisierung des Kartenverlaufs und Dropdown-Menüs beim Laden der Seite
-window.onload = function() {
-    updateCardHistory();
-};
 }
 
 // Hinzufügen eines Event Listeners für das Laden der Seite
