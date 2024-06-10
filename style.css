@@ -144,7 +144,9 @@ body {
 }
 
 .history-dropdown select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
+    width: calc(30% - 20px); /* 30% der Bildschirmbreite mit ein wenig Platz an den Seiten */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
