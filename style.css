@@ -111,12 +111,6 @@ body {
     width: 30%;
     display: flex;
     flex-direction: column;
-}
-
-.history-dropdown {
-    width: 30%;
-    align-self: flex-end;
-    margin-left: auto;
 
 }
 
@@ -130,4 +124,33 @@ body {
     cursor: pointer;
 }
 
+/* Container für den Kartenverlauf */
+.history-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+    background-color: #f0f0f0;
+    margin-top: 20px;
+    border-radius: 8px;
+    gap: 10px;
+}
 
+/* Jede Karte im Verlauf */
+.history-card {
+    min-width: 150px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.history-card:hover {
+    transform: scale(1.05);
+}
+
+.history-card:active {
+    background-color: #e0e0e0;
+}
