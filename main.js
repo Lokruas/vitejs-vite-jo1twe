@@ -6,71 +6,78 @@ function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
 
-let currentCard = null;
+document.getElementById('addCardButton').addEventListener('click', addCard);
 
-document.querySelectorAll('.card-side').forEach(card => {
-    card.addEventListener('focus', () => {
-        currentCard = card;
+function addCard() {
+    const frontContent = document.getElementById('front').innerText;
+    const backContent = document.getElementById('back').innerText;
+    
+    if (frontContent.trim() === '' || backContent.trim() === '') {
+        alert('Bitte füllen Sie sowohl die Vorder- als auch die Rückseite der Karte aus.');
+        return;
+    }
+    
+    const newCard = {
+        front: frontContent,
+        back: backContent
+    };
+    
+    cardHistory.push(newCard);
+    updateCardList();
+    
+    document.getElementById('front').innerText = '';
+    document.getElementById('back').innerText = '';
+}
+
+document.querySelectorAll('.card-side').forEach(side => {
+    side.addEventListener('focus', function() {
+        if (this.innerText === '') {
+            this.innerText = '';
+        }
+    });
+    side.addEventListener('input', function() {
+        this.dataset.empty = this.innerText.trim() === '';
     });
 });
 
-document.querySelectorAll('.toolbar button').forEach(button => {
-    button.addEventListener('click', () => {
-        if (currentCard) {
-            currentCard.focus();
+document.querySelectorAll('.card-side').forEach(side => {
+    side.addEventListener('blur', function() {
+        if (this.innerText === '') {
+            this.dataset.empty = true;
         }
     });
 });
 
-document.getElementById('fontSelect').addEventListener('change', function() {
-    if (currentCard) {
-        currentCard.focus();
-        execCmd('fontName', this.value);
-    }
-});
-
-let cardHistory = [];
-
-function addCard() {
-    const frontText = document.getElementById('front').innerText;
-    const backText = document.getElementById('back').innerText;
-    if (frontText && backText) {
-        const newCard = { front: frontText, back: backText };
-        cardHistory.push(newCard);
-        document.getElementById('front').innerText = '';
-        document.getElementById('back').innerText = '';
-        updateCardList();
-    } else {
-        alert("Bitte sowohl Vorder- als auch Rückseite ausfüllen.");
-    }
-}
-
-document.getElementById('addCardButton').addEventListener('click', addCard);
+const cardHistory = [];
 
 function updateCardList() {
-    const cardListContainer = document.querySelector('.history-scroll-container');
-    cardListContainer.innerHTML = ''; // Clear existing card list
+    const cardListContainer = document.getElementById('historyContainer');
+    cardListContainer.innerHTML = '';
+    
     cardHistory.forEach((card, index) => {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('history-card');
         
-        // Erstellen eines Textfelds für die Vorderseite
-        const frontTextArea = document.createElement('textarea');
-        frontTextArea.value = card.front;
-        frontTextArea.readOnly = true; // Nur-Lese-Modus
-        cardDiv.appendChild(frontTextArea);
+        const frontText = document.createElement('textarea');
+        frontText.readOnly = true;
+        frontText.value = card.front;
         
-        // Löschbutton hinzufügen
+        const backText = document.createElement('textarea');
+        backText.readOnly = true;
+        backText.value = card.back;
+        
+        cardDiv.appendChild(frontText);
+        cardDiv.appendChild(backText);
+        
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-button');
         deleteButton.innerHTML = 'X';
         deleteButton.onclick = (e) => {
-            e.stopPropagation(); // Verhindert das Laden der Karte bei Klick auf Löschen
+            e.stopPropagation();
             confirmDeleteCard(index);
         };
         cardDiv.appendChild(deleteButton);
         
-        // OnClick-Event für das Laden der Karte
         cardDiv.onclick = () => loadCard(index);
         
         cardListContainer.appendChild(cardDiv);
@@ -84,7 +91,7 @@ function loadCard(index) {
 }
 
 function confirmDeleteCard(index) {
-    if (confirm("Möchten Sie diese Karte wirklich löschen?")) {
+    if (confirm('Möchten Sie diese Karte wirklich löschen?')) {
         deleteCard(index);
     }
 }
