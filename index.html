@@ -29,8 +29,9 @@
             <button onclick="execCmd('insertUnorderedList')">•</button>
             <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
             <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
-            <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage(this)">
+            <input type="file" id="imageUpload" accept="image/*" multiple onchange="uploadImages(this)">
             <button onclick="toggleDrawMode()">Stift</button>
+            <button onclick="activateEraser()">Radiergummi</button>
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
