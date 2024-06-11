@@ -90,6 +90,7 @@ body {
 
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
@@ -134,12 +135,12 @@ body {
 
 .history-scroll-container {
     display: flex;
-    overflow-x: auto;
+    flex-direction: column; /* Ändern auf Spalte */
+    width: 70%; /* Anpassen der Breite */
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 8px;
     gap: 10px;
-    max-width: 80%;
     margin: 0 auto 20px auto; /* Abstand von unten */
 }
 
@@ -198,4 +199,5 @@ body {
     display: none;
     z-index: 1000;
     border: 1px solid #000;
+    cursor: crosshair; /* Cursor ändern */
 }
