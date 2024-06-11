@@ -6,6 +6,7 @@ body {
     padding: 0;
 }
 
+/* Header */
 .header {
     text-align: center;
     padding: 20px 0;
@@ -24,6 +25,7 @@ body {
     margin: 10px 0 0 0;
 }
 
+/* Toolbar */
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -37,7 +39,7 @@ body {
 
 .toolbar-left {
     display: flex;
-    gap: 5px; /* Enger zusammen */
+    gap: 5px;
     flex-wrap: wrap;
 }
 
@@ -55,7 +57,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
@@ -69,21 +71,7 @@ body {
     background-color: #0056b3;
 }
 
-.color-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.color-picker label {
-    font-size: 10px;
-    color: #000;
-}
-
+/* Container und Karten */
 .container {
     display: flex;
     justify-content: center;
@@ -116,23 +104,9 @@ body {
     border-radius: 4px;
     color: black;
     min-height: 200px;
-    position: relative;
 }
 
-.card-side::before {
-    content: attr(data-placeholder);
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #aaa;
-    pointer-events: none;
-    display: none; /* Anfangs ausgeblendet */
-}
-
-.card-side.empty::before {
-    display: block; /* Platzhalter anzeigen, wenn das Feld leer ist */
-}
-
+/* History Scroll */
 .history-scroll-container {
     display: flex;
     overflow-x: auto;
@@ -141,7 +115,7 @@ body {
     border-radius: 8px;
     gap: 10px;
     max-width: 80%;
-    margin: 0 auto 20px auto; /* Abstand von unten */
+    margin: 0 auto 20px auto;
 }
 
 .history-card {
@@ -156,6 +130,16 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+.history-card textarea {
+    resize: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .history-card:hover {
@@ -182,32 +166,7 @@ body {
     text-align: center;
 }
 
-#drawCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
-    z-index: 1000;
-    border: 1px solid #000;
-}
-
-.color-selector {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 1001;
-}
-
-.color-selector button {
-    width: 24px;
-    height: 24px;
-    border: none;
-    cursor: pointer;
-    margin: 2px;
-    border-radius: 50%;
+#drawingCanvas {
+    border: 2px solid #000;
+    cursor: crosshair;
 }
