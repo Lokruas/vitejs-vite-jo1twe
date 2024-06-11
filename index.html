@@ -29,9 +29,16 @@
             <button onclick="execCmd('insertUnorderedList')">•</button>
             <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
             <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
-            <input type="file" id="imageUpload" accept="image/*" multiple onchange="uploadImages(this)">
+            <input type="file" id="imageUpload" accept="image/*" multiple onchange="uploadImage(this)">
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="activateEraser()">Radiergummi</button>
+            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
@@ -45,10 +52,10 @@
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
             </div>
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
             </div>
         </div>
         
