@@ -1,31 +1,4 @@
-// Funktion, um den execCommand auszuführen
-function execCmd(command, value = null) {
-    document.execCommand(command, false, value);
-}
-
-// Funktion, um Bilder hochzuladen
-function uploadImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            insertHtmlAtCursor(img.outerHTML);
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Funktion, um HTML an der Cursorposition einzufügen
-function insertHtmlAtCursor(html) {
-    const range = window.getSelection().getRangeAt(0);
-    const fragment = range.createContextualFragment(html);
-    range.insertNode(fragment);
-}
-
-// Platzhalter für die Eingabefelder
+// Platzhalter-Text-Logik
 document.querySelectorAll('.card-side').forEach(element => {
     element.addEventListener('focus', function() {
         const placeholder = this.getAttribute('data-placeholder');
@@ -42,12 +15,10 @@ document.querySelectorAll('.card-side').forEach(element => {
             this.classList.add('placeholder');
         }
     });
-});
 
-// Initialisierung der Platzhalter
-document.querySelectorAll('.card-side').forEach(element => {
+    // Initiale Platzhalteranzeige
     const placeholder = element.getAttribute('data-placeholder');
-    if (element.textContent === '') {
+    if (element.textContent.trim() === '') {
         element.textContent = placeholder;
         element.classList.add('placeholder');
     }
@@ -55,8 +26,8 @@ document.querySelectorAll('.card-side').forEach(element => {
 
 // Funktion, um eine Karte hinzuzufügen
 function addCard() {
-    const front = document.getElementById('front').innerHTML.trim();
-    const back = document.getElementById('back').innerHTML.trim();
+    const front = document.getElementById('front').textContent.trim();
+    const back = document.getElementById('back').textContent.trim();
     const historyContainer = document.getElementById('historyContainer');
 
     const card = document.createElement('div');
@@ -66,11 +37,17 @@ function addCard() {
         <button class="delete-button" onclick="deleteCard(event, this)">×</button>
     `;
     card.onclick = function() {
-        document.getElementById('front').innerHTML = front;
-        document.getElementById('back').innerHTML = back;
+        document.getElementById('front').textContent = front;
+        document.getElementById('back').textContent = back;
+        checkPlaceholders();
     };
 
     historyContainer.appendChild(card);
+
+    // Leeren der Eingabefelder und Platzhalter aktualisieren
+    document.getElementById('front').textContent = '';
+    document.getElementById('back').textContent = '';
+    checkPlaceholders();
 }
 
 // Funktion, um eine Karte zu löschen
@@ -82,6 +59,26 @@ function deleteCard(event, button) {
     }
 }
 
+// Editor-Befehle ausführen
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+// Bild-Upload-Funktion
+function uploadImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            const range = window.getSelection().getRangeAt(0);
+            range.insertNode(img);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 // Zeichnungsmodus
 let isDrawing = false;
 const canvas = document.getElementById('drawCanvas');
@@ -89,14 +86,17 @@ const ctx = canvas.getContext('2d');
 let startX, startY;
 
 function toggleDrawMode() {
+    const colorSelector = document.getElementById('colorSelector');
     if (canvas.style.display === 'block') {
         canvas.style.display = 'none';
+        colorSelector.style.display = 'none';
         canvas.style.zIndex = '-1';
         isDrawing = false;
     } else {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.style.display = 'block';
+        colorSelector.style.display = 'block';
         canvas.style.zIndex = '1000';
         isDrawing = true;
     }
@@ -123,3 +123,23 @@ canvas.addEventListener('mouseup', () => {
     if (!isDrawing) return;
     ctx.closePath();
 });
+
+// Stiftfarbe ändern
+function changeDrawColor(color) {
+    ctx.strokeStyle = color;
+}
+
+// Platzhalter überprüfen und einstellen
+function checkPlaceholders() {
+    document.querySelectorAll('.card-side').forEach(element => {
+        const placeholder = element.getAttribute('data-placeholder');
+        if (element.textContent.trim() === '') {
+            element.textContent = placeholder;
+            element.classList.add('placeholder');
+        } else {
+            element.classList.remove('placeholder');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', checkPlaceholders);
