@@ -28,6 +28,9 @@ document.querySelectorAll('.card-side').forEach(element => {
 function addCard() {
     const front = document.getElementById('front').textContent.trim();
     const back = document.getElementById('back').textContent.trim();
+    if (!front || !back) {
+        alert('Bitte füllen Sie sowohl die Vorder- als auch die Rückseite der Karte aus.');
+        return;
     const historyContainer = document.getElementById('historyContainer');
 
     const card = document.createElement('div');
