@@ -29,7 +29,8 @@
             <button onclick="execCmd('insertUnorderedList')">•</button>
             <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
             <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
-            <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage(this)">
+            <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImage(this)">
             <button onclick="toggleDrawMode()">Stift</button>
         </div>
         <div class="toolbar-center">
@@ -58,6 +59,13 @@
     
     <!-- Canvas für das Zeichnen -->
     <canvas id="drawCanvas"></canvas>
+    
+    <div class="color-selector" id="colorSelector">
+        <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
+        <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
+        <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
+        <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
+    </div>
     
     <script src="main.js"></script>
 </body>
