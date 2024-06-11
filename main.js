@@ -1,185 +1,125 @@
-document.getElementById('fontSelect').addEventListener('change', function() {
-    execCmd('fontName', this.value);
-});
-
+// Funktion, um den execCommand auszuführen
 function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
 
-let currentCard = null;
-
-document.querySelectorAll('.card-side').forEach(card => {
-    card.addEventListener('focus', () => {
-        currentCard = card;
-    });
-});
-
-document.querySelectorAll('.toolbar button').forEach(button => {
-    button.addEventListener('click', () => {
-        if (currentCard) {
-            currentCard.focus();
-        }
-    });
-});
-
-document.getElementById('fontSelect').addEventListener('change', function() {
-    if (currentCard) {
-        currentCard.focus();
-        execCmd('fontName', this.value);
-    }
-});
-
-let cardHistory = [];
-
-function addCard() {
-    const frontText = document.getElementById('front').innerHTML;
-    const backText = document.getElementById('back').innerHTML;
-    const newCard = { front: frontText, back: backText };
-    cardHistory.push(newCard);
-    document.getElementById('front').innerHTML = '';
-    document.getElementById('back').innerHTML = '';
-    updateCardList();
-}
-
-function updateCardList() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = '';
-
-    cardHistory.forEach((card, index) => {
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('history-card');
-        cardDiv.innerHTML = `
-            <textarea readonly>${card.front}</textarea>
-            <button class="delete-button" onclick="confirmDeleteCard(${index})">✖️</button>
-        `;
-        cardDiv.onclick = () => loadCard(index);
-        historyContainer.appendChild(cardDiv);
-    });
-}
-
-function loadCard(index) {
-    const selectedCard = cardHistory[index];
-    document.getElementById('front').innerHTML = selectedCard.front;
-    document.getElementById('back').innerHTML = selectedCard.back;
-}
-
-function confirmDeleteCard(index) {
-    if (confirm('Möchten Sie diese Karte wirklich löschen?')) {
-        deleteCard(index);
-    }
-}
-
-function deleteCard(index) {
-    cardHistory.splice(index, 1);
-    updateCardList();
-}
-
-function openFileDialog() {
-    document.getElementById('imageUploader').click();
-}
-
-function insertImageFromUpload() {
-    const fileInput = document.getElementById('imageUploader');
-    const file = fileInput.files[0];
-    if (file) {
+// Funktion, um Bilder hochzuladen
+function uploadImage(input) {
+    if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            if (currentCard) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100%';
-                currentCard.appendChild(img);
-            }
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            insertHtmlAtCursor(img.outerHTML);
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(input.files[0]);
     }
-    fileInput.value = '';
 }
 
-// Platzhalter-Logik
-document.querySelectorAll('.card-side').forEach(card => {
-    card.addEventListener('focus', () => {
-        if (card.textContent === card.getAttribute('data-placeholder')) {
-            card.textContent = '';
-            card.style.opacity = '1';
+// Funktion, um HTML an der Cursorposition einzufügen
+function insertHtmlAtCursor(html) {
+    const range = window.getSelection().getRangeAt(0);
+    const fragment = range.createContextualFragment(html);
+    range.insertNode(fragment);
+}
+
+// Platzhalter für die Eingabefelder
+document.querySelectorAll('.card-side').forEach(element => {
+    element.addEventListener('focus', function() {
+        const placeholder = this.getAttribute('data-placeholder');
+        if (this.textContent === placeholder) {
+            this.textContent = '';
+            this.classList.remove('placeholder');
         }
     });
-    card.addEventListener('blur', () => {
-        if (card.textContent === '') {
-            card.textContent = card.getAttribute('data-placeholder');
-            card.style.opacity = '0.6';
+
+    element.addEventListener('blur', function() {
+        if (this.textContent.trim() === '') {
+            const placeholder = this.getAttribute('data-placeholder');
+            this.textContent = placeholder;
+            this.classList.add('placeholder');
         }
     });
-    if (card.textContent === '') {
-        card.textContent = card.getAttribute('data-placeholder');
-        card.style.opacity = '0.6';
+});
+
+// Initialisierung der Platzhalter
+document.querySelectorAll('.card-side').forEach(element => {
+    const placeholder = element.getAttribute('data-placeholder');
+    if (element.textContent === '') {
+        element.textContent = placeholder;
+        element.classList.add('placeholder');
     }
 });
+
+// Funktion, um eine Karte hinzuzufügen
+function addCard() {
+    const front = document.getElementById('front').innerHTML.trim();
+    const back = document.getElementById('back').innerHTML.trim();
+    const historyContainer = document.getElementById('historyContainer');
+
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+        <div class="front-content">${front}</div>
+        <button class="delete-button" onclick="deleteCard(event, this)">×</button>
+    `;
+    card.onclick = function() {
+        document.getElementById('front').innerHTML = front;
+        document.getElementById('back').innerHTML = back;
+    };
+
+    historyContainer.appendChild(card);
+}
+
+// Funktion, um eine Karte zu löschen
+function deleteCard(event, button) {
+    event.stopPropagation();
+    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
+    if (confirmed) {
+        button.parentElement.remove();
+    }
+}
+
+// Zeichnungsmodus
 let isDrawing = false;
-let x = 0;
-let y = 0;
+const canvas = document.getElementById('drawCanvas');
+const ctx = canvas.getContext('2d');
+let startX, startY;
 
-const canvas = document.getElementById('drawingCanvas');
-const context = canvas.getContext('2d');
+function toggleDrawMode() {
+    if (canvas.style.display === 'block') {
+        canvas.style.display = 'none';
+        canvas.style.zIndex = '-1';
+        isDrawing = false;
+    } else {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.display = 'block';
+        canvas.style.zIndex = '1000';
+        isDrawing = true;
+    }
+}
 
-canvas.addEventListener('mousedown', e => {
-    isDrawing = true;
-    x = e.offsetX;
-    y = e.offsetY;
+canvas.addEventListener('mousedown', (e) => {
+    if (!isDrawing) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
 });
 
-canvas.addEventListener('mousemove', e => {
-    if (isDrawing) {
-        drawLine(context, x, y, e.offsetX, e.offsetY);
-        x = e.offsetX;
-        y = e.offsetY;
-    }
+canvas.addEventListener('mousemove', (e) => {
+    if (!isDrawing) return;
+    if (e.buttons !== 1) return; // Nur bei gedrückter Maustaste zeichnen
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    ctx.lineTo(mouseX, mouseY);
+    ctx.stroke();
 });
 
 canvas.addEventListener('mouseup', () => {
-    isDrawing = false;
-    x = 0;
-    y = 0;
+    if (!isDrawing) return;
+    ctx.closePath();
 });
-
-function drawLine(context, x1, y1, x2, y2) {
-    context.beginPath();
-    context.strokeStyle = 'red';
-    context.lineWidth = 2;
-    context.moveTo(x1, y1);
-    context.lineTo(x2, y2);
-    context.stroke();
-    context.closePath();
-}
-
-function openFileDialog() {
-    document.getElementById('imageUploader').click();
-}
-
-function insertImageFromUpload() {
-    const fileInput = document.getElementById('imageUploader');
-    const file = fileInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            if (currentCard) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100%';
-                img.onclick = () => enableDrawingMode(img);
-                currentCard.appendChild(img);
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-    fileInput.value = '';
-}
-
-function enableDrawingMode(img) {
-    canvas.style.display = 'block';
-    canvas.width = img.clientWidth;
-    canvas.height = img.clientHeight;
-    canvas.style.position = 'absolute';
-    canvas.style.left = `${img.offsetLeft}px`;
-    canvas.style.top = `${img.offsetTop}px`;
-}
