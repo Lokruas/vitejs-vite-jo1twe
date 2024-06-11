@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karteneditor</title>
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,57 +11,54 @@
         <h1>Memorify</h1>
         <p>Dein Kompass im Labyrinth des Lernens</p>
     </div>
-
+    
     <div class="toolbar">
         <div class="toolbar-left">
             <button onclick="execCmd('bold')"><b>B</b></button>
             <button onclick="execCmd('italic')"><i>I</i></button>
             <button onclick="execCmd('underline')"><u>U</u></button>
-            <button onclick="execCmd('foreColor', '#FF0000')" style="color: red;">A</button>
-            <button onclick="execCmd('foreColor', '#0000FF')" style="color: blue;">A</button>
-            <button onclick="execCmd('hiliteColor', '#FFFF00')" style="background-color: yellow;">T</button>
-            <button onclick="execCmd('insertUnorderedList')">• Liste</button>
-            <button onclick="execCmd('insertOrderedList')">1. Liste</button>
-            <button onclick="execCmd('removeFormat')">✖️</button>
+            <div class="color-picker">
+                <label for="textColor">Textfarbe</label>
+                <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
+            </div>
+            <div class="color-picker">
+                <label for="highlightColor">Hintergrundfarbe</label>
+                <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
+            </div>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
             <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-            <button onclick="openFileDialog()">Bild hochladen</button>
+            <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
+            <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage(this)">
+            <button onclick="toggleDrawMode()">Stift</button>
         </div>
         <div class="toolbar-center">
-            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
+                <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
         </div>
     </div>
-
-    <input type="file" id="imageUploader" accept="image/*" style="display:none;" onchange="insertImageFromUpload()">
-
+    
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
             </div>
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
             </div>
         </div>
-    </div>
-    <div class="container">
-    <div class="card-editor">
-        <div class="card-side-container">
-            <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
-        </div>
-        <div class="card-side-container">
-            <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
+        
+        <div class="history-scroll-container" id="historyContainer">
+            <!-- Karten werden hier dynamisch eingefügt -->
         </div>
     </div>
-    <canvas id="drawingCanvas" style="display: none;"></canvas>
-</div>
-
-    <div class="history-scroll-container" id="historyContainer">
-        <!-- Karten werden hier dynamisch eingefügt -->
-    </div>
-
+    
+    <!-- Canvas für das Zeichnen -->
+    <canvas id="drawCanvas"></canvas>
+    
     <script src="main.js"></script>
 </body>
 </html>
