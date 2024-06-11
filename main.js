@@ -4,19 +4,42 @@ function execCmd(command, value = null) {
 }
 
 // Funktion, um Bilder hochzuladen
-function uploadImages(input) {
+function uploadImage(input) {
     if (input.files) {
         Array.from(input.files).forEach(file => {
             const reader = new FileReader();
             reader.onload = function(e) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'image-resizable';
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.style.maxWidth = '100%';
                 img.style.maxHeight = '100%';
-                img.style.resize = 'both';
-                img.style.overflow = 'auto';
-                img.addEventListener('dblclick', () => img.remove()); // Doppelklick zum Entfernen
-                insertHtmlAtCursor(img.outerHTML);
+
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(resizeHandle);
+
+                imgContainer.style.position = 'relative';
+                imgContainer.draggable = true;
+
+                imgContainer.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/html', imgContainer.outerHTML);
+                    imgContainer.remove();
+                });
+
+                imgContainer.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    imgContainer.style.left = e.clientX + 'px';
+                    imgContainer.style.top = e.clientY + 'px';
+                });
+
+                imgContainer.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                insertHtmlAtCursor(imgContainer.outerHTML);
             };
             reader.readAsDataURL(file);
         });
@@ -36,6 +59,12 @@ document.querySelectorAll('.card-side').forEach(element => {
         const placeholder = this.getAttribute('data-placeholder');
         if (this.textContent === placeholder) {
             this.textContent = '';
+            this.classList.remove('placeholder');
+        }
+    });
+
+    element.addEventListener('input', function() {
+        if (this.textContent !== '') {
             this.classList.remove('placeholder');
         }
     });
@@ -89,39 +118,33 @@ function deleteCard(event, button) {
 
 // Zeichnungsmodus
 let isDrawing = false;
-let isErasing = false;
+let drawColor = '#000000';
 const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 let startX, startY;
-let drawColor = '#000000';
 
 function toggleDrawMode() {
-    if (canvas.style.display === 'block') {
+    if (isDrawing) {
+        isDrawing = false;
         canvas.style.display = 'none';
         canvas.style.zIndex = '-1';
-        isDrawing = false;
     } else {
+        isDrawing = true;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.style.display = 'block';
         canvas.style.zIndex = '1000';
-        isDrawing = true;
-        isErasing = false; // Zeichenmodus aktivieren, Radiergummi deaktivieren
-        ctx.strokeStyle = drawColor;
-        ctx.lineWidth = 2;
     }
 }
 
+function setDrawColor(color) {
+    drawColor = color;
+    ctx.strokeStyle = drawColor;
+}
+
 function activateEraser() {
-    if (isDrawing && isErasing) {
-        isErasing = false;
-        ctx.strokeStyle = drawColor;
-        ctx.lineWidth = 2;
-    } else if (isDrawing) {
-        isErasing = true;
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 10;
-    }
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 10;
 }
 
 canvas.addEventListener('mousedown', (e) => {
