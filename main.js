@@ -75,7 +75,7 @@ function addCard() {
         document.getElementById('back').innerHTML = back;
     };
 
-    historyContainer.appendChild(card);
+    historyContainer.insertBefore(card, historyContainer.firstChild);
 }
 
 // Funktion, um eine Karte zu löschen
