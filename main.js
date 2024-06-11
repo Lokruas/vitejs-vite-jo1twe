@@ -1,87 +1,66 @@
-document.getElementById('addCardButton').addEventListener('click', addCard);
+document.getElementById('fontSelect').addEventListener('change', function() {
+    execCmd('fontName', this.value);
+});
 
-function addCard() {
-    const frontContent = document.getElementById('front').innerText.trim();
-    const backContent = document.getElementById('back').innerText.trim();
-    
-    if (!frontContent || !backContent) {
-        alert('Bitte füllen Sie sowohl die Vorder- als auch die Rückseite der Karte aus.');
-        return;
-    }
-    
-    const newCard = { front: frontContent, back: backContent };
-    cardHistory.push(newCard);
-    updateCardList();
-    
-    document.getElementById('front').innerText = '';
-    document.getElementById('back').innerText = '';
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
 }
 
-document.querySelectorAll('.card-side').forEach(side => {
-    side.addEventListener('focus', function() {
-        if (this.innerText === this.dataset.placeholder) {
-            this.innerText = '';
-            this.dataset.empty = false;
-        }
-    });
-    side.addEventListener('blur', function() {
-        if (this.innerText.trim() === '') {
-            this.innerText = this.dataset.placeholder;
-            this.dataset.empty = true;
-        }
-    });
-    side.addEventListener('input', function() {
-        this.dataset.empty = this.innerText.trim() === '';
+let currentCard = null;
+
+document.querySelectorAll('.card-side').forEach(card => {
+    card.addEventListener('focus', () => {
+        currentCard = card;
     });
 });
 
-document.querySelectorAll('.card-side').forEach(side => {
-    if (side.innerText.trim() === '') {
-        side.innerText = side.dataset.placeholder;
-        side.dataset.empty = true;
+document.querySelectorAll('.toolbar button').forEach(button => {
+    button.addEventListener('click', () => {
+        if (currentCard) {
+            currentCard.focus();
+        }
+    });
+});
+
+document.getElementById('fontSelect').addEventListener('change', function() {
+    if (currentCard) {
+        currentCard.focus();
+        execCmd('fontName', this.value);
     }
 });
 
-const cardHistory = [];
+let cardHistory = [];
+
+function addCard() {
+    const frontText = document.getElementById('front').innerHTML;
+    const backText = document.getElementById('back').innerHTML;
+    const newCard = { front: frontText, back: backText };
+    cardHistory.push(newCard);
+    document.getElementById('front').innerHTML = '';
+    document.getElementById('back').innerHTML = '';
+    updateCardList();
+}
 
 function updateCardList() {
-    const cardListContainer = document.getElementById('historyContainer');
-    cardListContainer.innerHTML = '';
-    
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+
     cardHistory.forEach((card, index) => {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('history-card');
-        
-        const frontText = document.createElement('textarea');
-        frontText.readOnly = true;
-        frontText.value = card.front;
-        
-        const backText = document.createElement('textarea');
-        backText.readOnly = true;
-        backText.value = card.back;
-        
-        cardDiv.appendChild(frontText);
-        cardDiv.appendChild(backText);
-        
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.innerHTML = 'X';
-        deleteButton.onclick = (e) => {
-            e.stopPropagation();
-            confirmDeleteCard(index);
-        };
-        cardDiv.appendChild(deleteButton);
-        
+        cardDiv.innerHTML = `
+            <textarea readonly>${card.front}</textarea>
+            <button class="delete-button" onclick="confirmDeleteCard(${index})">✖️</button>
+        `;
         cardDiv.onclick = () => loadCard(index);
-        
-        cardListContainer.appendChild(cardDiv);
+        historyContainer.appendChild(cardDiv);
     });
 }
 
 function loadCard(index) {
     const selectedCard = cardHistory[index];
-    document.getElementById('front').innerText = selectedCard.front;
-    document.getElementById('back').innerText = selectedCard.back;
+    document.getElementById('front').innerHTML = selectedCard.front;
+    document.getElementById('back').innerHTML = selectedCard.back;
 }
 
 function confirmDeleteCard(index) {
@@ -95,13 +74,112 @@ function deleteCard(index) {
     updateCardList();
 }
 
-function execCmd(command, value = null) {
-    document.execCommand(command, false, value);
+function openFileDialog() {
+    document.getElementById('imageUploader').click();
 }
 
-function insertImage() {
-    const imageUrl = prompt('Bitte geben Sie die Bild-URL ein:', 'http://');
-    if (imageUrl) {
-        execCmd('insertImage', imageUrl);
+function insertImageFromUpload() {
+    const fileInput = document.getElementById('imageUploader');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (currentCard) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                currentCard.appendChild(img);
+            }
+        };
+        reader.readAsDataURL(file);
     }
+    fileInput.value = '';
+}
+
+// Platzhalter-Logik
+document.querySelectorAll('.card-side').forEach(card => {
+    card.addEventListener('focus', () => {
+        if (card.textContent === card.getAttribute('data-placeholder')) {
+            card.textContent = '';
+            card.style.opacity = '1';
+        }
+    });
+    card.addEventListener('blur', () => {
+        if (card.textContent === '') {
+            card.textContent = card.getAttribute('data-placeholder');
+            card.style.opacity = '0.6';
+        }
+    });
+    if (card.textContent === '') {
+        card.textContent = card.getAttribute('data-placeholder');
+        card.style.opacity = '0.6';
+    }
+});
+let isDrawing = false;
+let x = 0;
+let y = 0;
+
+const canvas = document.getElementById('drawingCanvas');
+const context = canvas.getContext('2d');
+
+canvas.addEventListener('mousedown', e => {
+    isDrawing = true;
+    x = e.offsetX;
+    y = e.offsetY;
+});
+
+canvas.addEventListener('mousemove', e => {
+    if (isDrawing) {
+        drawLine(context, x, y, e.offsetX, e.offsetY);
+        x = e.offsetX;
+        y = e.offsetY;
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    isDrawing = false;
+    x = 0;
+    y = 0;
+});
+
+function drawLine(context, x1, y1, x2, y2) {
+    context.beginPath();
+    context.strokeStyle = 'red';
+    context.lineWidth = 2;
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.stroke();
+    context.closePath();
+}
+
+function openFileDialog() {
+    document.getElementById('imageUploader').click();
+}
+
+function insertImageFromUpload() {
+    const fileInput = document.getElementById('imageUploader');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (currentCard) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                img.onclick = () => enableDrawingMode(img);
+                currentCard.appendChild(img);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+    fileInput.value = '';
+}
+
+function enableDrawingMode(img) {
+    canvas.style.display = 'block';
+    canvas.width = img.clientWidth;
+    canvas.height = img.clientHeight;
+    canvas.style.position = 'absolute';
+    canvas.style.left = `${img.offsetLeft}px`;
+    canvas.style.top = `${img.offsetTop}px`;
 }
