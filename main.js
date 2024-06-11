@@ -4,17 +4,22 @@ function execCmd(command, value = null) {
 }
 
 // Funktion, um Bilder hochzuladen
-function uploadImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            insertHtmlAtCursor(img.outerHTML);
-        };
-        reader.readAsDataURL(input.files[0]);
+function uploadImages(input) {
+    if (input.files) {
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.resize = 'both';
+                img.style.overflow = 'auto';
+                img.addEventListener('dblclick', () => img.remove()); // Doppelklick zum Entfernen
+                insertHtmlAtCursor(img.outerHTML);
+            };
+            reader.readAsDataURL(file);
+        });
     }
 }
 
@@ -84,9 +89,11 @@ function deleteCard(event, button) {
 
 // Zeichnungsmodus
 let isDrawing = false;
+let isErasing = false;
 const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 let startX, startY;
+let drawColor = '#000000';
 
 function toggleDrawMode() {
     if (canvas.style.display === 'block') {
@@ -99,6 +106,21 @@ function toggleDrawMode() {
         canvas.style.display = 'block';
         canvas.style.zIndex = '1000';
         isDrawing = true;
+        isErasing = false; // Zeichenmodus aktivieren, Radiergummi deaktivieren
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = 2;
+    }
+}
+
+function activateEraser() {
+    if (isDrawing && isErasing) {
+        isErasing = false;
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = 2;
+    } else if (isDrawing) {
+        isErasing = true;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 10;
     }
 }
 
