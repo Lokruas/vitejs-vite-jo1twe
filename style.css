@@ -37,7 +37,7 @@ body {
 
 .toolbar-left {
     display: flex;
-    gap: 5px; /* Enger zusammen */
+    gap: 5px;
     flex-wrap: wrap;
 }
 
@@ -55,7 +55,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
@@ -135,13 +135,13 @@ body {
 
 .history-scroll-container {
     display: flex;
-    flex-direction: column; /* Ändern auf Spalte */
-    width: 70%; /* Anpassen der Breite */
+    overflow-x: auto;
+    gap: 10px;
+    width: 70%;
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 8px;
-    gap: 10px;
-    margin: 0 auto 20px auto; /* Abstand von unten */
+    margin: 0 auto 20px auto;
 }
 
 .history-card {
@@ -156,16 +156,6 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-}
-
-.history-card textarea {
-    resize: none;
-    border: none;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    font-size: 14px;
-    margin-bottom: 10px;
 }
 
 .history-card:hover {
@@ -199,5 +189,5 @@ body {
     display: none;
     z-index: 1000;
     border: 1px solid #000;
-    cursor: crosshair; /* Cursor ändern */
+    cursor: crosshair;
 }
