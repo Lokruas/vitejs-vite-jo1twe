@@ -3,71 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karteneditor - Memorify</title>
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="header">
         <h1>Memorify</h1>
         <p>Dein Kompass im Labyrinth des Lernens</p>
     </div>
-
+    
     <div class="toolbar">
-        <div class="toolbar-row">
-            <div class="toolbar-group">
-                <button onclick="execCmd('bold')"><i class="fas fa-bold"></i></button>
-                <button onclick="execCmd('italic')"><i class="fas fa-italic"></i></button>
-                <button onclick="execCmd('underline')"><i class="fas fa-underline"></i></button>
-                <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))"><i class="fas fa-link"></i></button>
-                <button onclick="execCmd('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                <button onclick="execCmd('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
-                <button onclick="execCmd('removeFormat')"><i class="fas fa-undo" style="color: red;"></i></button>
-                <button onclick="insertImage()"><i class="fas fa-image"></i></button>
+        <div class="toolbar-left">
+            <button onclick="execCmd('bold')"><b>B</b></button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <div class="color-picker">
+                <label for="textColor">Textfarbe</label>
+                <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
             </div>
-            <div class="toolbar-group">
-                <select id="fontColor" onchange="execCmd('foreColor', this.value)">
-                    <option value="">Textfarbe</option>
-                    <option value="#FF0000" style="color: red;">Rot</option>
-                    <option value="#0000FF" style="color: blue;">Blau</option>
-                    <option value="#00FF00" style="color: green;">Grün</option>
-                    <option value="#000000" style="color: black;">Schwarz</option>
-                </select>
-                <select id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
-                    <option value="">Hintergrundfarbe</option>
-                    <option value="#FFFF00" style="background-color: yellow;">Gelb</option>
-                    <option value="#FFA500" style="background-color: orange;">Orange</option>
-                    <option value="#FF00FF" style="background-color: magenta;">Magenta</option>
-                    <option value="#00FFFF" style="background-color: cyan;">Cyan</option>
-                </select>
+            <div class="color-picker">
+                <label for="highlightColor">Hintergrundfarbe</label>
+                <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
             </div>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
+            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
+            <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage(this)">
+            <button onclick="toggleDrawMode()">Stift</button>
         </div>
-        <div class="toolbar-row toolbar-center">
-            <button id="addCardButton" class="toolbar-add-button">Hinzufügen</button>
-            <select id="stackSelect" class="toolbar-stack-select">
+        <div class="toolbar-center">
+            <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
-                <option value="stack1">Stapel 1</option>
-                <option value="stack2">Stapel 2</option>
-                <option value="stack3">Stapel 3</option>
+                <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
         </div>
     </div>
-
+    
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
             </div>
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
             </div>
         </div>
+        
+        <div class="history-scroll-container" id="historyContainer">
+            <!-- Karten werden hier dynamisch eingefügt -->
+        </div>
     </div>
-
-    <div class="history-scroll-container" id="historyContainer">
-        <!-- Karten werden hier dynamisch eingefügt -->
-    </div>
-
+    
+    <!-- Canvas für das Zeichnen -->
+    <canvas id="drawCanvas"></canvas>
+    
     <script src="main.js"></script>
 </body>
 </html>
