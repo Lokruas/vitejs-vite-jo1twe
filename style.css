@@ -26,7 +26,7 @@ body {
 
 .toolbar {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     padding: 10px;
     background-color: #003e73;
@@ -35,56 +35,57 @@ body {
     border-radius: 8px;
 }
 
-.toolbar-row {
+.toolbar-left {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 5px 0;
+    gap: 5px; /* Enger zusammen */
+    flex-wrap: wrap;
 }
 
-.toolbar-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+.toolbar-center {
+    flex-grow: 1;
+    text-align: center;
 }
 
 .toolbar button,
-.toolbar .toolbar-add-button,
-.toolbar .toolbar-stack-select {
+.toolbar .toolbar-add-button {
     margin: 5px;
-    padding: 10px 15px;
+    padding: 8px 10px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
-}
-
-.toolbar button i {
-    font-size: 18px;
-}
-
-.toolbar button:hover,
-.toolbar .toolbar-add-button:hover,
-.toolbar .toolbar-stack-select:hover {
-    background-color: #0056b3;
+    font-size: 12px; /* Kleinere Ansicht */
 }
 
 .toolbar .toolbar-add-button {
     background: linear-gradient(to bottom, #0066cc, #004a99);
-    font-size: 16px;
-    padding: 15px 30px;
+    font-size: 14px;
+    padding: 10px 20px;
 }
 
-.toolbar-center {
-    text-align: center;
+.toolbar button:hover,
+.toolbar .toolbar-add-button:hover {
+    background-color: #0056b3;
+}
+
+.color-picker {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 5px;
+    background: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker label {
+    font-size: 10px;
+    color: #000;
+}
+
+#imageUpload {
+    display: none;
 }
 
 .container {
@@ -120,7 +121,6 @@ body {
     color: black;
     min-height: 200px;
     position: relative;
-    overflow: hidden;
 }
 
 .card-side::before {
@@ -128,17 +128,8 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    color: #888;
+    color: #aaa;
     pointer-events: none;
-    display: block;
-}
-
-.card-side:focus::before {
-    display: none;
-}
-
-.card-side:not(:empty)::before {
-    display: none;
 }
 
 .history-scroll-container {
@@ -149,7 +140,7 @@ body {
     border-radius: 8px;
     gap: 10px;
     max-width: 80%;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 20px auto; /* Abstand von unten */
 }
 
 .history-card {
@@ -158,19 +149,30 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
     display: flex;
     flex-direction: column;
-    align-items: center;
     position: relative;
 }
 
 .history-card textarea {
-    width: 100%;
-    height: 100px;
     resize: none;
     border: none;
-    background: none;
-    margin: 5px 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.history-card:hover {
+    transform: scale(1.05);
+}
+
+.history-card:active {
+    background-color: #e0e0e0;
 }
 
 .delete-button {
@@ -181,10 +183,19 @@ body {
     color: white;
     border: none;
     border-radius: 50%;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    padding: 5px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
 }
 
-.delete-button:hover {
-    background-color: darkred;
+#drawCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 1000;
+    border: 1px solid #000;
 }
