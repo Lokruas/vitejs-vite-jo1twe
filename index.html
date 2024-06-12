@@ -14,55 +14,45 @@
     
     <div class="toolbar">
         <div class="toolbar-left">
-            <div class="toolbar-row">
-                <!-- Textformatierung -->
-                <button onclick="execCmd('bold')"><b>B</b></button>
-                <button onclick="execCmd('italic')"><i>I</i></button>
-                <button onclick="execCmd('underline')"><u>U</u></button>
-                <button onclick="execCmd('strikethrough')"><strike>S</strike></button>
-                <select id="fontSelect" onchange="execCmd('fontName', this.value)">
-                    <option value="Arial">Arial</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Verdana">Verdana</option>
-                </select>
-                <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
-                    <option value="1">8pt</option>
-                    <option value="2">10pt</option>
-                    <option value="3" selected>12pt</option>
-                    <option value="4">14pt</option>
-                    <option value="5">18pt</option>
-                    <option value="6">24pt</option>
-                    <option value="7">36pt</option>
-                </select>
-            </div>
-            <div class="toolbar-row">
-                <!-- Formatierung -->
-                <button onclick="execCmd('justifyLeft')">Links</button>
-                <button onclick="execCmd('justifyCenter')">Zentrieren</button>
-                <button onclick="execCmd('justifyRight')">Rechts</button>
-                <button onclick="execCmd('justifyFull')">Blocksatz</button>
-                <button onclick="execCmd('indent')">Einrücken</button>
-                <button onclick="execCmd('outdent')">Ausrücken</button>
-                <button onclick="execCmd('insertOrderedList')">1.</button>
-                <button onclick="execCmd('insertUnorderedList')">•</button>
-            </div>
-            <div class="toolbar-row">
-                <!-- Hinzufügen -->
-                <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
-                <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
-                <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImages(this)">
-                <button onclick="toggleDrawMode()">Stift</button>
-                <button onclick="toggleEraserMode()">Radiergummi</button>
-            </div>
+            <!-- Textformatierung -->
+            <button onclick="execCmd('bold')"><b>B</b></button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <button onclick="execCmd('strikethrough')"><strike>S</strike></button>
+            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
+                <option value="1">8pt</option>
+                <option value="2">10pt</option>
+                <option value="3" selected>12pt</option>
+                <option value="4">14pt</option>
+                <option value="5">18pt</option>
+                <option value="6">24pt</option>
+                <option value="7">36pt</option>
+            </select>
+            
+            <!-- Formatierung -->
+            <button onclick="execCmd('justifyLeft')">Links</button>
+            <button onclick="execCmd('justifyCenter')">Zentrieren</button>
+            <button onclick="execCmd('justifyRight')">Rechts</button>
+            <button onclick="execCmd('justifyFull')">Blocksatz</button>
+            <button onclick="execCmd('indent')">Einrücken</button>
+            <button onclick="execCmd('outdent')">Ausrücken</button>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
         </div>
         <div class="toolbar-right">
-            <button class="toolbar-history-button" onclick="toggleHistory()">Karten-Historie</button>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
                 <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
+            <button class="toolbar-history-button" onclick="toggleHistory()">Karten-Historie</button>
         </div>
     </div>
     
