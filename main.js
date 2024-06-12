@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const cardSides = document.querySelectorAll('.card-side');
     cardSides.forEach(side => {
         side.addEventListener('focus', removePlaceholder);
@@ -19,15 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    document.getElementById('colorSelector').addEventListener('click', function(event) {
+    document.getElementById('colorSelector').addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             changeDrawColor(event.target.style.backgroundColor);
         }
     });
 
-    document.getElementById('imageUpload').addEventListener('change', function() {
+    document.getElementById('imageUpload').addEventListener('change', function () {
         uploadImages(this);
     });
+
+    loadHistory(); // Historie beim Laden der Seite laden
+    window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
 });
 
 // HTML-Funktionen
@@ -36,8 +39,20 @@ function execCmd(command, value = null) {
 }
 
 function addCard() {
-    // Funktion zum Hinzufügen einer neuen Karte
-    console.log('Neue Karte hinzufügen');
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+
+    let newCard = {
+        front: frontContent,
+        back: backContent
+    };
+
+    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
+    renderHistory(); // Historie rendern
+
+    // Inhalt der Textfelder zurücksetzen
+    document.getElementById('front').innerHTML = '';
+    document.getElementById('back').innerHTML = '';
 }
 
 function toggleHistory() {
@@ -65,7 +80,7 @@ function uploadImages(input) {
     const file = input.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const img = new Image();
             img.src = e.target.result;
             img.style.maxWidth = '100%';
@@ -84,23 +99,24 @@ let drawMode = false;
 function toggleDrawMode() {
     drawMode = !drawMode;
     const canvas = document.getElementById('drawCanvas');
-    canvas.style.display = drawMode ? 'block' : 'none';
+    canvas.style.pointerEvents = drawMode ? 'auto' : 'none';
     isErasing = false;
+    canvas.style.zIndex = drawMode ? 1 : -1;
 }
 
 function toggleEraserMode() {
     isErasing = !isErasing;
     const canvas = document.getElementById('drawCanvas');
-    if (isErasing) {
-        drawMode = false;
-        canvas.style.display = 'block';
-    } else {
-        canvas.style.display = 'none';
-    }
+    canvas.style.pointerEvents = isErasing ? 'auto' : 'none';
+    canvas.style.zIndex = isErasing ? 1 : -1;
+    drawMode = false;
 }
 
 function changeDrawColor(color) {
     drawColor = color;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = drawColor;
 }
 
 function startDrawing(event) {
@@ -109,7 +125,7 @@ function startDrawing(event) {
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         ctx.beginPath();
-        ctx.moveTo(event.clientX, event.clientY);
+        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
     }
 }
 
@@ -118,12 +134,10 @@ function draw(event) {
     const canvas = document.getElementById('drawCanvas');
     const ctx = canvas.getContext('2d');
     if (drawMode) {
-        ctx.strokeStyle = drawColor;
-        ctx.lineWidth = 3;
-        ctx.lineTo(event.clientX, event.clientY);
+        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
         ctx.stroke();
     } else if (isErasing) {
-        ctx.clearRect(event.clientX - 10, event.clientY - 10, 20, 20);
+        ctx.clearRect(event.clientX - canvas.offsetLeft - 10, event.clientY - canvas.offsetTop - 10, 20, 20);
     }
 }
 
@@ -142,6 +156,7 @@ function resizeCanvas() {
 
 // Vorhandene Kartenhistorie
 let history = [];
+
 function saveToHistory() {
     const frontContent = document.getElementById('front').innerHTML;
     const backContent = document.getElementById('back').innerHTML;
@@ -162,10 +177,34 @@ function renderHistory() {
         `;
         historyContainer.appendChild(historyCard);
     });
+
+    // Aktualisiere den Schieberegler
+    updateHistoryScroll();
+}
+
+function updateHistoryScroll() {
+    const historyContainer = document.getElementById('historyContainer');
+    if (historyContainer.scrollWidth > historyContainer.clientWidth) {
+        historyContainer.style.overflowX = 'scroll';
+    } else {
+        historyContainer.style.overflowX = 'hidden';
+    }
+}
+
+function saveHistory() {
+    localStorage.setItem('cardsHistory', JSON.stringify(history));
+}
+
+function loadHistory() {
+    const savedHistory = localStorage.getItem('cardsHistory');
+    if (savedHistory) {
+        history = JSON.parse(savedHistory);
+        renderHistory();
+    }
 }
 
 // Anpassung der Toolbar Buttons
-document.querySelector('.toolbar').addEventListener('click', function(event) {
+document.querySelector('.toolbar').addEventListener('click', function (event) {
     if (event.target.tagName === 'BUTTON') {
         const command = event.target.getAttribute('data-command');
         if (command) execCmd(command);
@@ -193,7 +232,7 @@ function execCmd(command, value = null) {
 
 // Bildgröße anpassen
 document.querySelectorAll('.card-side img').forEach(img => {
-    img.addEventListener('click', function() {
+    img.addEventListener('click', function () {
         const newWidth = prompt('Enter new width:', img.width);
         const newHeight = prompt('Enter new height:', img.height);
         if (newWidth && newHeight) {
@@ -204,105 +243,8 @@ document.querySelectorAll('.card-side img').forEach(img => {
 });
 
 // Zeichnen aktivieren
-document.getElementById('drawCanvas').addEventListener('mousedown', function(event) {
+document.getElementById('drawCanvas').addEventListener('mousedown', function (event) {
     isDrawing = true;
     ctx.beginPath();
-    ctx.moveTo(event.clientX, event.clientY);
+    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
 });
-document.getElementById('drawCanvas').addEventListener('mousemove', function(event) {
-    if (isDrawing) {
-        ctx.lineTo(event.clientX, event.clientY);
-        ctx.stroke();
-    }
-});
-document.getElementById('drawCanvas').addEventListener('mouseup', function() {
-    isDrawing = false;
-    ctx.closePath();
-});
-document.getElementById('drawCanvas').addEventListener('mouseout', function() {
-    isDrawing = false;
-    ctx.closePath();
-});
-
-// History-Funktionalität
-function saveCardToHistory() {
-    const frontContent = document.getElementById('front').innerHTML;
-    const backContent = document.getElementById('back').innerHTML;
-    history.push({ front: frontContent, back: backContent });
-    updateHistory();
-}
-
-function updateHistory() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = '';
-    history.forEach((card, index) => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'history-card';
-        cardElement.innerHTML = `
-            <div>Karte ${index + 1}</div>
-            <div><b>Vorderseite:</b> ${card.front}</div>
-            <div><b>Rückseite:</b> ${card.back}</div>
-        `;
-        historyContainer.appendChild(cardElement);
-    });
-}
-
-// Stift-Funktion nur in editierbaren Bereichen
-function toggleDrawMode() {
-    drawMode = !drawMode;
-    const canvas = document.getElementById('drawCanvas');
-    canvas.style.display = drawMode ? 'block' : 'none';
-    isErasing = false;
-}
-
-function toggleEraserMode() {
-    isErasing = !isErasing;
-    const canvas = document.getElementById('drawCanvas');
-    if (isErasing) {
-        drawMode = false;
-        canvas.style.display = 'block';
-    } else {
-        canvas.style.display = 'none';
-    }
-}
-
-function changeDrawColor(color) {
-    drawColor = color;
-}
-
-function startDrawing(event) {
-    if (drawMode || isErasing) {
-        isDrawing = true;
-        const canvas = document.getElementById('drawCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.moveTo(event.clientX, event.clientY);
-    }
-}
-
-function draw(event) {
-    if (!isDrawing) return;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    if (drawMode) {
-        ctx.strokeStyle = drawColor;
-        ctx.lineWidth = 3;
-        ctx.lineTo(event.clientX, event.clientY);
-        ctx.stroke();
-    } else if (isErasing) {
-        ctx.clearRect(event.clientX - 10, event.clientY - 10, 20, 20);
-    }
-}
-
-function stopDrawing() {
-    isDrawing = false;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.closePath();
-}
-
-function resizeCanvas() {
-    const canvas = document.getElementById('drawCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
