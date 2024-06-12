@@ -15,41 +15,44 @@
     <div class="toolbar">
         <div class="toolbar-left">
             <!-- Textformatierung -->
-            <button onclick="execCmd('bold')"><b>B</b></button>
-            <button onclick="execCmd('italic')"><i>I</i></button>
-            <button onclick="execCmd('underline')"><u>U</u></button>
-            <button onclick="execCmd('strikethrough')"><strike>S</strike></button>
-            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
-                <option value="Arial">Arial</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Verdana">Verdana</option>
-            </select>
-            <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
-                <option value="1">8pt</option>
-                <option value="2">10pt</option>
-                <option value="3" selected>12pt</option>
-                <option value="4">14pt</option>
-                <option value="5">18pt</option>
-                <option value="6">24pt</option>
-                <option value="7">36pt</option>
-            </select>
-            
-            <!-- Formatierung -->
-            <button onclick="execCmd('justifyLeft')">Links</button>
-            <button onclick="execCmd('justifyCenter')">Zentrieren</button>
-            <button onclick="execCmd('justifyRight')">Rechts</button>
-            <button onclick="execCmd('justifyFull')">Blocksatz</button>
-            <button onclick="execCmd('indent')">Einrücken</button>
-            <button onclick="execCmd('outdent')">Ausrücken</button>
-            <button onclick="execCmd('insertOrderedList')">1.</button>
-            <button onclick="execCmd('insertUnorderedList')">•</button>
-            <!-- Neu hinzugefügte Werkzeuge -->
-            <button onclick="toggleDrawMode()">Stift</button>
-            <button onclick="toggleEraserMode()">Radiergummi</button>
+            <div class="toolbar-row">
+                <button onclick="execCmd('bold')"><b>B</b></button>
+                <button onclick="execCmd('italic')"><i>I</i></button>
+                <button onclick="execCmd('underline')"><u>U</u></button>
+                <button onclick="execCmd('strikethrough')"><strike>S</strike></button>
+            </div>
+            <div class="toolbar-row">
+                <select id="fontSelect" onchange="execCmd('fontName', this.value)">
+                    <option value="Arial">Arial</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Verdana">Verdana</option>
+                </select>
+                <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
+                    <option value="1">8pt</option>
+                    <option value="2">10pt</option>
+                    <option value="3" selected>12pt</option>
+                    <option value="4">14pt</option>
+                    <option value="5">18pt</option>
+                    <option value="6">24pt</option>
+                    <option value="7">36pt</option>
+                </select>
+            </div>
+            <div class="toolbar-row">
+                <button onclick="execCmd('justifyLeft')">Links</button>
+                <button onclick="execCmd('justifyCenter')">Zentrieren</button>
+                <button onclick="execCmd('justifyRight')">Rechts</button>
+                <button onclick="execCmd('justifyFull')">Blocksatz</button>
+            </div>
+            <div class="toolbar-row">
+                <button onclick="execCmd('indent')">Einrücken</button>
+                <button onclick="execCmd('outdent')">Ausrücken</button>
+                <button onclick="execCmd('insertOrderedList')">1.</button>
+                <button onclick="execCmd('insertUnorderedList')">•</button>
+            </div>
         </div>
-        <div class="toolbar-center">
+        <div class="toolbar-right">
             <div class="color-tools">
                 <div class="color-picker">
                     <label for="textColor">Textfarbe</label>
@@ -60,8 +63,6 @@
                     <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
                 </div>
             </div>
-        </div>
-        <div class="toolbar-right">
             <button class="toolbar-add-button" onclick="saveToHistory()">Hinzufügen</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
