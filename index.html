@@ -45,6 +45,9 @@
             <button onclick="execCmd('outdent')">Ausrücken</button>
             <button onclick="execCmd('insertOrderedList')">1.</button>
             <button onclick="execCmd('insertUnorderedList')">•</button>
+            <!-- Neu hinzugefügte Werkzeuge -->
+            <button onclick="toggleDrawMode()">Stift</button>
+            <button onclick="toggleEraserMode()">Radiergummi</button>
         </div>
         <div class="toolbar-center">
             <div class="color-tools">
@@ -59,7 +62,7 @@
             </div>
         </div>
         <div class="toolbar-right">
-            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
+            <button class="toolbar-add-button" onclick="saveToHistory()">Hinzufügen</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
                 <!-- Weitere Optionen können hier hinzugefügt werden -->
