@@ -27,7 +27,7 @@ body {
 .toolbar {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     padding: 10px;
     background-color: #003e73;
     margin: 20px auto;
@@ -36,24 +36,13 @@ body {
     flex-wrap: wrap;
 }
 
-.toolbar-left {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
+.toolbar-left,
+.toolbar-center,
 .toolbar-right {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     gap: 5px;
-}
-
-.color-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    flex-wrap: wrap;
 }
 
 .toolbar button,
