@@ -41,13 +41,20 @@ body {
     flex-wrap: wrap;
 }
 
+.color-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .toolbar-center {
     flex-grow: 1;
     text-align: center;
 }
 
 .toolbar button,
-.toolbar .toolbar-add-button {
+.toolbar .toolbar-add-button,
+.toolbar select {
     margin: 5px;
     padding: 8px 10px;
     background-color: #007bff;
@@ -65,7 +72,8 @@ body {
 }
 
 .toolbar button:hover,
-.toolbar .toolbar-add-button:hover {
+.toolbar .toolbar-add-button:hover,
+.toolbar select:hover {
     background-color: #0056b3;
 }
 
@@ -82,10 +90,6 @@ body {
 .color-picker label {
     font-size: 10px;
     color: #000;
-}
-
-#imageUpload {
-    display: none;
 }
 
 .container {
@@ -111,7 +115,6 @@ body {
     width: 48%;
     color: black;
     margin: 10px;
-    position: relative;
 }
 
 .card-side {
@@ -131,6 +134,11 @@ body {
     left: 10px;
     color: #aaa;
     pointer-events: none;
+    display: none; /* Anfangs ausgeblendet */
+}
+
+.card-side.empty::before {
+    display: block; /* Platzhalter anzeigen, wenn das Feld leer ist */
 }
 
 .history-scroll-container {
@@ -158,22 +166,19 @@ body {
     position: relative;
 }
 
-.history-card textarea {
-    resize: none;
-    border: none;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
 .history-card:hover {
     transform: scale(1.05);
 }
 
 .history-card:active {
     background-color: #e0e0e0;
+}
+
+.history-card .front-preview {
+    font-weight: bold;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
 .delete-button {
@@ -193,30 +198,31 @@ body {
 }
 
 #drawCanvas {
+    display: none;
     position: absolute;
     top: 0;
     left: 0;
-    display: none;
     z-index: 1000;
-    border: 1px solid #000;
+    background: rgba(255, 255, 255, 0.5);
 }
 
-.image-resizable {
-    position: relative;
-    display: inline-block;
-}
-
-.image-resizable img {
-    max-width: 100%;
-    height: auto;
-}
-
-.resize-handle {
+.color-selector {
+    display: none;
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #000;
-    cursor: se-resize;
-    right: 0;
-    bottom: 0;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+.color-selector button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    cursor: pointer;
+    margin: 2px;
+    border-radius: 50%;
 }
