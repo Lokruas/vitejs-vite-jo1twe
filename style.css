@@ -37,9 +37,14 @@ body {
 
 .toolbar-left {
     display: flex;
-    flex-direction: column;
-    gap: 5px; /* Enger zusammen */
+    gap: 5px;
     flex-wrap: wrap;
+}
+
+.color-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .toolbar-center {
@@ -48,7 +53,8 @@ body {
 }
 
 .toolbar button,
-.toolbar .toolbar-add-button {
+.toolbar .toolbar-add-button,
+.toolbar select {
     margin: 5px;
     padding: 8px 10px;
     background-color: #007bff;
@@ -56,7 +62,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
@@ -66,13 +72,30 @@ body {
 }
 
 .toolbar button:hover,
-.toolbar .toolbar-add-button:hover {
+.toolbar .toolbar-add-button:hover,
+.toolbar select:hover {
     background-color: #0056b3;
+}
+
+.color-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker label {
+    font-size: 10px;
+    color: #000;
 }
 
 .container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     margin-top: 20px;
 }
@@ -80,7 +103,7 @@ body {
 .card-editor {
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 70%;
     margin-bottom: 20px;
 }
 
@@ -92,7 +115,6 @@ body {
     width: 48%;
     color: black;
     margin: 10px;
-    position: relative;
 }
 
 .card-side {
@@ -102,68 +124,59 @@ body {
     border-radius: 4px;
     color: black;
     min-height: 200px;
+    overflow: auto;
     position: relative;
 }
 
-.card-side[contenteditable]:empty:before {
+.card-side.placeholder::before {
     content: attr(data-placeholder);
-    color: gray;
-    display: block; /* funktioniert wie ein Platzhalter */
-}
-
-.uploaded-image {
-    max-width: 100%;
-    max-height: 100px; /* Höchsthöhe */
-    margin: 10px 0;
     position: absolute;
-    resize: both;
-    overflow: auto;
+    top: 10px;
+    left: 10px;
+    color: gray;
+    pointer-events: none;
+    font-size: 14px;
 }
 
 .history-scroll-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    gap: 10px;
-    width: 80%;
-    max-width: 800px;
-    margin-top: 20px;
     display: none;
+    flex-direction: column;
+    max-width: 80%;
+    margin: 0 auto 20px auto;
 }
 
 .history-card {
-    width: 90%;
+    min-width: 150px;
     background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    margin: 5px;
     padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    color: black;
 }
 
-.history-card-content {
-    border: none;
-    resize: none;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-    font-size: 14px;
-    margin: 10px 0;
-    color: black;
-    overflow: hidden;
+#drawCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    pointer-events: none;
+    display: none;
 }
 
 .color-selector {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: space-around;
-    margin-top: 10px;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .color-selector button {
@@ -174,12 +187,6 @@ body {
     cursor: pointer;
 }
 
-#drawCanvas {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    pointer-events: none;
-    border: 1px solid #ddd;
+.color-selector button:hover {
+    transform: scale(1.1);
 }
