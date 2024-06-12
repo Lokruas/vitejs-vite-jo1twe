@@ -46,6 +46,18 @@
             <button onclick="execCmd('insertOrderedList')">1.</button>
             <button onclick="execCmd('insertUnorderedList')">•</button>
         </div>
+        <div class="toolbar-center">
+            <div class="color-tools">
+                <div class="color-picker">
+                    <label for="textColor">Textfarbe</label>
+                    <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
+                </div>
+                <div class="color-picker">
+                    <label for="highlightColor">Hintergrundfarbe</label>
+                    <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
+                </div>
+            </div>
+        </div>
         <div class="toolbar-right">
             <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <select id="stackSelect">
