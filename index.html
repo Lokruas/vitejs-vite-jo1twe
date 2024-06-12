@@ -57,19 +57,18 @@
             <button onclick="execCmd('insertUnorderedList')">•</button>
             
             <!-- Hinzufügen -->
-            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
             <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImages(this)">
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="toggleEraserMode()">Radiergummi</button>
         </div>
         <div class="toolbar-right">
+            <button class="toolbar-history-button" onclick="toggleHistory()">Karten-Historie</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
                 <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
-            <button class="toolbar-history-button" onclick="toggleHistory()">Karten-Historie</button>
-            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
         </div>
     </div>
     
