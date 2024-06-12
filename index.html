@@ -55,7 +55,7 @@
                 <button onclick="toggleEraserMode()">Radiergummi</button>
             </div>
         </div>
-        <div class="toolbar-right">
+        <div class="toolbar-center">
             <div class="color-tools">
                 <div class="color-picker">
                     <label for="textColor">Textfarbe</label>
@@ -66,6 +66,8 @@
                     <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
                 </div>
             </div>
+        </div>
+        <div class="toolbar-right">
             <button class="toolbar-add-button" onclick="saveToHistory()">Hinzufügen</button>
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
