@@ -20,6 +20,7 @@
                 <button onclick="execCmd('italic')"><i>I</i></button>
                 <button onclick="execCmd('underline')"><u>U</u></button>
                 <button onclick="execCmd('strikethrough')"><strike>S</strike></button>
+                <button onclick="execCmd('removeFormat')">↩</button>
             </div>
             <div class="toolbar-row">
                 <select id="fontSelect" onchange="execCmd('fontName', this.value)">
@@ -50,6 +51,8 @@
                 <button onclick="execCmd('outdent')">Ausrücken</button>
                 <button onclick="execCmd('insertOrderedList')">1.</button>
                 <button onclick="execCmd('insertUnorderedList')">•</button>
+                <button onclick="toggleDrawMode()">Stift</button>
+                <button onclick="toggleEraserMode()">Radiergummi</button>
             </div>
         </div>
         <div class="toolbar-right">
