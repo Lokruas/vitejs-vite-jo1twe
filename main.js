@@ -1,168 +1,308 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const front = document.getElementById('front');
-    const back = document.getElementById('back');
-    const drawCanvas = document.getElementById('drawCanvas');
-    const ctx = drawCanvas.getContext('2d');
-    const colorSelector = document.getElementById('colorSelector');
-    let drawing = false;
-    let currentColor = '#000000';
-    let isDrawingMode = false;
-    let currentTool = 'pen'; // 'pen' oder 'eraser'
+    const cardSides = document.querySelectorAll('.card-side');
+    cardSides.forEach(side => {
+        side.addEventListener('focus', removePlaceholder);
+        side.addEventListener('blur', addPlaceholder);
+    });
 
-    // Canvas Größe anpassen
-    function resizeCanvas() {
-        drawCanvas.width = window.innerWidth;
-        drawCanvas.height = window.innerHeight;
-    }
-    resizeCanvas();
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let isErasing = false;
+    let drawColor = 'black';
+
+    // Initialisieren des Canvas zum Zeichnen
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
     window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    // Werkzeuge und Zeichenmodus
-    document.querySelectorAll('.toolbar button').forEach(button => {
-        button.addEventListener('click', function() {
-            if (this.getAttribute('data-tool') === 'pen' || this.getAttribute('data-tool') === 'eraser') {
-                isDrawingMode = true;
-                currentTool = this.getAttribute('data-tool');
-                drawCanvas.style.pointerEvents = 'auto';
-                drawCanvas.style.display = 'block';
-            } else {
-                isDrawingMode = false;
-                drawCanvas.style.pointerEvents = 'none';
-                drawCanvas.style.display = 'none';
-            }
-        });
+    document.getElementById('colorSelector').addEventListener('click', function(event) {
+        if (event.target.tagName === 'BUTTON') {
+            changeDrawColor(event.target.style.backgroundColor);
+        }
     });
 
-    function startDrawing(e) {
-        drawing = true;
-        ctx.strokeStyle = currentColor;
-        ctx.lineWidth = currentTool === 'pen' ? 2 : 10;
-        ctx.lineCap = 'round';
+    document.getElementById('imageUpload').addEventListener('change', function() {
+        uploadImages(this);
+    });
+});
+
+// HTML-Funktionen
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+function addCard() {
+    // Funktion zum Hinzufügen einer neuen Karte
+    console.log('Neue Karte hinzufügen');
+}
+
+function toggleHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
+}
+
+function removePlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === target.dataset.placeholder) {
+        target.classList.remove('placeholder');
+        target.textContent = '';
+    }
+}
+
+function addPlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === '') {
+        target.classList.add('placeholder');
+        target.textContent = target.dataset.placeholder;
+    }
+}
+
+function uploadImages(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.draggable = false;
+            img.style.resize = 'both';
+            img.style.overflow = 'auto';
+            document.getElementById('front').appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+let drawMode = false;
+
+function toggleDrawMode() {
+    drawMode = !drawMode;
+    const canvas = document.getElementById('drawCanvas');
+    canvas.style.display = drawMode ? 'block' : 'none';
+    isErasing = false;
+}
+
+function toggleEraserMode() {
+    isErasing = !isErasing;
+    const canvas = document.getElementById('drawCanvas');
+    if (isErasing) {
+        drawMode = false;
+        canvas.style.display = 'block';
+    } else {
+        canvas.style.display = 'none';
+    }
+}
+
+function changeDrawColor(color) {
+    drawColor = color;
+}
+
+function startDrawing(event) {
+    if (drawMode || isErasing) {
+        isDrawing = true;
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
         ctx.beginPath();
-        ctx.moveTo(e.clientX, e.clientY);
+        ctx.moveTo(event.clientX, event.clientY);
     }
+}
 
-    function draw(e) {
-        if (!drawing) return;
-        ctx.lineTo(e.clientX, e.clientY);
+function draw(event) {
+    if (!isDrawing) return;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    if (drawMode) {
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = 3;
+        ctx.lineTo(event.clientX, event.clientY);
         ctx.stroke();
+    } else if (isErasing) {
+        ctx.clearRect(event.clientX - 10, event.clientY - 10, 20, 20);
     }
+}
 
-    function stopDrawing() {
-        drawing = false;
-    }
+function stopDrawing() {
+    isDrawing = false;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.closePath();
+}
 
-    drawCanvas.addEventListener('mousedown', startDrawing);
-    drawCanvas.addEventListener('mousemove', draw);
-    drawCanvas.addEventListener('mouseup', stopDrawing);
+function resizeCanvas() {
+    const canvas = document.getElementById('drawCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-    document.addEventListener('click', function(event) {
-        if (isDrawingMode && !event.target.closest('.card-side')) {
-            isDrawingMode = false;
-            drawCanvas.style.pointerEvents = 'none';
-            drawCanvas.style.display = 'none';
-        }
+// Vorhandene Kartenhistorie
+let history = [];
+function saveToHistory() {
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+    history.push({ front: frontContent, back: backContent });
+    renderHistory();
+}
+
+function renderHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+    history.forEach((entry, index) => {
+        const historyCard = document.createElement('div');
+        historyCard.className = 'history-card';
+        historyCard.innerHTML = `
+            <div><strong>Karte ${index + 1}</strong></div>
+            <div>Vorderseite: ${entry.front}</div>
+            <div>Rückseite: ${entry.back}</div>
+        `;
+        historyContainer.appendChild(historyCard);
     });
+}
 
-    document.getElementById('drawCanvas').addEventListener('click', function(event) {
-        if (event.target.closest('.toolbar') || event.target.closest('.card-side')) {
-            drawCanvas.style.display = 'none';
-        }
-    });
-
-    document.querySelectorAll('.color-selector button').forEach(button => {
-        button.addEventListener('click', () => {
-            currentColor = button.style.backgroundColor;
-        });
-    });
-
-    // Einrückungen und Zentrieren
-    function execCmd(command, value = null) {
-        document.execCommand(command, false, value);
-    }
-
-    function toggleColorPicker(pickerId) {
-        const picker = document.getElementById(pickerId);
-        picker.style.display = picker.style.display === 'none' ? 'inline-block' : 'none';
-    }
-
-    function addCard() {
-        const frontText = document.getElementById('front').innerHTML.trim();
-        const backText = document.getElementById('back').innerHTML.trim();
-        if (frontText && backText) {
-            const historyContainer = document.getElementById('historyContainer');
-            const card = document.createElement('div');
-            card.className = 'history-card';
-
-            const frontTextarea = document.createElement('textarea');
-            frontTextarea.value = frontText;
-            frontTextarea.setAttribute('readonly', true);
-            frontTextarea.classList.add('history-card-content');
-
-            const backTextarea = document.createElement('textarea');
-            backTextarea.value = backText;
-            backTextarea.setAttribute('readonly', true);
-            backTextarea.classList.add('history-card-content');
-
-            card.appendChild(frontTextarea);
-            card.appendChild(backTextarea);
-            historyContainer.appendChild(card);
-
-            document.getElementById('front').innerHTML = '';
-            document.getElementById('back').innerHTML = '';
-        }
-    }
-
-    function toggleHistory() {
-        const historyContainer = document.getElementById('historyContainer');
-        historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function uploadImages(input) {
-        const files = input.files;
-        const frontSide = document.getElementById('front');
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'uploaded-image';
-                img.draggable = true;
-                img.onmousedown = enableImageResize;
-                frontSide.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function enableImageResize(event) {
-        const img = event.target;
-        let startX, startY, startWidth, startHeight;
-
-        img.addEventListener('mousedown', initResize);
-
-        function initResize(e) {
-            startX = e.clientX;
-            startY = e.clientY;
-            startWidth = parseInt(document.defaultView.getComputedStyle(img).width, 10);
-            startHeight = parseInt(document.defaultView.getComputedStyle(img).height, 10);
-            document.documentElement.addEventListener('mousemove', doResize);
-            document.documentElement.addEventListener('mouseup', stopResize);
-        }
-
-        function doResize(e) {
-            img.style.width = (startWidth + e.clientX - startX) + 'px';
-            img.style.height = (startHeight + e.clientY - startY) + 'px';
-        }
-
-        function stopResize() {
-            document.documentElement.removeEventListener('mousemove', doResize);
-            document.documentElement.removeEventListener('mouseup', stopResize);
-        }
-    }
-
-    function changeDrawColor(color) {
-        currentColor = color;
+// Anpassung der Toolbar Buttons
+document.querySelector('.toolbar').addEventListener('click', function(event) {
+    if (event.target.tagName === 'BUTTON') {
+        const command = event.target.getAttribute('data-command');
+        if (command) execCmd(command);
     }
 });
+
+// Hinzufügen von Einfüge- und Zentrierbuttons
+document.querySelector('.toolbar').insertAdjacentHTML('beforeend', `
+    <button data-command="justifyLeft">Links</button>
+    <button data-command="justifyCenter">Zentrieren</button>
+    <button data-command="justifyRight">Rechts</button>
+    <button data-command="justifyFull">Blocksatz</button>
+    <button data-command="insertImage">Bild</button>
+`);
+
+// Bilder einfügen
+function execCmd(command, value = null) {
+    if (command === 'insertImage') {
+        const url = prompt('Enter the image URL:', 'http://');
+        if (url) document.execCommand('insertImage', false, url);
+    } else {
+        document.execCommand(command, false, value);
+    }
+}
+
+// Bildgröße anpassen
+document.querySelectorAll('.card-side img').forEach(img => {
+    img.addEventListener('click', function() {
+        const newWidth = prompt('Enter new width:', img.width);
+        const newHeight = prompt('Enter new height:', img.height);
+        if (newWidth && newHeight) {
+            img.width = newWidth;
+            img.height = newHeight;
+        }
+    });
+});
+
+// Zeichnen aktivieren
+document.getElementById('drawCanvas').addEventListener('mousedown', function(event) {
+    isDrawing = true;
+    ctx.beginPath();
+    ctx.moveTo(event.clientX, event.clientY);
+});
+document.getElementById('drawCanvas').addEventListener('mousemove', function(event) {
+    if (isDrawing) {
+        ctx.lineTo(event.clientX, event.clientY);
+        ctx.stroke();
+    }
+});
+document.getElementById('drawCanvas').addEventListener('mouseup', function() {
+    isDrawing = false;
+    ctx.closePath();
+});
+document.getElementById('drawCanvas').addEventListener('mouseout', function() {
+    isDrawing = false;
+    ctx.closePath();
+});
+
+// History-Funktionalität
+function saveCardToHistory() {
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+    history.push({ front: frontContent, back: backContent });
+    updateHistory();
+}
+
+function updateHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+    history.forEach((card, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'history-card';
+        cardElement.innerHTML = `
+            <div>Karte ${index + 1}</div>
+            <div><b>Vorderseite:</b> ${card.front}</div>
+            <div><b>Rückseite:</b> ${card.back}</div>
+        `;
+        historyContainer.appendChild(cardElement);
+    });
+}
+
+// Stift-Funktion nur in editierbaren Bereichen
+function toggleDrawMode() {
+    drawMode = !drawMode;
+    const canvas = document.getElementById('drawCanvas');
+    canvas.style.display = drawMode ? 'block' : 'none';
+    isErasing = false;
+}
+
+function toggleEraserMode() {
+    isErasing = !isErasing;
+    const canvas = document.getElementById('drawCanvas');
+    if (isErasing) {
+        drawMode = false;
+        canvas.style.display = 'block';
+    } else {
+        canvas.style.display = 'none';
+    }
+}
+
+function changeDrawColor(color) {
+    drawColor = color;
+}
+
+function startDrawing(event) {
+    if (drawMode || isErasing) {
+        isDrawing = true;
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.moveTo(event.clientX, event.clientY);
+    }
+}
+
+function draw(event) {
+    if (!isDrawing) return;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    if (drawMode) {
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = 3;
+        ctx.lineTo(event.clientX, event.clientY);
+        ctx.stroke();
+    } else if (isErasing) {
+        ctx.clearRect(event.clientX - 10, event.clientY - 10, 20, 20);
+    }
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.closePath();
+}
+
+function resizeCanvas() {
+    const canvas = document.getElementById('drawCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
