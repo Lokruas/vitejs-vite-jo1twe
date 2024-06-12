@@ -94,9 +94,9 @@ body {
 
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
     margin-top: 20px;
 }
 
@@ -124,32 +124,25 @@ body {
     border-radius: 4px;
     color: black;
     min-height: 200px;
+    overflow: auto;
     position: relative;
 }
 
-.card-side::before {
+.card-side.placeholder::before {
     content: attr(data-placeholder);
     position: absolute;
     top: 10px;
     left: 10px;
-    color: #aaa;
+    color: gray;
     pointer-events: none;
-    display: none; /* Anfangs ausgeblendet */
-}
-
-.card-side.empty::before {
-    display: block; /* Platzhalter anzeigen, wenn das Feld leer ist */
+    font-size: 14px;
 }
 
 .history-scroll-container {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    gap: 10px;
+    display: none; /* Standardmäßig ausgeblendet */
+    flex-direction: column;
     max-width: 80%;
-    margin: 0 auto 20px auto; /* Abstand von unten */
+    margin: 0 auto 20px auto;
 }
 
 .history-card {
@@ -164,24 +157,19 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    margin: 10px 0;
+    color: black;
 }
 
 .history-card:hover {
     transform: scale(1.05);
 }
 
-.history-card:active {
-    background-color: #e0e0e0;
-}
-
 .history-card .front-preview {
-    font-weight: bold;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
+    font-size: 14px;
 }
 
-.delete-button {
+.history-card .delete-button {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -197,7 +185,7 @@ body {
     text-align: center;
 }
 
-#drawCanvas {
+.drawCanvas {
     display: none;
     position: absolute;
     top: 0;
@@ -225,4 +213,14 @@ body {
     cursor: pointer;
     margin: 2px;
     border-radius: 50%;
+}
+
+.image-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    cursor: se-resize;
 }
