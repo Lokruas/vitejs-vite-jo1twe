@@ -1,253 +1,218 @@
-// Platzhalter-Text-Logik
-document.querySelectorAll('.card-side').forEach(element => {
-    element.addEventListener('focus', function() {
-        const placeholder = this.getAttribute('data-placeholder');
-        if (this.textContent === placeholder) {
-            this.textContent = '';
-            this.classList.remove('placeholder');
-        }
+document.addEventListener("DOMContentLoaded", function() {
+    const cardSides = document.querySelectorAll('.card-side');
+    const canvas = document.getElementById('drawCanvas');
+    const context = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentColor = '#000000';
+    let currentTool = 'cursor';
+
+    // Platzhaltertext
+    cardSides.forEach(side => {
+        side.addEventListener('input', function() {
+            if (this.textContent.trim() === '') {
+                this.classList.add('placeholder');
+            } else {
+                this.classList.remove('placeholder');
+            }
+        });
     });
 
-    element.addEventListener('blur', function() {
-        if (this.textContent.trim() === '') {
-            const placeholder = this.getAttribute('data-placeholder');
-            this.textContent = placeholder;
-            this.classList.add('placeholder');
-        }
-    });
-
-    // Initiale Platzhalteranzeige
-    const placeholder = element.getAttribute('data-placeholder');
-    if (element.textContent.trim() === '') {
-        element.textContent = placeholder;
-        element.classList.add('placeholder');
-    }
-});
-
-// Funktion, um eine Karte hinzuzufügen
-function addCard() {
-    const front = document.getElementById('front').textContent.trim();
-    const back = document.getElementById('back').textContent.trim();
-    const historyContainer = document.getElementById('historyContainer');
-
-    const card = document.createElement('div');
-    card.className = 'history-card';
-    card.innerHTML = `
-        <div class="front-preview">${front}</div>
-        <button class="delete-button" onclick="deleteCard(event, this)">×</button>
-    `;
-    card.onclick = function() {
-        document.getElementById('front').textContent = front;
-        document.getElementById('back').textContent = back;
-        checkPlaceholders();
-    };
-
-    historyContainer.appendChild(card);
-
-    // Leeren der Eingabefelder und Platzhalter aktualisieren
-    document.getElementById('front').textContent = '';
-    document.getElementById('back').textContent = '';
-    checkPlaceholders();
-    updateHistoryVisibility();
-}
-
-// Funktion, um eine Karte zu löschen
-function deleteCard(event, button) {
-    event.stopPropagation();
-    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
-    if (confirmed) {
-        button.parentElement.remove();
-        updateHistoryVisibility();
-    }
-}
-
-// Editor-Befehle ausführen
-function execCmd(command, value = null) {
-    document.execCommand(command, false, value);
-}
-
-// Bild-Upload-Funktion
-function uploadImages(input) {
-    if (input.files) {
-        [...input.files].forEach(file => {
+    // Bild-Upload
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = document.createElement('img');
                 img.src = e.target.result;
-                img.style.maxWidth = '100%';
-                img.style.display = 'block';
-                img.style.position = 'relative';
+                img.className = 'uploaded-image';
                 img.draggable = true;
-                img.classList.add('uploaded-image');
-
-                const container = document.createElement('div');
-                container.style.position = 'relative';
-                container.appendChild(img);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerText = '×';
-                deleteBtn.className = 'delete-button';
-                deleteBtn.onclick = function() {
-                    container.remove();
-                };
-                container.appendChild(deleteBtn);
-
-                const resizeHandle = document.createElement('div');
-                resizeHandle.className = 'image-resize-handle';
-                resizeHandle.onmousedown = resizeMouseDown;
-                container.appendChild(resizeHandle);
-
-                img.ondragstart = dragStart;
-                img.ondragend = dragEnd;
-
-                const range = window.getSelection().getRangeAt(0);
-                range.insertNode(container);
+                img.onmousedown = enableImageResize;
+                document.querySelector('.card-side-container .card-side').appendChild(img);
             };
             reader.readAsDataURL(file);
-        });
-    }
-}
-
-// Drag-and-drop Logik
-let dragSrcEl = null;
-
-function dragStart(e) {
-    dragSrcEl = this;
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function dragEnd() {
-    dragSrcEl = null;
-}
-
-// Stift- und Radiergummi-Logik
-let isDrawing = false;
-let isErasing = false;
-const canvas = document.getElementById('drawCanvas');
-const ctx = canvas.getContext('2d');
-let startX, startY;
-
-function toggleDrawMode() {
-    if (isDrawing) {
-        deactivateDrawMode();
-    } else {
-        activateDrawMode();
-    }
-}
-
-function toggleEraserMode() {
-    if (isErasing) {
-        deactivateEraserMode();
-    } else {
-        activateEraserMode();
-    }
-}
-
-function activateDrawMode() {
-    isDrawing = true;
-    isErasing = false;
-    setupCanvas();
-}
-
-function deactivateDrawMode() {
-    isDrawing = false;
-    canvas.style.display = 'none';
-    document.body.style.cursor = 'default';
-}
-
-function activateEraserMode() {
-    isErasing = true;
-    isDrawing = false;
-    setupCanvas();
-}
-
-function deactivateEraserMode() {
-    isErasing = false;
-    canvas.style.display = 'none';
-    document.body.style.cursor = 'default';
-}
-
-function setupCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.display = 'block';
-    document.body.style.cursor = 'crosshair';
-}
-
-canvas.addEventListener('mousedown', (e) => {
-    if (!isDrawing && !isErasing) return;
-    startX = e.clientX;
-    startY = e.clientY;
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-});
-
-canvas.addEventListener('mousemove', (e) => {
-    if (!isDrawing && !isErasing) return;
-    if (e.buttons !== 1) return; // Nur bei gedrückter Maustaste zeichnen
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-    if (isDrawing) {
-        ctx.lineTo(mouseX, mouseY);
-        ctx.stroke();
-    } else if (isErasing) {
-        ctx.clearRect(mouseX - 5, mouseY - 5, 10, 10);
-    }
-});
-
-canvas.addEventListener('mouseup', () => {
-    if (!isDrawing && !isErasing) return;
-    ctx.closePath();
-});
-
-// Stiftfarbe ändern
-function changeDrawColor(color) {
-    ctx.strokeStyle = color;
-}
-
-// Bildgrößenänderung
-function resizeMouseDown(e) {
-    e.preventDefault();
-    const img = e.target.previousSibling;
-    document.onmousemove = function(event) {
-        img.style.width = (event.clientX - img.offsetLeft) + 'px';
-        img.style.height = (event.clientY - img.offsetTop) + 'px';
-    };
-    document.onmouseup = function() {
-        document.onmousemove = null;
-        document.onmouseup = null;
-    };
-}
-
-// Platzhalter überprüfen und einstellen
-function checkPlaceholders() {
-    document.querySelectorAll('.card-side').forEach(element => {
-        const placeholder = element.getAttribute('data-placeholder');
-        if (element.textContent.trim() === '') {
-            element.textContent = placeholder;
-            element.classList.add('placeholder');
-        } else {
-            element.classList.remove('placeholder');
         }
     });
+
+    // Karten-Historie
+    document.querySelector('.toolbar-history-button').addEventListener('click', function() {
+        const historyContainer = document.getElementById('historyContainer');
+        historyContainer.style.display = historyContainer.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    // Stift aktivieren/deaktivieren
+    document.querySelectorAll('.card-side').forEach(side => {
+        side.addEventListener('mousedown', function(e) {
+            if (currentTool === 'pen') {
+                isDrawing = true;
+                context.strokeStyle = currentColor;
+                context.lineWidth = 3;
+                context.lineCap = 'round';
+                context.beginPath();
+                context.moveTo(e.offsetX, e.offsetY);
+            }
+        });
+
+        side.addEventListener('mousemove', function(e) {
+            if (isDrawing && currentTool === 'pen') {
+                context.lineTo(e.offsetX, e.offsetY);
+                context.stroke();
+            }
+        });
+
+        side.addEventListener('mouseup', function() {
+            if (isDrawing) {
+                context.closePath();
+                isDrawing = false;
+            }
+        });
+
+        side.addEventListener('mouseleave', function() {
+            if (isDrawing) {
+                context.closePath();
+                isDrawing = false;
+            }
+        });
+
+        side.addEventListener('dblclick', function(e) {
+            if (currentTool === 'eraser') {
+                context.clearRect(e.offsetX - 10, e.offsetY - 10, 20, 20);
+            }
+        });
+    });
+
+    document.querySelector('.toolbar button[title="Stift"]').addEventListener('click', function() {
+        currentTool = currentTool === 'pen' ? 'cursor' : 'pen';
+    });
+
+    document.querySelector('.toolbar button[title="Radiergummi"]').addEventListener('click', function() {
+        currentTool = 'eraser';
+    });
+
+    function enableImageResize(event) {
+        const img = event.target;
+        let startX, startY, startWidth, startHeight;
+
+        img.addEventListener('mousedown', initResize);
+
+        function initResize(e) {
+            startX = e.clientX;
+            startY = e.clientY;
+            startWidth = parseInt(document.defaultView.getComputedStyle(img).width, 10);
+            startHeight = parseInt(document.defaultView.getComputedStyle(img).height, 10);
+            document.documentElement.addEventListener('mousemove', doResize);
+            document.documentElement.addEventListener('mouseup', stopResize);
+        }
+
+        function doResize(e) {
+            img.style.width = (startWidth + e.clientX - startX) + 'px';
+            img.style.height = (startHeight + e.clientY - startY) + 'px';
+        }
+
+        function stopResize() {
+            document.documentElement.removeEventListener('mousemove', doResize);
+            document.documentElement.removeEventListener('mouseup', stopResize);
+        }
+    }
+
+    // Zeichnungsfarbe ändern
+    function changeDrawColor(color) {
+        currentColor = color;
+    }
+});
+
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
 }
 
-// Karten-Historie umschalten
+function toggleColorPicker(pickerId) {
+    const picker = document.getElementById(pickerId);
+    picker.style.display = picker.style.display === 'none' ? 'inline-block' : 'none';
+}
+
+function addCard() {
+    const frontText = document.getElementById('front').innerHTML.trim();
+    const backText = document.getElementById('back').innerHTML.trim();
+    if (frontText && backText) {
+        const historyContainer = document.getElementById('historyContainer');
+        const card = document.createElement('div');
+        card.className = 'history-card';
+
+        const frontTextarea = document.createElement('textarea');
+        frontTextarea.value = frontText;
+        frontTextarea.setAttribute('readonly', true);
+        frontTextarea.classList.add('history-card-content');
+
+        const backTextarea = document.createElement('textarea');
+        backTextarea.value = backText;
+        backTextarea.setAttribute('readonly', true);
+        backTextarea.classList.add('history-card-content');
+
+        card.appendChild(frontTextarea);
+        card.appendChild(backTextarea);
+        historyContainer.appendChild(card);
+
+        document.getElementById('front').innerHTML = '';
+        document.getElementById('back').innerHTML = '';
+    }
+}
+
 function toggleHistory() {
     const historyContainer = document.getElementById('historyContainer');
-    if (historyContainer.style.display === 'flex') {
-        historyContainer.style.display = 'none';
-    } else {
-        historyContainer.style.display = 'flex';
+    historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
+}
+
+function uploadImages(input) {
+    const files = input.files;
+    const frontSide = document.getElementById('front');
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'uploaded-image';
+            img.draggable = true;
+            img.onmousedown = enableImageResize;
+            frontSide.appendChild(img);
+        };
+        reader.readAsDataURL(file);
     }
 }
 
-// Historie Sichtbarkeit aktualisieren
-function updateHistoryVisibility() {
-    const historyContainer = document.getElementById('historyContainer');
-    if (historyContainer.children.length > 0) {
-        historyContainer.style.display = 'flex';
-    } else {
-        historyContainer.style.display = 'none';
+function enableImageResize(event) {
+    const img = event.target;
+    let startX, startY, startWidth, startHeight;
+
+    img.addEventListener('mousedown', initResize);
+
+    function initResize(e) {
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(document.defaultView.getComputedStyle(img).width, 10);
+        startHeight = parseInt(document.defaultView.getComputedStyle(img).height, 10);
+        document.documentElement.addEventListener('mousemove', doResize);
+        document.documentElement.addEventListener('mouseup', stopResize);
+    }
+
+    function doResize(e) {
+        img.style.width = (startWidth + e.clientX - startX) + 'px';
+        img.style.height = (startHeight + e.clientY - startY) + 'px';
+    }
+
+    function stopResize() {
+        document.documentElement.removeEventListener('mousemove', doResize);
+        document.documentElement.removeEventListener('mouseup', stopResize);
     }
 }
+
+function changeDrawColor(color) {
+    currentColor = color;
+}
+
+document.querySelectorAll('.color-selector button').forEach(button => {
+    button.addEventListener('click', () => {
+        changeDrawColor(button.style.backgroundColor);
+    });
+});
