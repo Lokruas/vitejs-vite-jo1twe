@@ -1,70 +1,9 @@
-// Funktion, um den execCommand auszuführen
-function execCmd(command, value = null) {
-    document.execCommand(command, false, value);
-}
-
-// Funktion, um Bilder hochzuladen
-function uploadImage(input) {
-    if (input.files) {
-        Array.from(input.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'image-resizable';
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '100%';
-
-                const resizeHandle = document.createElement('div');
-                resizeHandle.className = 'resize-handle';
-                imgContainer.appendChild(img);
-                imgContainer.appendChild(resizeHandle);
-
-                imgContainer.style.position = 'relative';
-                imgContainer.draggable = true;
-
-                imgContainer.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/html', imgContainer.outerHTML);
-                    imgContainer.remove();
-                });
-
-                imgContainer.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    imgContainer.style.left = e.clientX + 'px';
-                    imgContainer.style.top = e.clientY + 'px';
-                });
-
-                imgContainer.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                });
-
-                insertHtmlAtCursor(imgContainer.outerHTML);
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-}
-
-// Funktion, um HTML an der Cursorposition einzufügen
-function insertHtmlAtCursor(html) {
-    const range = window.getSelection().getRangeAt(0);
-    const fragment = range.createContextualFragment(html);
-    range.insertNode(fragment);
-}
-
-// Platzhalter für die Eingabefelder
+// Platzhalter-Text-Logik
 document.querySelectorAll('.card-side').forEach(element => {
     element.addEventListener('focus', function() {
         const placeholder = this.getAttribute('data-placeholder');
         if (this.textContent === placeholder) {
             this.textContent = '';
-            this.classList.remove('placeholder');
-        }
-    });
-
-    element.addEventListener('input', function() {
-        if (this.textContent !== '') {
             this.classList.remove('placeholder');
         }
     });
@@ -76,12 +15,10 @@ document.querySelectorAll('.card-side').forEach(element => {
             this.classList.add('placeholder');
         }
     });
-});
 
-// Initialisierung der Platzhalter
-document.querySelectorAll('.card-side').forEach(element => {
+    // Initiale Platzhalteranzeige
     const placeholder = element.getAttribute('data-placeholder');
-    if (element.textContent === '') {
+    if (element.textContent.trim() === '') {
         element.textContent = placeholder;
         element.classList.add('placeholder');
     }
@@ -89,22 +26,28 @@ document.querySelectorAll('.card-side').forEach(element => {
 
 // Funktion, um eine Karte hinzuzufügen
 function addCard() {
-    const front = document.getElementById('front').innerHTML.trim();
-    const back = document.getElementById('back').innerHTML.trim();
+    const front = document.getElementById('front').textContent.trim();
+    const back = document.getElementById('back').textContent.trim();
     const historyContainer = document.getElementById('historyContainer');
 
     const card = document.createElement('div');
     card.className = 'history-card';
     card.innerHTML = `
-        <div class="front-content">${front}</div>
+        <div class="front-preview">${front}</div>
         <button class="delete-button" onclick="deleteCard(event, this)">×</button>
     `;
     card.onclick = function() {
-        document.getElementById('front').innerHTML = front;
-        document.getElementById('back').innerHTML = back;
+        document.getElementById('front').textContent = front;
+        document.getElementById('back').textContent = back;
+        checkPlaceholders();
     };
 
-    historyContainer.insertBefore(card, historyContainer.firstChild);
+    historyContainer.appendChild(card);
+
+    // Leeren der Eingabefelder und Platzhalter aktualisieren
+    document.getElementById('front').textContent = '';
+    document.getElementById('back').textContent = '';
+    checkPlaceholders();
 }
 
 // Funktion, um eine Karte zu löschen
@@ -116,35 +59,48 @@ function deleteCard(event, button) {
     }
 }
 
+// Editor-Befehle ausführen
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+// Bild-Upload-Funktion
+function uploadImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            img.style.display = 'block';
+            const range = window.getSelection().getRangeAt(0);
+            range.insertNode(img);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 // Zeichnungsmodus
 let isDrawing = false;
-let drawColor = '#000000';
 const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 let startX, startY;
 
 function toggleDrawMode() {
-    if (isDrawing) {
-        isDrawing = false;
+    const colorSelector = document.getElementById('colorSelector');
+    if (canvas.style.display === 'block') {
         canvas.style.display = 'none';
+        colorSelector.style.display = 'none';
         canvas.style.zIndex = '-1';
+        isDrawing = false;
     } else {
-        isDrawing = true;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.style.display = 'block';
+        colorSelector.style.display = 'block';
         canvas.style.zIndex = '1000';
+        isDrawing = true;
     }
-}
-
-function setDrawColor(color) {
-    drawColor = color;
-    ctx.strokeStyle = drawColor;
-}
-
-function activateEraser() {
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 10;
 }
 
 canvas.addEventListener('mousedown', (e) => {
@@ -168,3 +124,23 @@ canvas.addEventListener('mouseup', () => {
     if (!isDrawing) return;
     ctx.closePath();
 });
+
+// Stiftfarbe ändern
+function changeDrawColor(color) {
+    ctx.strokeStyle = color;
+}
+
+// Platzhalter überprüfen und einstellen
+function checkPlaceholders() {
+    document.querySelectorAll('.card-side').forEach(element => {
+        const placeholder = element.getAttribute('data-placeholder');
+        if (element.textContent.trim() === '') {
+            element.textContent = placeholder;
+            element.classList.add('placeholder');
+        } else {
+            element.classList.remove('placeholder');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', checkPlaceholders);
