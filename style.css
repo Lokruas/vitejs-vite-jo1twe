@@ -37,12 +37,6 @@ body {
 
 .toolbar-left {
     display: flex;
-    gap: 5px; /* Enger zusammen */
-    flex-wrap: wrap;
-}
-
-.color-tools {
-    display: flex;
     flex-direction: column;
     gap: 5px;
 }
@@ -53,8 +47,7 @@ body {
 }
 
 .toolbar button,
-.toolbar .toolbar-add-button,
-.toolbar select {
+.toolbar .toolbar-add-button {
     margin: 5px;
     padding: 8px 10px;
     background-color: #007bff;
@@ -62,7 +55,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
@@ -72,31 +65,15 @@ body {
 }
 
 .toolbar button:hover,
-.toolbar .toolbar-add-button:hover,
-.toolbar select:hover {
+.toolbar .toolbar-add-button:hover {
     background-color: #0056b3;
-}
-
-.color-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.color-picker label {
-    font-size: 10px;
-    color: #000;
 }
 
 .container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     margin-top: 20px;
 }
 
@@ -139,7 +116,7 @@ body {
 }
 
 .history-scroll-container {
-    display: none; /* Standardmäßig ausgeblendet */
+    display: none;
     flex-direction: column;
     max-width: 80%;
     margin: 0 auto 20px auto;
@@ -158,6 +135,16 @@ body {
     flex-direction: column;
     position: relative;
     margin: 10px 0;
+}
+
+.history-card textarea {
+    resize: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 10px;
     color: black;
 }
 
@@ -165,62 +152,32 @@ body {
     transform: scale(1.05);
 }
 
-.history-card .front-preview {
-    font-size: 14px;
+.history-card:active {
+    background-color: #e0e0e0;
 }
 
-.history-card .delete-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    line-height: 20px;
-    text-align: center;
-}
-
-.drawCanvas {
+#drawCanvas {
     display: none;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .color-selector {
-    display: none;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
 }
 
 .color-selector button {
     width: 24px;
     height: 24px;
     border: none;
-    cursor: pointer;
-    margin: 2px;
     border-radius: 50%;
-}
-
-.image-resize-handle {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 15px;
-    height: 15px;
-    background-color: red;
-    cursor: se-resize;
+    cursor: pointer;
 }
