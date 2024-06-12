@@ -14,24 +14,19 @@
     
     <div class="toolbar">
         <div class="toolbar-left">
+            <div class="color-tools">
+                <div class="color-picker">
+                    <label for="textColor">Textfarbe</label>
+                    <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
+                </div>
+                <div class="color-picker">
+                    <label for="highlightColor">Hintergrundfarbe</label>
+                    <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
+                </div>
+            </div>
             <button onclick="execCmd('bold')"><b>B</b></button>
             <button onclick="execCmd('italic')"><i>I</i></button>
             <button onclick="execCmd('underline')"><u>U</u></button>
-            <div class="color-picker">
-                <label for="textColor">Textfarbe</label>
-                <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
-            </div>
-            <div class="color-picker">
-                <label for="highlightColor">Hintergrundfarbe</label>
-                <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
-            </div>
-            <button onclick="execCmd('insertOrderedList')">1.</button>
-            <button onclick="execCmd('insertUnorderedList')">•</button>
-            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-            <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
-            <input type="file" id="imageUpload" accept="image/*" multiple onchange="uploadImage(this)">
-            <button onclick="toggleDrawMode()">Stift</button>
-            <button onclick="activateEraser()">Radiergummi</button>
             <select id="fontSelect" onchange="execCmd('fontName', this.value)">
                 <option value="Arial">Arial</option>
                 <option value="Courier New">Courier New</option>
@@ -39,6 +34,13 @@
                 <option value="Times New Roman">Times New Roman</option>
                 <option value="Verdana">Verdana</option>
             </select>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
+            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button onclick="execCmd('removeFormat')"><span style="color: red;">⇦</span></button>
+            <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImage(this)">
+            <button onclick="toggleDrawMode()">Stift</button>
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
@@ -52,10 +54,10 @@
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite"></div>
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
             </div>
             <div class="card-side-container">
-                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite"></div>
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
             </div>
         </div>
         
@@ -66,6 +68,13 @@
     
     <!-- Canvas für das Zeichnen -->
     <canvas id="drawCanvas"></canvas>
+    
+    <div class="color-selector" id="colorSelector">
+        <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
+        <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
+        <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
+        <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
+    </div>
     
     <script src="main.js"></script>
 </body>
