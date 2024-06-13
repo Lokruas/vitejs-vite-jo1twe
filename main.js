@@ -266,3 +266,160 @@ function updateHistoryVisibility() {
         historyContainer.style.display = 'block';
     }
 }
+document.addEventListener('DOMContentLoaded', function () {
+    const cardSides = document.querySelectorAll('.card-side');
+    cardSides.forEach(side => {
+        side.addEventListener('focus', removePlaceholder);
+        side.addEventListener('blur', addPlaceholder);
+    });
+
+    const frontCanvas = document.getElementById('frontCanvas');
+    const backCanvas = document.getElementById('backCanvas');
+    const frontCtx = frontCanvas.getContext('2d');
+    const backCtx = backCanvas.getContext('2d');
+    let isDrawing = false;
+    let drawColor = 'black';
+    let currentCanvas = null;
+    let currentCtx = null;
+
+    // Initialisieren des Canvas zum Zeichnen
+    [frontCanvas, backCanvas].forEach(canvas => {
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        window.addEventListener('resize', resizeCanvases);
+    });
+    resizeCanvases();
+
+    document.getElementById('colorSelector').addEventListener('click', function (event) {
+        if (event.target.tagName === 'BUTTON') {
+            changeDrawColor(event.target.style.backgroundColor);
+        }
+    });
+
+    document.getElementById('imageUpload').addEventListener('change', function () {
+        uploadImages(this);
+    });
+
+    loadHistory(); // Historie beim Laden der Seite laden
+    window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
+
+    // Toolbar-Buttons initialisieren
+    initializeToolbarButtons();
+
+    // Set the current canvas based on focus
+    document.getElementById('front').addEventListener('focus', () => {
+        currentCanvas = frontCanvas;
+        currentCtx = frontCtx;
+    });
+
+    document.getElementById('back').addEventListener('focus', () => {
+        currentCanvas = backCanvas;
+        currentCtx = backCtx;
+    });
+});
+
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+function addCard() {
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+
+    let newCard = {
+        front: frontContent,
+        back: backContent
+    };
+
+    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
+    renderHistory(); // Historie rendern
+
+    // Inhalt der Textfelder zurücksetzen
+    document.getElementById('front').innerHTML = '';
+    document.getElementById('back').innerHTML = '';
+}
+
+function toggleHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
+}
+
+function removePlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === target.dataset.placeholder) {
+        target.classList.remove('placeholder');
+        target.textContent = '';
+    }
+}
+
+function addPlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === '') {
+        target.classList.add('placeholder');
+        target.textContent = target.dataset.placeholder;
+    }
+}
+
+function uploadImages(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.draggable = false;
+            img.style.resize = 'both';
+            img.style.overflow = 'auto';
+            document.getElementById('front').appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+let drawMode = false;
+
+function toggleDrawMode() {
+    drawMode = !drawMode;
+    document.getElementById('frontCanvas').style.pointerEvents = drawMode ? 'auto' : 'none';
+    document.getElementById('backCanvas').style.pointerEvents = drawMode ? 'auto' : 'none';
+}
+
+function startDrawing(event) {
+    if (!drawMode) return;
+    isDrawing = true;
+    currentCtx.strokeStyle = drawColor;
+    currentCtx.lineWidth = 2; // Linienbreite für das Zeichnen
+    currentCtx.lineCap = 'round'; // Linienstil
+    currentCtx.beginPath();
+    currentCtx.moveTo(event.offsetX, event.offsetY);
+}
+
+function draw(event) {
+    if (!isDrawing) return;
+    currentCtx.lineTo(event.offsetX, event.offsetY);
+    currentCtx.stroke();
+}
+
+function stopDrawing() {
+    if (!isDrawing) return;
+    isDrawing = false;
+    currentCtx.closePath();
+}
+
+function changeDrawColor(color) {
+    drawColor = color;
+}
+
+function resizeCanvases() {
+    const frontContainer = document.getElementById('frontContainer');
+    const backContainer = document.getElementById('backContainer');
+    [frontCanvas, backCanvas].forEach((canvas, index) => {
+        const container = index === 0 ? frontContainer : backContainer;
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    });
+}
