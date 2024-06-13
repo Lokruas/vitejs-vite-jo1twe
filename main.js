@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadHistory(); // Historie beim Laden der Seite laden
     window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
+
+    // Toolbar-Buttons initialisieren
+    initializeToolbarButtons();
 });
 
 // HTML-Funktionen
@@ -212,22 +215,23 @@ document.querySelector('.toolbar').addEventListener('click', function (event) {
 });
 
 // Hinzufügen von Einfüge- und Zentrierbuttons
-document.querySelector('.toolbar').insertAdjacentHTML('beforeend', `
-    <button data-command="justifyLeft">Links</button>
-    <button data-command="justifyCenter">Zentrieren</button>
-    <button data-command="justifyRight">Rechts</button>
-    <button data-command="justifyFull">Blocksatz</button>
-    <button data-command="insertImage">Bild</button>
-`);
+function initializeToolbarButtons() {
+    document.querySelector('.toolbar').insertAdjacentHTML('beforeend', `
+        <button data-command="justifyLeft">Links</button>
+        <button data-command="justifyCenter">Zentrieren</button>
+        <button data-command="justifyRight">Rechts</button>
+        <button data-command="justifyFull">Blocksatz</button>
+        <button data-command="insertImage">Bild</button>
+        <button data-command="justifyLeft" class="indent-button">Einzug verkleinern</button>
+    `);
 
-// Bilder einfügen
-function execCmd(command, value = null) {
-    if (command === 'insertImage') {
-        const url = prompt('Enter the image URL:', 'http://');
-        if (url) document.execCommand('insertImage', false, url);
-    } else {
-        document.execCommand(command, false, value);
-    }
+    document.querySelector('.toolbar').addEventListener('click', function (event) {
+        const command = event.target.getAttribute('data-command');
+        if (command === 'justifyLeft') {
+            event.preventDefault();
+            document.execCommand('outdent'); // Einzug verkleinern
+        }
+    });
 }
 
 // Bildgröße anpassen
