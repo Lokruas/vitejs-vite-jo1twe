@@ -57,6 +57,25 @@ function addCard() {
     document.getElementById('front').innerHTML = '';
     document.getElementById('back').innerHTML = '';
 }
+ const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+        <div class="front-preview">${front}</div>
+        <button class="delete-button" onclick="deleteCard(event, this)">Ã—</button>
+    `;
+    card.onclick = function() {
+        document.getElementById('front').textContent = front;
+        document.getElementById('back').textContent = back;
+        checkPlaceholders();
+    };
+
+    historyContainer.appendChild(card);
+
+    // Leeren der Eingabefelder und Platzhalter aktualisieren
+    document.getElementById('front').textContent = '';
+    document.getElementById('back').textContent = '';
+    checkPlaceholders();
+    updateHistoryVisibility();
 
 function toggleHistory() {
     const historyContainer = document.getElementById('historyContainer');
@@ -205,6 +224,12 @@ function loadHistory() {
         renderHistory();
     }
 }
+function deleteCard(event, button) {
+    event.stopPropagation();
+    const confirmed = confirm('MÃ¶chten Sie diese Karte wirklich lÃ¶schen?');
+    if (confirmed) {
+        button.parentElement.remove();
+        updateHistoryVisibility();
 
 // Anpassung der Toolbar Buttons
 document.querySelector('.toolbar').addEventListener('click', function (event) {
