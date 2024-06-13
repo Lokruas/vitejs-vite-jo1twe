@@ -187,6 +187,22 @@ body {
     line-height: 20px;
     text-align: center;
 }
+.card-side-container {
+    position: relative;
+}
+.card-side {
+    position: relative;
+    z-index: 10;
+    padding: 10px;
+    background: white;
+}
+.drawCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none; /* Wichtig, damit das Zeichnen möglich ist */
+}
 
 #drawCanvas {
     display: none;
