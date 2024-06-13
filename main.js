@@ -219,24 +219,9 @@ function deleteCard(event, button) {
         const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
         history.splice(cardIndex, 1);
         renderHistory();
-        updateHistoryVisibility();
     }
 }
 
-function updateHistoryVisibility() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.style.display = history.length ? 'block' : 'none';
-}
-
-// Anpassung der Toolbar Buttons
-document.querySelector('.toolbar').addEventListener('click', function (event) {
-    if (event.target.tagName === 'BUTTON') {
-        const command = event.target.getAttribute('data-command');
-        if (command) execCmd(command);
-    }
-});
-
-// Hinzufügen von Einfüge- und Zentrierbuttons
 function initializeToolbarButtons() {
     document.querySelector('.toolbar').insertAdjacentHTML('beforeend', `
         <button data-command="justifyLeft">Links</button>
@@ -252,18 +237,32 @@ function initializeToolbarButtons() {
         if (command === 'justifyLeft') {
             event.preventDefault();
             document.execCommand('outdent'); // Einzug verkleinern
+        } else {
+            execCmd(command);
         }
     });
 }
 
-// Bildgröße anpassen
-document.querySelectorAll('.card-side img').forEach(img => {
-    img.addEventListener('click', function () {
-        const newWidth = prompt('Enter new width:', img.width);
-        const newHeight = prompt('Enter new height:', img.height);
-        if (newWidth && newHeight) {
-            img.width = newWidth;
-            img.height = newHeight;
-        }
-    });
-});
+function checkPlaceholders() {
+    const front = document.getElementById('front');
+    const back = document.getElementById('back');
+
+    if (front.textContent === '') {
+        front.classList.add('placeholder');
+        front.textContent = front.dataset.placeholder;
+    }
+
+    if (back.textContent === '') {
+        back.classList.add('placeholder');
+        back.textContent = back.dataset.placeholder;
+    }
+}
+
+function updateHistoryVisibility() {
+    const historyContainer = document.getElementById('historyContainer');
+    if (history.length === 0) {
+        historyContainer.style.display = 'none';
+    } else {
+        historyContainer.style.display = 'block';
+    }
+}
