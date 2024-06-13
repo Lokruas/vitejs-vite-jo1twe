@@ -6,31 +6,21 @@
     <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .history-scroll-container {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-
-        .history-card {
-            display: inline-block;
-            border: 1px solid #ddd;
-            margin-right: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
+        .card-side-container {
             position: relative;
         }
-
-        .delete-button {
+        .card-side {
+            position: relative;
+            z-index: 10;
+            padding: 10px;
+            background: white;
+        }
+        .drawCanvas {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: red;
-            color: white;
-            border: none;
-            cursor: pointer;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -80,11 +70,12 @@
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="toggleEraserMode()">Radiergummi</button>
             <button onclick="execCmd('indent')">Einschub</button>
-            <button onclick="execCmd('outdent')">Rückschub</button>
+            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
+                <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
             <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
@@ -93,19 +84,20 @@
     
     <div class="container">
         <div class="card-editor">
-            <div class="card-side-container">
+            <div class="card-side-container" id="frontContainer">
                 <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
+                <canvas class="drawCanvas" id="frontCanvas"></canvas>
             </div>
-            <div class="card-side-container">
+            <div class="card-side-container" id="backContainer">
                 <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
+                <canvas class="drawCanvas" id="backCanvas"></canvas>
             </div>
         </div>
         
         <div class="history-scroll-container" id="historyContainer">
+            <!-- Karten werden hier dynamisch eingefügt -->
         </div>
     </div>
-    
-    <canvas id="drawCanvas"></canvas>
     
     <div class="color-selector" id="colorSelector">
         <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
