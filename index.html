@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .history-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .history-card {
+            display: inline-block;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -52,12 +80,11 @@
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="toggleEraserMode()">Radiergummi</button>
             <button onclick="execCmd('indent')">Einschub</button>
-            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
+            <button onclick="execCmd('outdent')">Rückschub</button>
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
                 <option value="default">Stapelwahl</option>
-                <!-- Weitere Optionen können hier hinzugefügt werden -->
             </select>
             <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
             <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
@@ -75,11 +102,9 @@
         </div>
         
         <div class="history-scroll-container" id="historyContainer">
-            <!-- Karten werden hier dynamisch eingefügt -->
         </div>
     </div>
     
-    <!-- Canvas für das Zeichnen -->
     <canvas id="drawCanvas"></canvas>
     
     <div class="color-selector" id="colorSelector">
