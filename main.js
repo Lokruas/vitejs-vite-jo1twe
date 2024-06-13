@@ -57,25 +57,30 @@ function addCard() {
     document.getElementById('front').innerHTML = '';
     document.getElementById('back').innerHTML = '';
 }
- const card = document.createElement('div');
-    card.className = 'history-card';
-    card.innerHTML = `
-        <div class="front-preview">${front}</div>
-        <button class="delete-button" onclick="deleteCard(event, this)">Ã—</button>
-    `;
-    card.onclick = function() {
-        document.getElementById('front').textContent = front;
-        document.getElementById('back').textContent = back;
-        checkPlaceholders();
-    };
 
-    historyContainer.appendChild(card);
+function renderHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+    history.forEach((entry, index) => {
+        const historyCard = document.createElement('div');
+        historyCard.className = 'history-card';
+        historyCard.innerHTML = `
+            <div><strong>Karte ${index + 1}</strong></div>
+            <div class="front-preview">${entry.front}</div>
+            <button class="delete-button" onclick="deleteCard(event, this)">×</button>
+        `;
+        historyCard.onclick = function() {
+            document.getElementById('front').innerHTML = entry.front;
+            document.getElementById('back').innerHTML = entry.back;
+            checkPlaceholders();
+        };
 
-    // Leeren der Eingabefelder und Platzhalter aktualisieren
-    document.getElementById('front').textContent = '';
-    document.getElementById('back').textContent = '';
-    checkPlaceholders();
+        historyContainer.appendChild(historyCard);
+    });
+
+    updateHistoryScroll();
     updateHistoryVisibility();
+}
 
 function toggleHistory() {
     const historyContainer = document.getElementById('historyContainer');
@@ -186,24 +191,6 @@ function saveToHistory() {
     renderHistory();
 }
 
-function renderHistory() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = '';
-    history.forEach((entry, index) => {
-        const historyCard = document.createElement('div');
-        historyCard.className = 'history-card';
-        historyCard.innerHTML = `
-            <div><strong>Karte ${index + 1}</strong></div>
-            <div>Vorderseite: ${entry.front}</div>
-            <div>Rückseite: ${entry.back}</div>
-        `;
-        historyContainer.appendChild(historyCard);
-    });
-
-    // Aktualisiere den Schieberegler
-    updateHistoryScroll();
-}
-
 function updateHistoryScroll() {
     const historyContainer = document.getElementById('historyContainer');
     if (historyContainer.scrollWidth > historyContainer.clientWidth) {
@@ -224,12 +211,22 @@ function loadHistory() {
         renderHistory();
     }
 }
+
 function deleteCard(event, button) {
     event.stopPropagation();
-    const confirmed = confirm('MÃ¶chten Sie diese Karte wirklich lÃ¶schen?');
+    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
     if (confirmed) {
-        button.parentElement.remove();
+        const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
+        history.splice(cardIndex, 1);
+        renderHistory();
         updateHistoryVisibility();
+    }
+}
+
+function updateHistoryVisibility() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.style.display = history.length ? 'block' : 'none';
+}
 
 // Anpassung der Toolbar Buttons
 document.querySelector('.toolbar').addEventListener('click', function (event) {
@@ -269,11 +266,4 @@ document.querySelectorAll('.card-side img').forEach(img => {
             img.height = newHeight;
         }
     });
-});
-
-// Zeichnen aktivieren
-document.getElementById('drawCanvas').addEventListener('mousedown', function (event) {
-    isDrawing = true;
-    ctx.beginPath();
-    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
 });
