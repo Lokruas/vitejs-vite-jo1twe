@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const addCardsLink = deck.querySelector('.add-cards');
       addCardsLink.addEventListener('click', (e) => {
           e.preventDefault();
-          window.open('vitejs-vite-qe4nac (1)/Kartenhinzufügen/Kartenhinzufügen.html', 'newWindow', 'width=800,height=600');
+          window.open('../Kartenhinzufügen/Kartenhinzufügen.html', 'newWindow', 'width=800,height=600');
       });
   }
 
