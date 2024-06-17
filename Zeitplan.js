@@ -50,10 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i <= diffDays; i++) {
                 const currentDate = new Date(start);
                 currentDate.setDate(start.getDate() + i);
+                const formattedDate = currentDate.toISOString().split('T')[0];
+
                 calendar.addEvent({
                     title: `${cardsPerDay} Karten`,
-                    start: currentDate.toISOString().split('T')[0],
-                    display: 'background'
+                    start: formattedDate,
+                    color: 'blue'
                 });
             }
         }
