@@ -1,135 +1,119 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const createScheduleBtn = document.getElementById('create-schedule');
-    const editScheduleBtn = document.getElementById('edit-schedule');
+document.addEventListener('DOMContentLoaded', function() {
+    const createScheduleBtn = document.getElementById('create-schedule-btn');
+    const editScheduleBtn = document.getElementById('edit-schedule-btn');
     const createModal = document.getElementById('create-modal');
     const editModal = document.getElementById('edit-modal');
     const closeButtons = document.querySelectorAll('.close');
-    const savePlanBtn = document.getElementById('save-plan');
-    const cancelPlanBtn = document.getElementById('cancel-plan');
+    const savePlanBtn = document.getElementById('save-plan-btn');
+    const cancelPlanBtn = document.getElementById('cancel-plan-btn');
+    const setMilestoneBtn = document.getElementById('set-milestone-btn');
+    const dateRange = document.getElementById('date-range');
     const selectPlan = document.getElementById('select-plan');
     const editOptions = document.getElementById('edit-options');
-    const setMilestoneBtn = document.getElementById('set-milestone');
-
     let calendar;
-    let startDate, endDate;
-    let milestones = [];
     let isSettingMilestone = false;
+    let startDate = null;
+    let endDate = null;
+    let milestones = [];
 
     function renderCalendar() {
-        calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        const calendarEl = document.getElementById('calendar');
+        calendarEl.innerHTML = ''; // Kalender zurücksetzen
+        calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            locale: 'de',
             height: 'auto',
             selectable: true,
-            selectMirror: true,
-            dateClick: (info) => {
+            select: function(info) {
                 if (!startDate) {
-                    startDate = info.dateStr;
-                    document.getElementById('start-date').textContent = `Startdatum: ${startDate}`;
-                    calendar.addEvent({
-                        title: 'Startdatum',
-                        start: startDate,
-                        color: '#008000'
-                    });
+                    startDate = info.startStr;
+                    dateRange.innerHTML = `Startzeitpunkt: ${startDate}`;
                 } else if (!endDate) {
-                    endDate = info.dateStr;
-                    document.getElementById('end-date').textContent = `Enddatum: ${endDate}`;
-                    calendar.addEvent({
-                        title: 'Enddatum',
-                        start: endDate,
-                        color: '#FF0000'
-                    });
-                    calculateCardAssignments();
+                    endDate = info.startStr;
+                    dateRange.innerHTML += `<br>Endzeitpunkt: ${endDate}`;
+                    updateCardDistribution();
                 } else if (isSettingMilestone) {
-                    addMilestone(info.dateStr);
+                    setMilestone(info.startStr);
                 }
             }
         });
         calendar.render();
     }
 
-    function calculateCardAssignments() {
-        let days = [];
-        let currentDate = new Date(startDate);
-        let endDateObj = new Date(endDate);
-        while (currentDate <= endDateObj) {
-            days.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
+    function updateCardDistribution() {
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const cardsPerDay = Math.floor(100 / diffDays); // Beispielanzahl: 100 Karten
+
+            for (let i = 0; i <= diffDays; i++) {
+                const currentDate = new Date(start);
+                currentDate.setDate(start.getDate() + i);
+                calendar.addEvent({
+                    title: `${cardsPerDay} Karten`,
+                    start: currentDate.toISOString().split('T')[0],
+                    display: 'background'
+                });
+            }
         }
-
-        days.forEach(day => {
-            calendar.addEvent({
-                title: `Karten: ${Math.floor(Math.random() * 10) + 1}`,
-                start: day,
-                display: 'background',
-                backgroundColor: '#ADD8E6'
-            });
-        });
-
-        document.querySelectorAll('.fc-daygrid-day').forEach(dayEl => {
-            dayEl.addEventListener('mouseover', () => {
-                let date = dayEl.getAttribute('data-date');
-                let cardsInfo = calendar.getEvents().find(event => event.startStr === date && event.display === 'background');
-                if (cardsInfo) {
-                    dayEl.setAttribute('title', cardsInfo.title);
-                }
-            });
-        });
     }
 
-    function addMilestone(date) {
+    function setMilestone(date) {
         milestones.push(date);
-        const milestoneEl = document.createElement('p');
-        milestoneEl.textContent = `Zwischenziel: ${date}`;
+        const milestoneEl = document.createElement('div');
+        milestoneEl.innerHTML = `Zwischenziel: ${date}`;
+        milestoneEl.style.color = 'orange';
         document.getElementById('milestone-date').appendChild(milestoneEl);
+
         calendar.addEvent({
             title: 'Zwischenziel',
             start: date,
-            color: '#FFA500'
+            color: 'orange'
         });
         isSettingMilestone = false;
     }
 
-    createScheduleBtn.addEventListener('click', () => {
-        createModal.style.display = 'block';
+    createScheduleBtn.onclick = function() {
         renderCalendar();
-    });
+        createModal.style.display = 'block';
+    };
 
-    editScheduleBtn.addEventListener('click', () => {
+    editScheduleBtn.onclick = function() {
         editModal.style.display = 'block';
-    });
+    };
 
     closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.onclick = function() {
             createModal.style.display = 'none';
             editModal.style.display = 'none';
-        });
+            startDate = null;
+            endDate = null;
+            milestones = [];
+            dateRange.innerHTML = '';
+            document.getElementById('milestone-date').innerHTML = '';
+        };
     });
 
-    window.addEventListener('click', (event) => {
-        if (event.target === createModal || event.target === editModal) {
-            createModal.style.display = 'none';
-            editModal.style.display = 'none';
-        }
-    });
-
-    savePlanBtn.addEventListener('click', () => {
-        alert('Zeitplan gespeichert!');
-    });
-
-    cancelPlanBtn.addEventListener('click', () => {
+    savePlanBtn.onclick = function() {
         createModal.style.display = 'none';
-    });
+        // Hier würde der Code zum Speichern des Zeitplans stehen
+    };
 
-    selectPlan.addEventListener('change', () => {
-        if (selectPlan.value) {
-            editOptions.classList.remove('hidden');
-        } else {
-            editOptions.classList.add('hidden');
-        }
-    });
+    cancelPlanBtn.onclick = function() {
+        createModal.style.display = 'none';
+        startDate = null;
+        endDate = null;
+        milestones = [];
+        dateRange.innerHTML = '';
+        document.getElementById('milestone-date').innerHTML = '';
+    };
 
-    setMilestoneBtn.addEventListener('click', () => {
+    setMilestoneBtn.onclick = function() {
         isSettingMilestone = true;
-    });
+    };
+
+    selectPlan.onchange = function() {
+        editOptions.classList.remove('hidden');
+    };
 });
