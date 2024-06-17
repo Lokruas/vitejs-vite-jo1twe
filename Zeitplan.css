@@ -1,10 +1,11 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('/Users/deinBenutzername/Ordner 3/Zeitplan/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg'); /* Pfad zum Bild */
+    background-image: url('/Users/deinBenutzername/Ordner 3/Zeitplan/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    color: black; /* Textfarbe korrigiert */
 }
 
 .header {
@@ -37,6 +38,11 @@ button {
     border: none;
     border-radius: 5px;
     color: white;
+    transition: transform 0.2s;
+}
+
+button.animated-button:active {
+    transform: scale(1.1);
 }
 
 #create-schedule-btn {
@@ -145,4 +151,5 @@ button.cancel {
 
 .edit-option.delete {
     background: #ff4d4d;
+    color: red; /* Rot für Löschen */
 }
