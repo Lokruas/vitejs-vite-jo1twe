@@ -36,7 +36,38 @@
                 <label for="endDate">Enddatum:</label>
                 <input type="date" id="endDate">
             </div>
-            <button id="createScheduleBtn" class="btn">Zeitplan erstellen</button>
+            <div class="form-group">
+                <label for="planName">Zeitplan Name:</label>
+                <input type="text" id="planName">
+            </div>
+            <div class="button-container">
+                <button id="savePlanBtn" class="btn">Speichern</button>
+                <button id="cancelPlanBtn" class="btn red">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Zeitplan bearbeiten</h2>
+            <div class="form-group">
+                <label for="selectPlan">Wähle einen Zeitplan:</label>
+                <select id="selectPlan">
+                    <option value="" disabled selected>Wähle einen Zeitplan</option>
+                    <option value="1">Dummy Zeitplan 1</option>
+                    <!-- Weitere Optionen werden später aus der Datenbank geladen -->
+                </select>
+            </div>
+            <div id="editOptions" class="hidden">
+                <button class="editOption">Zeitplan umbenennen</button>
+                <button class="editOption">Neues Zeitziel festlegen</button>
+                <button class="editOption">Zwischenziel festlegen</button>
+                <button class="editOption">Zeitplan kopieren</button>
+                <button class="editOption">Anfragenzahl anpassen</button>
+                <button class="editOption">Fortschritt zurücksetzen</button>
+                <button class="editOption red">Löschen</button>
+            </div>
         </div>
     </div>
 
