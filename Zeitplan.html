@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="Zeitplan.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
 </head>
 <body>
     <div class="header">
@@ -22,26 +23,20 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Erstelle einen Zeitplan</h2>
-            <div class="form-group">
-                <label for="stackSelect">Wähle einen Stapel:</label>
-                <select id="stackSelect">
-                    <option value="" disabled selected>Wähle einen Stapel</option>
-                    <!-- Optionen werden später aus der Datenbank geladen -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="startDate">Startdatum:</label>
-                <input type="date" id="startDate">
-            </div>
-            <div class="form-group">
-                <label for="endDate">Enddatum:</label>
-                <input type="date" id="endDate">
-            </div>
+            <div id="calendar"></div>
             <div class="form-group">
                 <label for="planName">Zeitplan Name:</label>
                 <input type="text" id="planName">
             </div>
+            <div class="summary">
+                <p id="startDisplay">Startdatum: Noch nicht gewählt</p>
+                <p id="endDisplay">Enddatum: Noch nicht gewählt</p>
+                <div id="milestones">
+                    <p>Zwischenziele:</p>
+                </div>
+            </div>
             <div class="button-container">
+                <button id="setMilestoneBtn" class="btn">Zwischenziel festlegen</button>
                 <button id="savePlanBtn" class="btn">Speichern</button>
                 <button id="cancelPlanBtn" class="btn red">Abbrechen</button>
             </div>
@@ -58,7 +53,6 @@
                 <select id="selectPlan">
                     <option value="" disabled selected>Wähle einen Zeitplan</option>
                     <option value="1">Dummy Zeitplan 1</option>
-                    <!-- Weitere Optionen werden später aus der Datenbank geladen -->
                 </select>
             </div>
             <div id="editOptions" class="hidden">
@@ -73,6 +67,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="Zeitplan.js"></script>
 </body>
 </html>
