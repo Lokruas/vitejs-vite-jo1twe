@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const createScheduleButton = document.getElementById('createSchedule');
     const editScheduleButton = document.getElementById('editSchedule');
-    const scheduleModal = document.getElementById('scheduleModal');
+    const createModal = document.getElementById('createModal');
     const editModal = document.getElementById('editModal');
     const closeButtons = document.querySelectorAll('.close');
     const savePlanBtn = document.getElementById('savePlanBtn');
@@ -9,49 +9,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectPlan = document.getElementById('selectPlan');
     const editOptions = document.getElementById('editOptions');
 
+    // Zeitplan erstellen
     createScheduleButton.addEventListener('click', () => {
-        scheduleModal.style.display = 'block';
+        createModal.style.display = 'block';
     });
 
+    // Zeitplan bearbeiten
     editScheduleButton.addEventListener('click', () => {
         editModal.style.display = 'block';
     });
 
+    // Modal schließen
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
-            scheduleModal.style.display = 'none';
+            createModal.style.display = 'none';
             editModal.style.display = 'none';
         });
     });
 
+    // Modal schließen bei Klick außerhalb des Modals
     window.addEventListener('click', (event) => {
-        if (event.target === scheduleModal) {
-            scheduleModal.style.display = 'none';
+        if (event.target === createModal) {
+            createModal.style.display = 'none';
         }
         if (event.target === editModal) {
             editModal.style.display = 'none';
         }
     });
 
+    // Zeitplan speichern
     savePlanBtn.addEventListener('click', () => {
         const stackSelect = document.getElementById('stackSelect');
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
         const planName = document.getElementById('planName').value;
 
-        if (stackSelect.value === "" || startDate === "" || endDate === "" || planName === "") {
-            alert('Bitte füllen Sie alle Felder aus.');
-            return;
-        }
-
         alert(`Zeitplan '${planName}' für den Stapel '${stackSelect.options[stackSelect.selectedIndex].text}' wurde von ${startDate} bis ${endDate} erstellt.`);
-        scheduleModal.style.display = 'none';
+        createModal.style.display = 'none';
     });
 
+    // Zeitplan abbrechen
     cancelPlanBtn.addEventListener('click', () => {
-        scheduleModal.style.display = 'none';
+        createModal.style.display = 'none';
     });
 
+    // Zeitplan auswählen zum Bearbeiten
     selectPlan.addEventListener('change', () => {
         editOptions.classList.remove('hidden');
     });
