@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('/mnt/data/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg'); /* Bild als Hintergrund */
+    background-image: url('/Users/deinBenutzername/Ordner 3/Zeitplan/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg'); /* Pfad zum Bild */
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -107,6 +107,12 @@ select {
     background: #e6f7ff;
     border-radius: 10px;
     overflow: hidden;
+}
+
+.fc .fc-toolbar-title,
+.fc .fc-daygrid-day-number,
+.fc .fc-daygrid-day-events {
+    color: black; /* Textfarbe im Kalender */
 }
 
 #date-range,
