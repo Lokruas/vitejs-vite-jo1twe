@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Memorify</h1>
+        <p class="subtitle">Dein Kompass im Labyrinth des Lernens</p>
+    </div>
 
+    <div class="button-container">
+        <button id="createSchedule" class="btn">Zeitplan erstellen</button>
+        <button id="editSchedule" class="btn">Zeitpläne bearbeiten</button>
+    </div>
+
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Erstelle einen Zeitplan</h2>
+            <div class="form-group">
+                <label for="stackSelect">Wähle einen Stapel:</label>
+                <select id="stackSelect">
+                    <option value="" disabled selected>Wähle einen Stapel</option>
+                    <!-- Optionen werden später aus der Datenbank geladen -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Startdatum:</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate">Enddatum:</label>
+                <input type="date" id="endDate">
+            </div>
+            <button id="createScheduleBtn" class="btn">Zeitplan erstellen</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
