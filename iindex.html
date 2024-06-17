@@ -1,122 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard Learning App</title>
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>MEMORIFY</h1>
-        <p>Dein Kompass im Labyrinth des Lernens</p>
-        <div class="icons-container">
-            <i class="bi bi-person"></i>
-            <i class="bi bi-card-list"></i>
-            <i class="bi bi-calendar3"></i>
-            <i class="bi bi-flag"></i>
-        </div>
-    </header>
-    <main>
-        <section id="overview">
-            <div class="deck-stats">
-                <div class="deck-header">
-                    <div class="stapel">Stapel</div>
-                    <div class="other">Insgesamt</div>
-                    <div class="other">Neu</div>
-                    <div class="other">Fällig</div>
-                    <div class="other">Menü</div>
-                </div>
-            </div>
-            <ul id="deck-list">
-                <li class="deck" draggable="true" data-id="1">
-                    <div class="deck-header">
-                        <button class="toggle">-</button>
-                        <div class="deck-title">Semester 4</div>
-                        <div class="deck-count">267</div>
-                        <div class="card-counts">
-                            <span class="new-count">0</span>
-                            <span class="due-count">0</span>
-                        </div>
-                        <div class="menu-button-container">
-                            <button class="menu-button">...</button>
-                        </div>
-                    </div>
-                    <ul class="sub-decks show">
-                        <li class="deck" draggable="true" data-id="2">
-                            <div class="deck-header">
-                                <button class="toggle">-</button>
-                                <div class="deck-title">Geschäftsmodell- und Strategieentwicklung</div>
-                                <div class="deck-count">113</div>
-                                <div class="card-counts">
-                                    <span class="new-count">0</span>
-                                    <span class="due-count">0</span>
-                                </div>
-                                <div class="menu-button-container">
-                                    <button class="menu-button">...</button>
-                                </div>
-                            </div>
-                            <ul class="sub-decks show">
-                                <li class="deck" draggable="true" data-id="3">
-                                    <div class="deck-header">
-                                        <button class="toggle">-</button>
-                                        <div class="deck-title">Block A: Entwicklung von Strategien und Geschäftsmodellen</div>
-                                        <div class="deck-count">42</div>
-                                        <div class="card-counts">
-                                            <span class="new-count">0</span>
-                                            <span class="due-count">0</span>
-                                        </div>
-                                        <div class="menu-button-container">
-                                            <button class="menu-button">...</button>
-                                        </div>
-                                    </div>
-                                </li>
-                                <!-- Weitere untergeordnete Blöcke -->
-                            </ul>
-                        </li>
-                        <li class="deck" draggable="true" data-id="5">
-                            <div class="deck-header">
-                                <button class="toggle">+</button>
-                                <div class="deck-title">Projekt- und Innovationsmanagement</div>
-                                <div class="deck-count">154</div>
-                                <div class="card-counts">
-                                    <span class="new-count">0</span>
-                                    <span class="due-count">0</span>
-                                </div>
-                                <div class="menu-button-container">
-                                    <button class="menu-button">...</button>
-                                    <div class="dropdown-menu">
-                                        <a href="#" class="rename-deck">Umbenennen</a>
-                                        <a href="#" class="delete-deck">Löschen</a>
-                                        <a href="../Kartenhinzufuegen/Kartenhinzufuegen.html" class="add-cards">Karten hinzufügen</a> 
-                                    </div>
-                                </div>
-                            </div>
-                            <ul class="sub-decks">
-                                <!-- Untergeordnete Elemente -->
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="center-button">
-                <button id="new-deck">Neuen Stapel erstellen</button>
-            </div>
-        </section>
-    </main>
-    
-    <!-- Modal for new deck -->
-    <div id="modal" class="modal">
+    <div class="header">
+        <h1>Memorify</h1>
+        <p class="subtitle">Dein Kompass im Labyrinth des Lernens</p>
+    </div>
+
+    <div class="button-container">
+        <button id="createSchedule" class="btn">Zeitplan erstellen</button>
+        <button id="editSchedule" class="btn">Zeitpläne bearbeiten</button>
+    </div>
+
+    <!-- Modal für Zeitplan erstellen -->
+    <div id="createModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Neuen Stapel erstellen</h2>
-            <label for="deck-name">Stapelname:</label>
-            <input type="text" id="deck-name" name="deck-name">
-            <button id="save-deck">Speichern</button>
+            <h2>Erstelle einen Zeitplan</h2>
+            <div class="form-group">
+                <label for="stackSelect">Wähle einen Stapel:</label>
+                <select id="stackSelect">
+                    <option value="" disabled selected>Wähle einen Stapel</option>
+                    <!-- Optionen werden später aus der Datenbank geladen -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Startdatum:</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate">Enddatum:</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="form-group">
+                <label for="planName">Zeitplan Name:</label>
+                <input type="text" id="planName">
+            </div>
+            <div class="button-container">
+                <button id="savePlanBtn" class="btn">Speichern</button>
+                <button id="cancelPlanBtn" class="btn red">Abbrechen</button>
+            </div>
         </div>
     </div>
-    
-    <script src="main.js"></script>
+
+    <!-- Modal für Zeitplan bearbeiten -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Zeitplan bearbeiten</h2>
+            <div class="form-group">
+                <label for="selectPlan">Wähle einen Zeitplan:</label>
+                <select id="selectPlan">
+                    <option value="" disabled selected>Wähle einen Zeitplan</option>
+                    <option value="1">Dummy Zeitplan 1</option>
+                    <!-- Weitere Optionen werden später aus der Datenbank geladen -->
+                </select>
+            </div>
+            <div id="editOptions" class="hidden">
+                <button class="editOption">Zeitplan umbenennen</button>
+                <button class="editOption">Neues Zeitziel festlegen</button>
+                <button class="editOption">Zwischenziel festlegen</button>
+                <button class="editOption">Zeitplan kopieren</button>
+                <button class="editOption">Anfragenzahl anpassen</button>
+                <button class="editOption">Fortschritt zurücksetzen</button>
+                <button class="editOption red">Löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
