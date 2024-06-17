@@ -10,60 +10,54 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateRange = document.getElementById('date-range');
     const selectPlan = document.getElementById('select-plan');
     const editOptions = document.getElementById('edit-options');
-
+    let calendar;
+    let isSettingMilestone = false;
     let startDate = null;
     let endDate = null;
     let milestones = [];
-    let isSettingMilestone = false;
 
     function renderCalendar() {
         const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
+        calendarEl.innerHTML = ''; // Kalender zurücksetzen
+        calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            locale: 'de',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            dateClick: function(info) {
-                if (isSettingMilestone) {
-                    setMilestone(info.dateStr);
-                    return;
-                }
+            height: 'auto',
+            selectable: true,
+            select: function(info) {
                 if (!startDate) {
-                    startDate = info.dateStr;
-                    dateRange.innerHTML = `Start: ${startDate}`;
+                    startDate = info.startStr;
+                    dateRange.innerHTML = `Startzeitpunkt: ${startDate}`;
                 } else if (!endDate) {
-                    endDate = info.dateStr;
-                    if (new Date(endDate) < new Date(startDate)) {
-                        [startDate, endDate] = [endDate, startDate];
-                    }
-                    dateRange.innerHTML = `Zeitraum: ${startDate} - ${endDate}`;
-                    calculateCardsPerDay();
+                    endDate = info.startStr;
+                    dateRange.innerHTML += `<br>Endzeitpunkt: ${endDate}`;
+                    updateCardDistribution();
+                } else if (isSettingMilestone) {
+                    setMilestone(info.startStr);
                 }
             }
         });
         calendar.render();
     }
 
-    function calculateCardsPerDay() {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const timeDiff = Math.abs(end - start);
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        const cardsPerDay = 5; // Annahme: 5 Karten pro Tag
+    function updateCardDistribution() {
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const cardsPerDay = Math.floor(100 / diffDays); // Beispielanzahl: 100 Karten
 
-        for (let i = 0; i <= daysDiff; i++) {
-            const currentDate = new Date(start);
-            currentDate.setDate(currentDate.getDate() + i);
-            const formattedDate = currentDate.toISOString().split('T')[0];
+            for (let i = 0; i <= diffDays; i++) {
+                const currentDate = new Date(start);
+                currentDate.setDate(start.getDate() + i);
+                const formattedDate = currentDate.toISOString().split('T')[0];
 
-            calendar.addEvent({
-                title: `${cardsPerDay} Karten`,
-                start: formattedDate,
-                color: 'blue'
-            });
+                calendar.addEvent({
+                    title: `${cardsPerDay} Karten`,
+                    start: formattedDate,
+                    color: 'blue'
+                });
+            }
         }
     }
 
@@ -124,10 +118,4 @@ document.addEventListener('DOMContentLoaded', function() {
     selectPlan.onchange = function() {
         editOptions.classList.remove('hidden');
     };
-
-    document.querySelectorAll('.edit-option').forEach(button => {
-        button.onclick = function() {
-            alert(`Option ${button.innerHTML} gewählt.`);
-        };
-    });
 });
