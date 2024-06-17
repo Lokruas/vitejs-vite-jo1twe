@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const createScheduleButton = document.getElementById('createSchedule');
-    const editScheduleButton = document.getElementById('editSchedule');
+    const createScheduleBtn = document.getElementById('createSchedule');
+    const editScheduleBtn = document.getElementById('editSchedule');
     const createModal = document.getElementById('createModal');
     const editModal = document.getElementById('editModal');
     const closeButtons = document.querySelectorAll('.close');
@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectPlan = document.getElementById('selectPlan');
     const editOptions = document.getElementById('editOptions');
 
-    // Zeitplan erstellen
-    createScheduleButton.addEventListener('click', () => {
+    // Event Listener für den Zeitplan erstellen Button
+    createScheduleBtn.addEventListener('click', () => {
         createModal.style.display = 'block';
     });
 
-    // Zeitplan bearbeiten
-    editScheduleButton.addEventListener('click', () => {
+    // Event Listener für den Zeitpläne bearbeiten Button
+    editScheduleBtn.addEventListener('click', () => {
         editModal.style.display = 'block';
     });
 
-    // Modal schließen
+    // Event Listener für das Schließen der Modale
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
             createModal.style.display = 'none';
@@ -27,7 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Modal schließen bei Klick außerhalb des Modals
+    // Event Listener für den Abbrechen Button
+    cancelPlanBtn.addEventListener('click', () => {
+        createModal.style.display = 'none';
+    });
+
+    // Event Listener für den Speichern Button
+    savePlanBtn.addEventListener('click', () => {
+        // Hier wird später die Logik zum Speichern des Zeitplans hinzugefügt
+        alert('Zeitplan gespeichert!');
+        createModal.style.display = 'none';
+    });
+
+    // Event Listener für den Dropdown-Select des Zeitplans
+    selectPlan.addEventListener('change', () => {
+        editOptions.classList.remove('hidden');
+    });
+
+    // Klick außerhalb des Modals schließt dieses
     window.addEventListener('click', (event) => {
         if (event.target === createModal) {
             createModal.style.display = 'none';
@@ -35,33 +52,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target === editModal) {
             editModal.style.display = 'none';
         }
-    });
-
-    // Zeitplan speichern
-    savePlanBtn.addEventListener('click', () => {
-        const stackSelect = document.getElementById('stackSelect');
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const planName = document.getElementById('planName').value;
-
-        alert(`Zeitplan '${planName}' für den Stapel '${stackSelect.options[stackSelect.selectedIndex].text}' wurde von ${startDate} bis ${endDate} erstellt.`);
-        createModal.style.display = 'none';
-    });
-
-    // Zeitplan abbrechen
-    cancelPlanBtn.addEventListener('click', () => {
-        createModal.style.display = 'none';
-    });
-
-    // Zeitplan auswählen zum Bearbeiten
-    selectPlan.addEventListener('change', () => {
-        editOptions.classList.remove('hidden');
-    });
-
-    // Dummy-Funktionen für die Bearbeitungsoptionen
-    document.querySelectorAll('.editOption').forEach(button => {
-        button.addEventListener('click', () => {
-            alert(`Du hast '${button.textContent}' gewählt. Funktion ist noch nicht implementiert.`);
-        });
     });
 });
