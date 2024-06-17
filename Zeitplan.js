@@ -1,46 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const createScheduleBtn = document.getElementById('createSchedule');
-    const editScheduleBtn = document.getElementById('editSchedule');
-    const createModal = document.getElementById('createModal');
-    const editModal = document.getElementById('editModal');
+    const createScheduleBtn = document.getElementById('create-schedule');
+    const editScheduleBtn = document.getElementById('edit-schedule');
+    const createModal = document.getElementById('create-modal');
+    const editModal = document.getElementById('edit-modal');
     const closeButtons = document.querySelectorAll('.close');
-    const savePlanBtn = document.getElementById('savePlanBtn');
-    const cancelPlanBtn = document.getElementById('cancelPlanBtn');
-    const setMilestoneBtn = document.getElementById('setMilestoneBtn');
-    const selectPlan = document.getElementById('selectPlan');
-    const editOptions = document.getElementById('editOptions');
-    const calendarEl = document.getElementById('calendar');
-    const startDisplay = document.getElementById('startDisplay');
-    const endDisplay = document.getElementById('endDisplay');
-    const milestonesEl = document.getElementById('milestones');
+    const savePlanBtn = document.getElementById('save-plan');
+    const cancelPlanBtn = document.getElementById('cancel-plan');
+    const selectPlan = document.getElementById('select-plan');
+    const editOptions = document.getElementById('edit-options');
+    const setMilestoneBtn = document.getElementById('set-milestone');
 
-    let calendar, startDate, endDate, isSettingMilestone = false, milestones = [];
+    let calendar;
+    let startDate, endDate;
+    let milestones = [];
+    let isSettingMilestone = false;
 
     function renderCalendar() {
-        calendar = new FullCalendar.Calendar(calendarEl, {
+        calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             initialView: 'dayGridMonth',
+            locale: 'de',
+            height: 'auto',
             selectable: true,
-            select: function(info) {
-                if (isSettingMilestone) {
-                    addMilestone(info.startStr);
-                } else if (!startDate) {
-                    startDate = info.startStr;
-                    startDisplay.textContent = `Startdatum: ${startDate}`;
+            selectMirror: true,
+            dateClick: (info) => {
+                if (!startDate) {
+                    startDate = info.dateStr;
+                    document.getElementById('start-date').textContent = `Startdatum: ${startDate}`;
                     calendar.addEvent({
                         title: 'Startdatum',
                         start: startDate,
                         color: '#008000'
                     });
                 } else if (!endDate) {
-                    endDate = info.startStr;
-                    endDisplay.textContent = `Enddatum: ${endDate}`;
+                    endDate = info.dateStr;
+                    document.getElementById('end-date').textContent = `Enddatum: ${endDate}`;
                     calendar.addEvent({
                         title: 'Enddatum',
                         start: endDate,
                         color: '#FF0000'
                     });
-                    // Fügen Sie hier die Logik für den Hover-Effekt hinzu
                     calculateCardAssignments();
+                } else if (isSettingMilestone) {
+                    addMilestone(info.dateStr);
                 }
             }
         });
@@ -48,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateCardAssignments() {
-        // Beispielhafte Logik für die Berechnung der Karten pro Tag
         let days = [];
         let currentDate = new Date(startDate);
         let endDateObj = new Date(endDate);
@@ -61,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
             calendar.addEvent({
                 title: `Karten: ${Math.floor(Math.random() * 10) + 1}`,
                 start: day,
-                display: 'background'
+                display: 'background',
+                backgroundColor: '#ADD8E6'
             });
         });
 
-        // Fügen Sie hier den Hover-Effekt hinzu
         document.querySelectorAll('.fc-daygrid-day').forEach(dayEl => {
             dayEl.addEventListener('mouseover', () => {
                 let date = dayEl.getAttribute('data-date');
@@ -81,8 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         milestones.push(date);
         const milestoneEl = document.createElement('p');
         milestoneEl.textContent = `Zwischenziel: ${date}`;
-        milestonesEl.appendChild(milestoneEl);
-
+        document.getElementById('milestone-date').appendChild(milestoneEl);
         calendar.addEvent({
             title: 'Zwischenziel',
             start: date,
@@ -91,18 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
         isSettingMilestone = false;
     }
 
-    // Event Listener für den Zeitplan erstellen Button
     createScheduleBtn.addEventListener('click', () => {
         createModal.style.display = 'block';
         renderCalendar();
     });
 
-    // Event Listener für den Zeitpläne bearbeiten Button
     editScheduleBtn.addEventListener('click', () => {
         editModal.style.display = 'block';
     });
 
-    // Event Listener für das Schließen der Modale
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
             createModal.style.display = 'none';
@@ -110,34 +106,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Event Listener für den Abbrechen Button
+    window.addEventListener('click', (event) => {
+        if (event.target === createModal || event.target === editModal) {
+            createModal.style.display = 'none';
+            editModal.style.display = 'none';
+        }
+    });
+
+    savePlanBtn.addEventListener('click', () => {
+        alert('Zeitplan gespeichert!');
+    });
+
     cancelPlanBtn.addEventListener('click', () => {
         createModal.style.display = 'none';
     });
 
-    // Event Listener für den Speichern Button
-    savePlanBtn.addEventListener('click', () => {
-        alert('Zeitplan gespeichert!');
-        createModal.style.display = 'none';
-    });
-
-    // Event Listener für den Dropdown-Select des Zeitplans
     selectPlan.addEventListener('change', () => {
-        editOptions.classList.remove('hidden');
+        if (selectPlan.value) {
+            editOptions.classList.remove('hidden');
+        } else {
+            editOptions.classList.add('hidden');
+        }
     });
 
-    // Event Listener für den Zwischenziel Button
     setMilestoneBtn.addEventListener('click', () => {
         isSettingMilestone = true;
-    });
-
-    // Klick außerhalb des Modals schließt dieses
-    window.addEventListener('click', (event) => {
-        if (event.target === createModal) {
-            createModal.style.display = 'none';
-        }
-        if (event.target === editModal) {
-            editModal.style.display = 'none';
-        }
     });
 });
