@@ -1,76 +1,77 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #87CEFA, #00BFFF);
-    color: #333;
     margin: 0;
-    padding: 0;
-    text-align: center;
+    font-family: Arial, sans-serif;
+    background-image: url('/mnt/data/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg'); /* Bild als Hintergrund */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .header {
-    background: linear-gradient(to right, #1E90FF, #00BFFF);
+    text-align: center;
+    background: linear-gradient(to right, #006994, #33b5e5);
     color: white;
     padding: 20px;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 3em;
+    font-size: 2.5em;
 }
 
-.header p {
+.header h2 {
     margin: 0;
-    font-size: 1.5em;
     font-style: italic;
 }
 
-.button-container {
-    margin: 20px;
+.container {
+    text-align: center;
+    margin-top: 50px;
 }
 
-.button {
-    background: linear-gradient(to bottom, #4682B4, #1E90FF);
-    color: white;
-    border: none;
+button {
     padding: 15px 30px;
     font-size: 1.2em;
     margin: 10px;
     cursor: pointer;
-    border-radius: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
 }
 
-.button:hover {
-    background: linear-gradient(to bottom, #1E90FF, #4682B4);
+#create-schedule-btn {
+    background: linear-gradient(to right, #0052a3, #00aaff);
 }
 
-.cancel {
-    background: #FF6347;
+#edit-schedule-btn {
+    background: linear-gradient(to right, #004080, #0066cc);
 }
 
 .modal {
     display: none;
     position: fixed;
     z-index: 1;
+    padding-top: 60px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
 }
 
 .modal-content {
-    background: #F0F8FF;
-    margin: 10% auto;
+    background: linear-gradient(to right, #33b5e5, #006994);
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px #000;
+    color: white;
 }
 
 .close {
-    color: #aaa;
+    color: white;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -78,32 +79,64 @@ body {
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 
+label {
+    font-size: 1.2em;
+    margin-top: 10px;
+    display: block;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
 #calendar {
-    background: #E0FFFF;
-    padding: 20px;
-    margin-top: 20px;
+    max-width: 100%;
+    margin: 20px 0;
+    background: #e6f7ff;
     border-radius: 10px;
+    overflow: hidden;
 }
 
-#schedule-info {
+#date-range,
+#milestone-date {
+    font-size: 1.2em;
     margin-top: 20px;
 }
 
-#schedule-dates p {
+button.cancel {
+    background: #ff4d4d;
+}
+
+.hidden {
+    display: none;
+}
+
+.edit-option {
+    display: block;
+    width: 100%;
+    padding: 10px;
     margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    background: #0052a3;
+    color: white;
+    text-align: left;
+    cursor: pointer;
 }
 
-#image-container {
-    margin-top: 20px;
-}
-
-.main-image {
-    width: 60%;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px #000;
+.edit-option.delete {
+    background: #ff4d4d;
 }
