@@ -1,68 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="Zeitplan.css">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <h1>Memorify</h1>
-        <p>Dein Kompass im Labyrinth des Lernens</p>
-    </header>
-
-    <div class="button-container">
-        <button id="create-schedule" class="button">Zeitplan erstellen</button>
-        <button id="edit-schedule" class="button">Zeitplan bearbeiten</button>
+        <h2>Dein Kompass im Labyrinth des Lernens</h2>
     </div>
-
-    <div id="image-container">
-        <img src="/mnt/data/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg" alt="Wunderschönes Bild" class="main-image">
+    <div class="container">
+        <button id="create-schedule-btn">Zeitplan erstellen</button>
+        <button id="edit-schedule-btn">Zeitpläne bearbeiten</button>
     </div>
-
     <div id="create-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Neuen Zeitplan erstellen</h2>
+            <label for="stack-select">Wähle einen Stapel:</label>
+            <select id="stack-select">
+                <option value="dummy-stapel">Dummy-Stapel</option>
+            </select>
+            <h3>Wähle den Zeitraum für deinen Zeitplan:</h3>
             <div id="calendar"></div>
-            <div id="schedule-info">
-                <label for="schedule-name">Zeitplan Name:</label>
-                <input type="text" id="schedule-name">
-                <div id="schedule-dates">
-                    <p id="start-date"></p>
-                    <p id="end-date"></p>
-                    <p id="milestone-date"></p>
-                </div>
-            </div>
-            <button id="set-milestone" class="button">Zwischenziel festlegen</button>
-            <button id="save-plan" class="button">Speichern</button>
-            <button id="cancel-plan" class="button cancel">Abbrechen</button>
+            <label for="plan-name">Zeitplan Name:</label>
+            <input type="text" id="plan-name">
+            <button id="set-milestone-btn">Zwischenziel festlegen</button>
+            <button id="save-plan-btn">Speichern</button>
+            <button id="cancel-plan-btn" class="cancel">Abbrechen</button>
+            <div id="date-range"></div>
+            <div id="milestone-date"></div>
         </div>
     </div>
-
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Zeitplan bearbeiten</h2>
+            <label for="select-plan">Wähle einen Zeitplan:</label>
             <select id="select-plan">
-                <option value="">Wähle einen Zeitplan</option>
                 <option value="dummy-plan">Dummy Zeitplan</option>
             </select>
             <div id="edit-options" class="hidden">
-                <button class="button">Zeitplan umbenennen</button>
-                <button class="button">Neues Zeitziel festlegen</button>
-                <button class="button">Zwischenziel festlegen</button>
-                <button class="button">Zeitplan kopieren</button>
-                <button class="button">Anfragenzahl anpassen</button>
-                <button class="button">Fortschritt zurücksetzen</button>
-                <button class="button cancel">Löschen</button>
+                <button class="edit-option">Zeitplan umbenennen</button>
+                <button class="edit-option">Neues Zeitziel festlegen</button>
+                <button class="edit-option">Zwischenziel festlegen</button>
+                <button class="edit-option">Zeitplan kopieren</button>
+                <button class="edit-option">Anfragenzahl anpassen</button>
+                <button class="edit-option">Fortschritt zurücksetzen</button>
+                <button class="edit-option delete">Löschen</button>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="Zeitplan.js"></script>
 </body>
 </html>
