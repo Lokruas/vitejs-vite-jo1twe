@@ -100,46 +100,24 @@ body {
 }
 
 .form-group {
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
-.form-group label {
+label {
     display: block;
     margin-bottom: 5px;
     color: #FFFFFF;
 }
 
-.form-group input,
-.form-group select {
+input, select {
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: none;
-}
-
-#editOptions {
-    margin-top: 20px;
-}
-
-#editOptions.hidden {
-    display: none;
-}
-
-.editOption {
-    display: block;
-    width: 100%;
     margin-bottom: 10px;
-    padding: 10px;
-    background: #FF7F50;
-    color: #FFFFFF;
-    text-align: left;
-    border: none;
-    cursor: pointer;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    transition: background 0.3s ease;
+    box-sizing: border-box;
 }
 
-.editOption:hover {
-    background: #FF6347;
+.hidden {
+    display: none;
 }
