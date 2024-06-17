@@ -1,68 +1,63 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
     <link rel="stylesheet" href="Zeitplan.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
+    <header class="header">
         <h1>Memorify</h1>
-        <p class="subtitle">Dein Kompass im Labyrinth des Lernens</p>
-    </div>
+        <p>Dein Kompass im Labyrinth des Lernens</p>
+    </header>
 
     <div class="button-container">
-        <button id="createSchedule" class="btn">Zeitplan erstellen</button>
-        <button id="editSchedule" class="btn">Zeitpläne bearbeiten</button>
+        <button id="create-schedule" class="button">Zeitplan erstellen</button>
+        <button id="edit-schedule" class="button">Zeitplan bearbeiten</button>
     </div>
 
-    <!-- Modal für Zeitplan erstellen -->
-    <div id="createModal" class="modal">
+    <div id="image-container">
+        <img src="/mnt/data/_72af79d1-a58a-42b8-937e-c28da6f085a0.jpg" alt="Wunderschönes Bild" class="main-image">
+    </div>
+
+    <div id="create-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Erstelle einen Zeitplan</h2>
+            <h2>Neuen Zeitplan erstellen</h2>
             <div id="calendar"></div>
-            <div class="form-group">
-                <label for="planName">Zeitplan Name:</label>
-                <input type="text" id="planName">
-            </div>
-            <div class="summary">
-                <p id="startDisplay">Startdatum: Noch nicht gewählt</p>
-                <p id="endDisplay">Enddatum: Noch nicht gewählt</p>
-                <div id="milestones">
-                    <p>Zwischenziele:</p>
+            <div id="schedule-info">
+                <label for="schedule-name">Zeitplan Name:</label>
+                <input type="text" id="schedule-name">
+                <div id="schedule-dates">
+                    <p id="start-date"></p>
+                    <p id="end-date"></p>
+                    <p id="milestone-date"></p>
                 </div>
             </div>
-            <div class="button-container">
-                <button id="setMilestoneBtn" class="btn">Zwischenziel festlegen</button>
-                <button id="savePlanBtn" class="btn">Speichern</button>
-                <button id="cancelPlanBtn" class="btn red">Abbrechen</button>
-            </div>
+            <button id="set-milestone" class="button">Zwischenziel festlegen</button>
+            <button id="save-plan" class="button">Speichern</button>
+            <button id="cancel-plan" class="button cancel">Abbrechen</button>
         </div>
     </div>
 
-    <!-- Modal für Zeitplan bearbeiten -->
-    <div id="editModal" class="modal">
+    <div id="edit-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Zeitplan bearbeiten</h2>
-            <div class="form-group">
-                <label for="selectPlan">Wähle einen Zeitplan:</label>
-                <select id="selectPlan">
-                    <option value="" disabled selected>Wähle einen Zeitplan</option>
-                    <option value="1">Dummy Zeitplan 1</option>
-                </select>
-            </div>
-            <div id="editOptions" class="hidden">
-                <button class="editOption">Zeitplan umbenennen</button>
-                <button class="editOption">Neues Zeitziel festlegen</button>
-                <button class="editOption">Zwischenziel festlegen</button>
-                <button class="editOption">Zeitplan kopieren</button>
-                <button class="editOption">Anfragenzahl anpassen</button>
-                <button class="editOption">Fortschritt zurücksetzen</button>
-                <button class="editOption red">Löschen</button>
+            <select id="select-plan">
+                <option value="">Wähle einen Zeitplan</option>
+                <option value="dummy-plan">Dummy Zeitplan</option>
+            </select>
+            <div id="edit-options" class="hidden">
+                <button class="button">Zeitplan umbenennen</button>
+                <button class="button">Neues Zeitziel festlegen</button>
+                <button class="button">Zwischenziel festlegen</button>
+                <button class="button">Zeitplan kopieren</button>
+                <button class="button">Anfragenzahl anpassen</button>
+                <button class="button">Fortschritt zurücksetzen</button>
+                <button class="button cancel">Löschen</button>
             </div>
         </div>
     </div>
