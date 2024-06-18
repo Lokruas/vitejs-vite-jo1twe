@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: url('cropped_background.jpg') no-repeat center top fixed;
+    background: url('background.jpg') no-repeat center top fixed;
     background-size: cover;
     position: relative;
     height: 100vh;
