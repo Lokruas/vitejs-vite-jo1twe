@@ -118,4 +118,42 @@ document.addEventListener('DOMContentLoaded', function() {
     selectPlan.onchange = function() {
         editOptions.classList.remove('hidden');
     };
+
+    // Weitere Bearbeitungsoptionen für Zeitpläne
+    document.querySelectorAll('.edit-option').forEach(option => {
+        option.onclick = function() {
+            switch (this.textContent.trim()) {
+                case 'Zeitplan umbenennen':
+                    const newName = prompt('Neuer Name für den Zeitplan:');
+                    if (newName) {
+                        const selectedOption = selectPlan.options[selectPlan.selectedIndex];
+                        selectedOption.text = newName;
+                    }
+                    break;
+                case 'Neues Zeitziel festlegen':
+                    renderCalendar();
+                    createModal.style.display = 'block';
+                    break;
+                case 'Zwischenziel festlegen':
+                    renderCalendar();
+                    createModal.style.display = 'block';
+                    isSettingMilestone = true;
+                    break;
+                case 'Einstellungen kopieren':
+                    const planCopy = selectPlan.options[selectPlan.selectedIndex].cloneNode(true);
+                    planCopy.text += ' (Kopie)';
+                    selectPlan.appendChild(planCopy);
+                    alert('Zeitplan erfolgreich kopiert!');
+                    break;
+                case 'Löschen':
+                    if (confirm('Möchtest du diesen Zeitplan wirklich löschen?')) {
+                        selectPlan.removeChild(selectPlan.options[selectPlan.selectedIndex]);
+                        editOptions.classList.add('hidden');
+                        alert('Zeitplan erfolgreich gelöscht!');
+                    }
+                    break;
+                // Weitere Funktionen hier einfügen
+            }
+        };
+    });
 });
