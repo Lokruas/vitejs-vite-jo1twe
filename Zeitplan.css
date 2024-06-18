@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: url('cropped_background.jpg') no-repeat center calc(-20% + 50px) fixed; /* Bild wird weiter nach oben verschoben */
+    background: url('cropped_background.jpg') no-repeat center top fixed; /* Bild wird nach oben verschoben */
     background-size: cover;
     height: 100vh;
 }
