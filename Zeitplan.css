@@ -1,11 +1,10 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('cropped_background.jpg'); /* Pfad zum zugeschnittenen Bild */
+    background: url('cropped_background.jpg') no-repeat center top fixed;
     background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
+    position: relative;
+    height: 100vh;
 }
 
 
@@ -14,6 +13,8 @@ body {
     background: linear-gradient(to right, #006994, #33b5e5);
     color: white;
     padding: 20px;
+    position: relative;
+    z-index: 2; /* Überlagert den verblassten Hintergrund */
 }
 
 .header h1 {
@@ -29,6 +30,12 @@ body {
 .container {
     text-align: center;
     margin-top: 50px;
+    position: relative;
+    z-index: 2; /* Überlagert den verblassten Hintergrund */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5); /* Schwarzer Hintergrund mit 50% Transparenz */
+    border-radius: 10px;
+    display: inline-block;
 }
 
 button {
@@ -39,11 +46,14 @@ button {
     border: none;
     border-radius: 5px;
     color: white;
-    transition: all 0.3s ease;
+    position: relative;
+    z-index: 3; /* Überlagert alles */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-button.animated-btn:hover {
+button:hover {
     transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 #create-schedule-btn {
@@ -52,104 +62,4 @@ button.animated-btn:hover {
 
 #edit-schedule-btn {
     background: linear-gradient(to right, #004080, #0066cc);
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 60px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-}
-
-.modal-content {
-    background: linear-gradient(to right, #33b5e5, #006994);
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    color: white;
-}
-
-.close {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-label {
-    font-size: 1.2em;
-    margin-top: 10px;
-    display: block;
-}
-
-input[type="text"],
-select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 1em;
-}
-
-#calendar {
-    max-width: 100%;
-    margin: 20px 0;
-    background: #e6f7ff;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.fc .fc-toolbar-title,
-.fc .fc-daygrid-day-number,
-.fc .fc-daygrid-day-events {
-    color: black; /* Textfarbe im Kalender */
-}
-
-#date-range,
-#milestone-date {
-    font-size: 1.2em;
-    margin-top: 20px;
-}
-
-button.cancel {
-    background: #ff4d4d;
-}
-
-.hidden {
-    display: none;
-}
-
-.edit-option {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    background: #0052a3;
-    color: white;
-    text-align: left;
-    cursor: pointer;
-}
-
-.edit-option.delete {
-    background: #ff4d4d;
 }
