@@ -37,7 +37,7 @@ body {
 
 .toolbar-left {
     display: flex;
-    gap: 5px; /* Enger zusammen */
+    gap: 5px;
     flex-wrap: wrap;
 }
 
@@ -62,19 +62,13 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px; /* Kleinere Ansicht */
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
     background: linear-gradient(to bottom, #0066cc, #004a99);
     font-size: 14px;
     padding: 10px 20px;
-}
-
-.toolbar button:hover,
-.toolbar .toolbar-add-button:hover,
-.toolbar select:hover {
-    background-color: #0056b3;
 }
 
 .color-picker {
@@ -140,12 +134,12 @@ body {
 
 .history-scroll-container {
     display: flex;
-    flex-direction: row; /* Horizontal anordnen */
-    overflow-x: auto; /* Horizontaler Scrollbalken */
-    max-width: 100%; /* Volle Breite nutzen */
-    padding: 10px; /* Abstand nach innen */
-    background: rgba(0, 0, 0, 0.1); /* Hintergrundfarbe */
-    border-radius: 8px; /* Ecken abrunden */
+    flex-direction: row;
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 .history-card {
@@ -187,21 +181,24 @@ body {
     line-height: 20px;
     text-align: center;
 }
+
 .card-side-container {
     position: relative;
 }
+
 .card-side {
     position: relative;
     z-index: 10;
     padding: 10px;
     background: white;
 }
+
 .drawCanvas {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 5;
-    pointer-events: none; /* Wichtig, damit das Zeichnen möglich ist */
+    pointer-events: none;
 }
 
 #drawCanvas {
