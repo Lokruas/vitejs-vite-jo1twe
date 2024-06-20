@@ -198,14 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderHistory();
     }
 
-    function updateHistoryScroll() {
-        const historyContainer = document.getElementById('historyContainer');
-        if (historyContainer.scrollWidth > historyContainer.clientWidth) {
-            historyContainer.style.overflowX = 'scroll';
-        } else {
-            historyContainer.style.overflowX = 'hidden';
-        }
-    }
+  
     const historyScrollContainer = document.querySelector('.history-scroll-container');
 let isDown = false;
 let startX;
