@@ -140,6 +140,8 @@ body {
     padding: 10px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    cursor: grab; /* Zeigt an, dass Elemente gezogen werden können */
+}
 }
 
 .history-card {
