@@ -14,6 +14,8 @@
             z-index: 10;
             padding: 10px;
             background: white;
+            border: 1px solid #ccc;
+            min-height: 200px;
         }
         .drawCanvas {
             position: absolute;
@@ -21,6 +23,30 @@
             left: 0;
             z-index: 5;
             pointer-events: none;
+        }
+        .history-scroll-container {
+            display: flex;
+            overflow-x: scroll;
+            white-space: nowrap;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .history-card {
+            display: inline-block;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 150px;
+            background: #f9f9f9;
+        }
+        .history-card-front, .history-card-back {
+            margin-bottom: 10px;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .color-selector {
+            display: none;
         }
     </style>
 </head>
