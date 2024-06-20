@@ -206,6 +206,35 @@ document.addEventListener('DOMContentLoaded', function () {
             historyContainer.style.overflowX = 'hidden';
         }
     }
+    const historyScrollContainer = document.querySelector('.history-scroll-container');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+historyScrollContainer.addEventListener('mousedown', (e) => {
+    isDown = true;
+    historyScrollContainer.classList.add('active');
+    startX = e.pageX - historyScrollContainer.offsetLeft;
+    scrollLeft = historyScrollContainer.scrollLeft;
+});
+
+historyScrollContainer.addEventListener('mouseleave', () => {
+    isDown = false;
+    historyScrollContainer.classList.remove('active');
+});
+
+historyScrollContainer.addEventListener('mouseup', () => {
+    isDown = false;
+    historyScrollContainer.classList.remove('active');
+});
+
+historyScrollContainer.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - historyScrollContainer.offsetLeft;
+    const walk = (x - startX) * 3; // Scroll-Geschwindigkeit
+    historyScrollContainer.scrollLeft = scrollLeft - walk;
+});
 
     function saveHistory() {
         localStorage.setItem('cardsHistory', JSON.stringify(history));
@@ -273,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
             historyContainer.style.display = 'block';
         }
     }
+}};
 
     function adjustToolbar() {
         const toolbar = document.querySelector('.toolbar');
