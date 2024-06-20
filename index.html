@@ -14,8 +14,6 @@
             z-index: 10;
             padding: 10px;
             background: white;
-            border: 1px solid #ccc;
-            min-height: 200px;
         }
         .drawCanvas {
             position: absolute;
@@ -24,30 +22,6 @@
             z-index: 5;
             pointer-events: none;
         }
-        .history-scroll-container {
-            display: flex;
-            overflow-x: scroll;
-            white-space: nowrap;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        .history-card {
-            display: inline-block;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 150px;
-            background: #f9f9f9;
-        }
-        .history-card-front, .history-card-back {
-            margin-bottom: 10px;
-            white-space: normal;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .color-selector {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -55,10 +29,9 @@
         <h1>Memorify</h1>
         <p>Dein Kompass im Labyrinth des Lernens</p>
     </div>
-    
+
     <div class="toolbar">
         <div class="toolbar-left">
-            <!-- Farbauswahl und Formatierungstools -->
             <div class="color-tools">
                 <div class="color-picker">
                     <label for="textColor">Textfarbe</label>
@@ -97,7 +70,7 @@
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="toggleEraserMode()">Radiergummi</button>
             <button onclick="execCmd('indent')">Einschub</button>
-            <button onclick="execCmd('outdent')">Rückschub</button>
+            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
         </div>
         <div class="toolbar-center">
             <select id="stackSelect">
@@ -108,7 +81,7 @@
             <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
         </div>
     </div>
-    
+
     <div class="container">
         <div class="card-editor">
             <div class="card-side-container" id="frontContainer">
@@ -125,14 +98,14 @@
             <!-- Karten werden hier dynamisch eingefügt -->
         </div>
     </div>
-    
+
     <div class="color-selector" id="colorSelector">
         <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
         <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
         <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
         <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
     </div>
-    
+
     <script src="main.js"></script>
 </body>
 </html>
