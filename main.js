@@ -56,21 +56,14 @@ function execCmd(command, value = null) {
     document.execCommand(command, false, value);
 }
 
+let history = [];
+
 function addCard() {
     const frontContent = document.getElementById('front').innerHTML;
     const backContent = document.getElementById('back').innerHTML;
-
-    let newCard = {
-        front: frontContent,
-        back: backContent
-    };
-
-    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
-    renderHistory(); // Historie rendern
-
-    // Inhalt der Textfelder zurücksetzen
-    document.getElementById('front').innerHTML = '';
-    document.getElementById('back').innerHTML = '';
+    history.unshift({ front: frontContent, back: backContent }); // Neueste Karte vorne einfügen
+    renderHistory();
+    saveHistory();
 }
 
 function toggleHistory() {
