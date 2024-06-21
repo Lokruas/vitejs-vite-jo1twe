@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
             selectable: true,
             dateClick: function(info) {
                 if (!startDate) {
-                    startDate = info.startStr;
+                    startDate = info.dateStr;
                     dateRange.innerHTML = `Startzeitpunkt: ${startDate}`;
                 } else if (!endDate) {
-                    endDate = info.startStr;
+                    endDate = info.dateStr;
                     dateRange.innerHTML += `<br>Endzeitpunkt: ${endDate}`;
                     updateCardDistribution();
                 } else if (isSettingMilestone) {
-                    setMilestone(info.startStr);
+                    setMilestone(info.dateStr);
                 }
             }
         });
@@ -162,17 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     editScheduleBtn.onclick = function() {
-        if (selectPlan.value) {
-            editingPlan = plans[selectPlan.value]; // Plan zum Bearbeiten setzen
-            startDate = editingPlan.startDate;
-            endDate = editingPlan.endDate;
-            milestones = [...editingPlan.milestones];
-            document.getElementById('plan-name').value = editingPlan.name;
-            renderCalendar();
-            createModal.style.display = 'block';
-        } else {
-            alert('Bitte wähle einen Zeitplan zum Bearbeiten aus.');
-        }
+        editModal.style.display = 'block';
     };
 
     closeButtons.forEach(button => {
