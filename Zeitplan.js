@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const setMilestoneBtn = document.getElementById('set-milestone-btn');
     const dateRange = document.getElementById('date-range');
     const selectPlan = document.getElementById('select-plan');
-    const editOptions = document.getElementById('edit-options');
+    const editSelectedPlanBtn = document.getElementById('edit-selected-plan-btn');
     const progressContainer = document.getElementById('progress-container');
     let calendar;
     let isSettingMilestone = false;
@@ -17,15 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let endDate = null;
     let milestones = [];
     let plans = {};
+    let editingPlan = null;
 
     function renderCalendar() {
         const calendarEl = document.getElementById('calendar');
         calendarEl.innerHTML = ''; // Kalender zurücksetzen
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            height: 'auto',
+            locale: 'de',
             selectable: true,
-            select: function(info) {
+            dateClick: function(info) {
                 if (!startDate) {
                     startDate = info.startStr;
                     dateRange.innerHTML = `Startzeitpunkt: ${startDate}`;
@@ -39,6 +40,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         calendar.render();
+
+        if (editingPlan) {
+            // Vorhandene Daten im Kalender anzeigen
+            calendar.addEvent({
+                title: 'Startzeitpunkt',
+                start: editingPlan.startDate,
+                color: 'green'
+            });
+
+            calendar.addEvent({
+                title: 'Endzeitpunkt',
+                start: editingPlan.endDate,
+                color: 'red'
+            });
+
+            editingPlan.milestones.forEach(milestone => {
+                calendar.addEvent({
+                    title: 'Zwischenziel',
+                    start: milestone,
+                    color: 'orange'
+                });
+            });
+        }
     }
 
     function updateCardDistribution() {
@@ -132,13 +156,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     createScheduleBtn.onclick = function() {
+        editingPlan = null; // Keine Bearbeitung, sondern Erstellung
         renderCalendar();
         createModal.style.display = 'block';
     };
 
     editScheduleBtn.onclick = function() {
-        editOptions.classList.remove('hidden');
-        editModal.style.display = 'block';
+        if (selectPlan.value) {
+            editingPlan = plans[selectPlan.value]; // Plan zum Bearbeiten setzen
+            startDate = editingPlan.startDate;
+            endDate = editingPlan.endDate;
+            milestones = [...editingPlan.milestones];
+            document.getElementById('plan-name').value = editingPlan.name;
+            renderCalendar();
+            createModal.style.display = 'block';
+        } else {
+            alert('Bitte wähle einen Zeitplan zum Bearbeiten aus.');
+        }
     };
 
     closeButtons.forEach(button => {
@@ -172,76 +206,55 @@ document.addEventListener('DOMContentLoaded', function() {
         isSettingMilestone = true;
     };
 
-    selectPlan.onchange = function() {
-        editOptions.classList.remove('hidden');
+    editSelectedPlanBtn.onclick = function() {
+        const planName = selectPlan.value;
+        if (planName) {
+            editingPlan = plans[planName]; // Setze den Plan, der bearbeitet werden soll
+            startDate = editingPlan.startDate;
+            endDate = editingPlan.endDate;
+            milestones = [...editingPlan.milestones];
+            document.getElementById('plan-name').value = editingPlan.name;
+            renderCalendar();
+            createModal.style.display = 'block';
+        } else {
+            alert('Bitte wähle einen Zeitplan zum Bearbeiten aus.');
+        }
     };
 
-    document.querySelectorAll('.edit-option').forEach(option => {
-        option.onclick = function() {
-            const selectedOption = selectPlan.options[selectPlan.selectedIndex];
-            const planName = selectedOption.textContent.trim();
-            switch (this.textContent.trim()) {
-                case 'Zeitplan bearbeiten':
-                    if (plans[planName]) {
-                        const plan = plans[planName];
-                        startDate = plan.startDate;
-                        endDate = plan.endDate;
-                        milestones = plan.milestones;
-                        document.getElementById('plan-name').value = plan.name;
-                        renderCalendar();
-                        createModal.style.display = 'block';
-                    }
-                    break;
-                case 'Zeitplan umbenennen':
-                    const newName = prompt('Neuer Name für den Zeitplan:', planName);
-                    if (newName && plans[planName]) {
-                        plans[newName] = { ...plans[planName], name: newName };
-                        delete plans[planName];
-                        selectedOption.text = newName;
-                        updateProgressDisplay();
-                    }
-                    break;
-                case 'Neues Zeitziel festlegen':
-                    if (plans[planName]) {
-                        startDate = plans[planName].startDate;
-                        endDate = null;
-                        milestones = [];
-                        renderCalendar();
-                        createModal.style.display = 'block';
-                    }
-                    break;
-                case 'Zwischenziel festlegen':
-                    if (plans[planName]) {
-                        renderCalendar();
-                        createModal.style.display = 'block';
-                        isSettingMilestone = true;
-                    }
-                    break;
-                case 'Zeitplan kopieren':
-                    const planCopy = { ...plans[planName] };
-                    const copyName = `${planName} (Kopie)`;
-                    plans[copyName] = planCopy;
-                    const newOption = document.createElement('option');
-                    newOption.textContent = copyName;
-                    selectPlan.appendChild(newOption);
-                    updateProgressDisplay();
-                    alert('Zeitplan erfolgreich kopiert!');
-                    break;
-                case 'Fortschritt zurücksetzen':
-                    if (confirm('Möchtest du den Fortschritt wirklich zurücksetzen?')) {
-                        resetProgress(planName);
-                    }
-                    break;
-                case 'Löschen':
-                    if (confirm('Möchtest du diesen Zeitplan wirklich löschen?')) {
-                        selectPlan.removeChild(selectedOption);
-                        deletePlan(planName);
-                        editOptions.classList.add('hidden');
-                    }
-                    break;
-            }
-        };
-    });
+    document.getElementById('copy-plan-btn').onclick = function() {
+        const planName = selectPlan.value;
+        if (planName) {
+            const planCopy = { ...plans[planName] };
+            const copyName = `${planName} (Kopie)`;
+            plans[copyName] = planCopy;
+            const newOption = document.createElement('option');
+            newOption.textContent = copyName;
+            selectPlan.appendChild(newOption);
+            updateProgressDisplay();
+            alert('Zeitplan erfolgreich kopiert!');
+        } else {
+            alert('Bitte wähle einen Zeitplan zum Kopieren aus.');
+        }
+    };
+
+    document.getElementById('reset-progress-btn').onclick = function() {
+        const planName = selectPlan.value;
+        if (planName && confirm('Möchtest du den Fortschritt wirklich zurücksetzen?')) {
+            resetProgress(planName);
+        } else {
+            alert('Bitte wähle einen Zeitplan zum Zurücksetzen aus.');
+        }
+    };
+
+    document.getElementById('delete-plan-btn').onclick = function() {
+        const planName = selectPlan.value;
+        if (planName && confirm('Möchtest du diesen Zeitplan wirklich löschen?')) {
+            selectPlan.removeChild(selectPlan.querySelector(`option[value="${planName}"]`));
+            deletePlan(planName);
+        } else {
+            alert('Bitte wähle einen Zeitplan zum Löschen aus.');
+        }
+    };
 
     updateProgressDisplay(); // Initiale Fortschrittsanzeige aktualisieren
 });
