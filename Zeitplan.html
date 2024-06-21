@@ -14,7 +14,7 @@
     </div>
     <div class="container">
         <button id="create-schedule-btn">Zeitplan erstellen</button>
-        <button id="edit-schedule-btn">Zeitpläne bearbeiten</button>
+        <button id="edit-schedule-btn">Zeitplan bearbeiten</button>
         <div id="progress-container"></div>
     </div>
     <div id="create-modal" class="modal">
@@ -42,15 +42,10 @@
             <select id="select-plan">
                 <option value="dummy-plan">Dummy Zeitplan</option>
             </select>
-            <div id="edit-options" class="hidden">
-                <button class="edit-option">Zeitplan bearbeiten</button>
-                <button class="edit-option">Zeitplan umbenennen</button>
-                <button class="edit-option">Neues Zeitziel festlegen</button>
-                <button class="edit-option">Zwischenziel festlegen</button>
-                <button class="edit-option">Zeitplan kopieren</button>
-                <button class="edit-option">Fortschritt zurücksetzen</button>
-                <button class="edit-option delete">Löschen</button>
-            </div>
+            <button id="edit-selected-plan-btn">Bearbeiten</button>
+            <button id="copy-plan-btn">Kopieren</button>
+            <button id="reset-progress-btn">Fortschritt zurücksetzen</button>
+            <button id="delete-plan-btn" class="delete">Löschen</button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
