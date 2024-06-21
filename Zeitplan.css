@@ -153,10 +153,6 @@ button.cancel {
     background: #ff4d4d;
 }
 
-.hidden {
-    display: none;
-}
-
 .edit-option {
     display: block;
     width: 100%;
