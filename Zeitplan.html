@@ -15,6 +15,7 @@
     <div class="container">
         <button id="create-schedule-btn">Zeitplan erstellen</button>
         <button id="edit-schedule-btn">Zeitpläne bearbeiten</button>
+        <div id="progress-container"></div>
     </div>
     <div id="create-modal" class="modal">
         <div class="modal-content">
@@ -42,11 +43,11 @@
                 <option value="dummy-plan">Dummy Zeitplan</option>
             </select>
             <div id="edit-options" class="hidden">
+                <button class="edit-option">Zeitplan bearbeiten</button>
                 <button class="edit-option">Zeitplan umbenennen</button>
                 <button class="edit-option">Neues Zeitziel festlegen</button>
                 <button class="edit-option">Zwischenziel festlegen</button>
                 <button class="edit-option">Zeitplan kopieren</button>
-                <button class="edit-option">Anfragenzahl anpassen</button>
                 <button class="edit-option">Fortschritt zurücksetzen</button>
                 <button class="edit-option delete">Löschen</button>
             </div>
