@@ -13,9 +13,8 @@
         <h2>Dein Kompass im Labyrinth des Lernens</h2>
     </div>
     <div class="container">
-        <button id="create-schedule-btn">Zeitplan erstellen</button>
-        <button id="edit-schedule-btn">Zeitplan bearbeiten</button>
-        <div id="progress-container"></div>
+        <button id="create-schedule-btn" class="animated-btn">Zeitplan erstellen</button>
+        <button id="edit-schedule-btn" class="animated-btn">Zeitpläne bearbeiten</button>
     </div>
     <div id="create-modal" class="modal">
         <div class="modal-content">
@@ -28,9 +27,9 @@
             <div id="calendar"></div>
             <label for="plan-name">Zeitplan Name:</label>
             <input type="text" id="plan-name">
-            <button id="set-milestone-btn">Zwischenziel festlegen</button>
-            <button id="save-plan-btn">Speichern</button>
-            <button id="cancel-plan-btn" class="cancel">Abbrechen</button>
+            <button id="set-milestone-btn" class="animated-btn">Zwischenziel festlegen</button>
+            <button id="save-plan-btn" class="animated-btn">Speichern</button>
+            <button id="cancel-plan-btn" class="animated-btn cancel">Abbrechen</button>
             <div id="date-range"></div>
             <div id="milestone-date"></div>
         </div>
@@ -42,10 +41,15 @@
             <select id="select-plan">
                 <option value="dummy-plan">Dummy Zeitplan</option>
             </select>
-            <button id="edit-selected-plan-btn">Bearbeiten</button>
-            <button id="copy-plan-btn">Kopieren</button>
-            <button id="reset-progress-btn">Fortschritt zurücksetzen</button>
-            <button id="delete-plan-btn" class="delete">Löschen</button>
+            <div id="edit-options" class="hidden">
+                <button class="edit-option animated-btn">Zeitplan umbenennen</button>
+                <button class="edit-option animated-btn">Neues Zeitziel festlegen</button>
+                <button class="edit-option animated-btn">Zwischenziel festlegen</button>
+                <button class="edit-option animated-btn">Einstellungen kopieren</button>
+                <button class="edit-option animated-btn">Anfragenzahl anpassen</button>
+                <button class="edit-option animated-btn">Fortschritt zurücksetzen</button>
+                <button class="edit-option animated-btn delete">Löschen</button>
+            </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
