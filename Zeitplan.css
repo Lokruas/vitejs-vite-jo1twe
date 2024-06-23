@@ -9,9 +9,11 @@ body {
 
 .header {
     text-align: center;
-    background: linear-gradient(to right, #006994, #33b5e5);
+    padding: 20px 0;
+    background: url('header-background.png') no-repeat center center;
+    background-size: cover;
     color: white;
-    padding: 20px;
+    border-bottom: 4px solid #004a86;
 }
 
 .header h1 {
