@@ -44,11 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     createScheduleBtn.onclick = function() {
+        editModal.style.display = 'none';  // Schließt das Bearbeitungsfenster
         createModal.style.display = 'block';
         renderCalendar();
     };
 
     editScheduleBtn.onclick = function() {
+        createModal.style.display = 'none'; // Schließt das Erstellungsfenster
         editModal.style.display = 'block';
         populatePlans();
     };
@@ -161,30 +163,13 @@ document.addEventListener('DOMContentLoaded', function() {
         switch (action) {
             case 'edit':
                 createModal.style.display = 'block';
+                editModal.style.display = 'none';  // Schließt das Bearbeitungsfenster
                 const plan = plans[selectedPlan];
                 document.getElementById('plan-name').value = selectedPlan;
                 startDate = plan.startDate;
                 endDate = plan.endDate;
                 milestones = plan.milestones;
                 renderCalendar();
-                break;
-            case 'rename':
-                const newName = prompt('Neuer Name für den Zeitplan:', selectedPlan);
-                if (newName && newName !== selectedPlan) {
-                    plans[newName] = plans[selectedPlan];
-                    delete plans[selectedPlan];
-                    updateProgressDisplay();
-                    populatePlans();
-                }
-                break;
-            case 'new-end-date':
-                isSettingMilestone = false;
-                endDate = null;
-                dateRange.innerHTML = `Startzeitpunkt: ${plans[selectedPlan].startDate}`;
-                renderCalendar();
-                break;
-            case 'add-milestone':
-                isSettingMilestone = true;
                 break;
             case 'copy':
                 const copyName = prompt('Name für die Kopie des Zeitplans:', `${selectedPlan} - Kopie`);
