@@ -36,23 +36,20 @@
         </div>
     </div>
     <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <label for="select-plan">Wähle einen Zeitplan:</label>
-            <select id="select-plan">
-                <option value="dummy-plan">Dummy Zeitplan</option>
-            </select>
-            <div id="edit-options" class="hidden">
-                <button class="edit-option" data-action="edit">Zeitplan bearbeiten</button>
-                <button class="edit-option" data-action="rename">Zeitplan umbenennen</button>
-                <button class="edit-option" data-action="new-end-date">Neues Zeitziel festlegen</button>
-                <button class="edit-option" data-action="add-milestone">Zwischenziel festlegen</button>
-                <button class="edit-option" data-action="copy">Zeitplan kopieren</button>
-                <button class="edit-option" data-action="reset">Fortschritt zurücksetzen</button>
-                <button class="edit-option delete" data-action="delete">Löschen</button>
-            </div>
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <label for="select-plan">Wähle einen Zeitplan:</label>
+        <select id="select-plan">
+            <option value="dummy-plan">Dummy Zeitplan</option>
+        </select>
+        <div id="edit-options" class="hidden">
+            <button class="edit-option" data-action="edit">Zeitplan bearbeiten</button>
+            <button class="edit-option" data-action="copy">Zeitplan kopieren</button>
+            <button class="edit-option" data-action="reset">Fortschritt zurücksetzen</button>
+            <button class="edit-option delete" data-action="delete">Löschen</button>
         </div>
     </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="Zeitplan.js"></script>
 </body>
