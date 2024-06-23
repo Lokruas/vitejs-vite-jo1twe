@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('background.jpg'); /* Pfad zum Bild */
+    background-image: url('background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -140,7 +140,7 @@ select {
 .fc .fc-toolbar-title,
 .fc .fc-daygrid-day-number,
 .fc .fc-daygrid-day-events {
-    color: black; /* Textfarbe im Kalender */
+    color: black;
 }
 
 #date-range,
