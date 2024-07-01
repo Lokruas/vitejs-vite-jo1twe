@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anmeldung</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .bg {
+      background-image: url('https://i.imgur.com/wX794hp.png');
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container, .register-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .login-container form, .register-container form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .login-container input[type='text'], .login-container input[type='password'],
+    .register-container input[type='text'], .register-container input[type='email'], .register-container input[type='password'] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    .login-container button, .register-container button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .login-container button:hover, .register-container button:hover {
+      background-color: #0056b3;
+    }
+    .register-link {
+      margin-top: 10px;
+      display: block;
+      text-decoration: none;
+      color: #007bff;
+      cursor: pointer;
+    }
+    .register-link:hover {
+      text-decoration: underline;
+    }
+    .register-container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="login-container" id="login-container">
+      <h2>Anmeldung</h2>
+      <form id="login-form">
+        <input type="text" name="username" placeholder="Benutzername" required><br>
+        <input type="password" name="password" placeholder="Passwort" required><br>
+        <button type="submit">Anmelden</button>
+      </form>
+      <span class="register-link" onclick="toggleForm()">Noch kein Konto? Registrieren</span>
+    </div>
+
+    <div class="register-container" id="register-container">
+      <h2>Registrierung</h2>
+      <form id="register-form">
+        <input type="text" name="username" placeholder="Benutzername" required><br>
+        <input type="email" name="email" placeholder="E-Mail" required><br>
+        <input type="password" name="password" placeholder="Passwort" required><br>
+        <button type="submit">Registrieren</button>
+      </form>
+      <span class="register-link" onclick="toggleForm()">Schon ein Konto? Anmelden</span>
+    </div>
+  </div>
+
+  <script>
+    // IndexedDB Setup
+    let db;
+    let request = indexedDB.open("memorifyDB", 1);
+
+    request.onupgradeneeded = function(event) {
+      db = event.target.result;
+      let userStore = db.createObjectStore("users", { keyPath: "username" });
+      userStore.createIndex("email", "email", { unique: true });
+    };
+
+    request.onsuccess = function(event) {
+      db = event.target.result;
+    };
+
+    request.onerror = function(event) {
+      console.error("Database error: ", event.target.errorCode);
+    };
+
+    // Form Handling
+    document.getElementById("register-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let username = event.target.username.value;
+      let email = event.target.email.value;
+      let password = event.target.password.value;
+
+      let transaction = db.transaction(["users"], "readwrite");
+      let userStore = transaction.objectStore("users");
+      let request = userStore.add({ username, email, password });
+
+      request.onsuccess = function() {
+        alert("Registrierung erfolgreich!");
+        toggleForm();
+      };
+
+      request.onerror = function() {
+        alert("Fehler bei der Registrierung: Benutzername oder E-Mail bereits vergeben.");
+      };
+    });
+
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let username = event.target.username.value;
+      let password = event.target.password.value;
+
+      let transaction = db.transaction(["users"], "readonly");
+      let userStore = transaction.objectStore("users");
+      let request = userStore.get(username);
+
+      request.onsuccess = function(event) {
+        let user = event.target.result;
+        if (user && user.password === password) {
+          alert("Anmeldung erfolgreich!");
+          // Weiterleitung zu einer anderen Seite oder weitere Logik hier hinzufügen
+        } else {
+          alert("Ungültiger Benutzername oder Passwort.");
+        }
+      };
+
+      request.onerror = function() {
+        alert("Fehler bei der Anmeldung.");
+      };
+    });
+
+    function toggleForm() {
+      var loginContainer = document.getElementById('login-container');
+      var registerContainer = document.getElementById('register-container');
+      
+      if (loginContainer.style.display === 'none') {
+        loginContainer.style.display = 'block';
+        registerContainer.style.display = 'none';
+      } else {
+        loginContainer.style.display = 'none';
+        registerContainer.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
