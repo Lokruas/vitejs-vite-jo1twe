@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("card-content").innerText = card.question;
         document.getElementById("card").dataset.cardId = card.id;
         document.getElementById("show-answer-button").style.display = "block";
+        document.getElementById("hint-button").style.display = "block";
         document.getElementById("answer-options").style.display = "none";
     }
 
@@ -59,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let card = event.target.result;
             document.getElementById("card-content").innerText = card.answer;
             document.getElementById("show-answer-button").style.display = "none";
+            document.getElementById("hint-button").style.display = "none";
             document.getElementById("answer-options").style.display = "flex";
         };
     };
