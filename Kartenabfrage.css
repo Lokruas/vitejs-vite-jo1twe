@@ -5,8 +5,8 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0096c7;
-    color: white;
+    background-color: #e0f7fa;
+    color: #0077b6;
 }
 
 .card-container {
@@ -18,13 +18,14 @@ body, html {
 }
 
 .card {
-    background-color: #023e8a;
+    background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    max-width: 400px;
-    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    max-width: 600px;
     width: 80%;
+    text-align: center;
+    perspective: 1000px;
 }
 
 .card-content {
@@ -44,4 +45,9 @@ button {
 
 button:hover {
     background-color: #005f99;
+}
+
+#answer-options {
+    display: none;
+    flex-direction: column;
 }
