@@ -5,43 +5,43 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #1E90FF; /* Meerblau */
+    background-color: #0096c7;
     color: white;
 }
 
-.container {
-    width: 90%;
-    max-width: 600px;
-    margin: auto;
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .card {
-    background-color: #4682B4; /* Dunkleres Blau */
+    background-color: #023e8a;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    width: 80%;
 }
 
-.card-front, .card-back {
-    display: none;
+.card-content {
+    margin-bottom: 20px;
 }
 
-.card-front {
-    display: block;
-}
-
-.button {
-    background-color: #1E90FF; /* Meerblau */
-    color: white;
+button {
+    background-color: #0077b6;
     border: none;
-    border-radius: 5px;
+    color: white;
     padding: 10px 20px;
-    margin: 10px;
+    margin: 5px;
+    border-radius: 5px;
     cursor: pointer;
-    display: inline-block;
+    font-size: 1em;
 }
 
-.button:hover {
-    background-color: #104E8B; /* Dunkleres Meerblau */
+button:hover {
+    background-color: #005f99;
 }
