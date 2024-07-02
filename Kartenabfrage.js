@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let card = event.target.result;
             document.getElementById("card-content").innerText = card.answer;
             document.getElementById("show-answer-button").style.display = "none";
-            document.getElementById("answer-options").style.display = "block";
+            document.getElementById("answer-options").style.display = "flex";
         };
     };
 
