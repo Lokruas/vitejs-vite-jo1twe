@@ -146,7 +146,7 @@
         let user = event.target.result;
         if (user && user.password === password) {
           alert("Anmeldung erfolgreich!");
-          // Weiterleitung zu einer anderen Seite oder weitere Logik hier hinzufügen
+          window.location.href = "Startfenster/startfenster.html"; // Weiterleitung zu Startfenster
         } else {
           alert("Ungültiger Benutzername oder Passwort.");
         }
