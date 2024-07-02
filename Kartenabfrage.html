@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karten Abfrage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-front" id="card-front">
+                <!-- Frage wird hier angezeigt -->
+            </div>
+            <div class="card-back" id="card-back">
+                <!-- Antwort wird hier angezeigt -->
+                <button class="button" onclick="rateCard('skip')">Skip</button>
+                <button class="button" onclick="rateCard('dontKnowYet')">Don't know yet</button>
+                <button class="button" onclick="rateCard('partiallyRecalled')">Partially recalled</button>
+                <button class="button" onclick="rateCard('stressful')">Stressful</button>
+                <button class="button" onclick="rateCard('easy')">Easy</button>
+            </div>
+            <button class="button" id="show-answer" onclick="showAnswer()">Show Answer</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
