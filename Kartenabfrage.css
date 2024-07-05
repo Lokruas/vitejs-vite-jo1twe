@@ -1,55 +1,37 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
+#card-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e0f7fa;
-    color: #0077b6;
+    height: 80vh;
 }
 
-.card-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-.card {
-    background-color: #b3e5fc;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    max-width: 800px;
-    width: 80%;
+#card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 300px;
     text-align: center;
-    perspective: 1000px;
 }
 
-.card-content {
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-button {
-    background-color: #0077b6;
+#show-answer, #answer-buttons button {
+    margin-top: 20px;
+    padding: 10px;
     border: none;
-    color: white;
-    padding: 10px 20px;
-    margin: 5px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
 }
 
-button:hover {
-    background-color: #005f99;
+#show-answer {
+    background-color: #4CAF50;
+    color: white;
 }
 
-#answer-options {
-    display: none;
-    flex-direction: column;
+#answer-buttons button {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+#answer-buttons button:hover {
+    background-color: #ddd;
 }
