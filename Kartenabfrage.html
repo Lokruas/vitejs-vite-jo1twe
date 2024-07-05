@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartenabfrage</title>
-    <link rel="stylesheet" href="Kartenabfrage.css">
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="card-container">
-        <div class="card" id="card">
-            <div class="card-content" id="card-content">Wer hat diese geniale Web-App gemacht?</div>
-            <button id="show-answer-button" onclick="showAnswer()">Show Answer</button>
-            <button id="hint-button" onclick="showHint()">Hinweis</button>
-            <div id="answer-options">
-                <button onclick="handleAnswer('skip')">Skip</button>
-                <button onclick="handleAnswer('dont_know')">Don't Know Yet</button>
-                <button onclick="handleAnswer('partially_recalled')">Partially Recalled</button>
-                <button onclick="handleAnswer('stressful')">Stressful</button>
-                <button onclick="handleAnswer('easy')">Easy</button>
+    <div class="header">
+        <h1>Memorify</h1>
+        <p>Dein Kompass im Labyrinth des Lernens</p>
+    </div>
+    
+    <div id="card-container">
+        <div id="card">
+            <div id="card-content"></div>
+            <button id="show-answer">Antwort anzeigen</button>
+            <div id="answer-buttons" style="display: none;">
+                <button id="know-it">Kann ich</button>
+                <button id="dont-know-it">Kann ich nicht</button>
             </div>
         </div>
     </div>
-    <script src="Kartenabfrage.js"></script>
+    
+    <script src="main.js"></script>
 </body>
 </html>
