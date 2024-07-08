@@ -7,15 +7,29 @@
     <link rel="stylesheet" href="Kartenabfrage.css">
 </head>
 <body>
+    <header>
+        <h1>Memorify</h1>
+        <h2>Dein Kompass im Labyrinth des Lernens</h2>
+    </header>
     <div class="container">
-        <div class="dropdown">
-            <label for="deck-select">Stapel:</label>
-            <select id="deck-select">
-                <option value="innovation">Innovation- und Projektmanagement</option>
-                <option value="strategie">Strategieentwicklung</option>
-                <option value="webapp">Web-Application</option>
-            </select>
+        <div class="dropdowns">
+            <div class="dropdown">
+                <label for="deck-select">Stapel:</label>
+                <select id="deck-select">
+                    <option value="innovation">Innovation- und Projektmanagement</option>
+                    <option value="strategie">Strategieentwicklung</option>
+                    <option value="webapp">Web-Application</option>
+                </select>
+            </div>
+            <div class="dropdown" id="subdeck-dropdown">
+                <label for="subdeck-select">Unterstapel:</label>
+                <select id="subdeck-select">
+                    <option value="all">Ganzen Stapel lernen</option>
+                </select>
+            </div>
+            <div id="counter">Stapel: ... Karten übrig</div>
         </div>
+        <div id="path">Pfad: </div>
         <div class="card">
             <div id="question">Frage wird hier angezeigt</div>
             <div id="answer" style="display: none;">Antwort wird hier angezeigt</div>
