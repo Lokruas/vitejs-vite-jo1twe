@@ -1,161 +1,55 @@
-body {
-    background: linear-gradient(to bottom, #e0f7fa, #0288d1);
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    background-image: url('header-background.png');
-    background-size: cover;
-    text-align: center;
-    padding: 20px;
-    color: white;
-    width: 100%;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
-}
-
-header h2 {
-    margin: 5px 0 0 0;
-    font-size: 1.2em;
-}
-
-.container {
-    text-align: center;
-    width: 80%;
-    margin-top: 40px;
-}
-
-.header-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background: #e1f5fe;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.dropdown {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.header-buttons {
-    display: flex;
-    align-items: center;
-}
-
-#counter {
-    font-size: 1.2em;
-    color: #0288d1;
-    background: #ffffff;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #0288d1;
-}
-
-#path {
-    margin: 20px 0;
-    font-size: 1.2em;
-    color: #0288d1;
-    background: #e1f5fe;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.card {
-    background-color: #ffffff;
-    border: 2px solid #0288d1;
-    border-radius: 10px;
-    padding: 40px;
-    margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-}
-
-.card div, .card p {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-}
-
-#show-answer {
-    margin-top: 20px;
-    background-color: #0288d1;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2em;
-}
-
-.buttons {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.rating {
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.completion-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.completion-message p {
-    font-size: 1.5em;
-    color: #0288d1;
-}
-
-#repeat-deck {
-    margin-top: 20px;
-    background-color: #0288d1;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.footer-controls {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-#reset-progress, #edit-deck {
-    background-color: #0288d1;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-    margin: 0 10px;
-}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartenabfrage</title>
+    <link rel="stylesheet" href="Kartenabfrage.css">
+</head>
+<body>
+    <header>
+        <h1>Memorify</h1>
+        <h2>Dein Kompass im Labyrinth des Lernens</h2>
+    </header>
+    <div class="container">
+        <div class="header-controls">
+            <div class="dropdown">
+                <label for="deck-select">Stapel:</label>
+                <select id="deck-select">
+                    <option value="">-- Wähle einen Stapel --</option>
+                    <option value="innovation">Innovation- und Projektmanagement</option>
+                    <option value="strategie">Strategieentwicklung</option>
+                    <option value="webapp">Web-Application</option>
+                </select>
+                <select id="subdeck-select" style="display: none;">
+                    <option value="all">Ganzen Stapel lernen</option>
+                </select>
+            </div>
+            <div class="header-buttons">
+                <button id="reset-progress">Fortschritt zurücksetzen</button>
+                <button id="edit-deck">Bearbeiten</button>
+            </div>
+            <div id="counter">Stapel: - Karten übrig</div>
+        </div>
+        <div id="path">Pfad: </div>
+        <div class="card">
+            <div id="prompt">Bitte wähle einen Stapel aus, den du lernen willst.</div>
+            <div id="question" style="display: none;">Frage wird hier angezeigt</div>
+            <div id="answer" style="display: none;">Antwort wird hier angezeigt</div>
+            <button id="show-answer" style="display: none;">Antwort anzeigen</button>
+            <div class="completion-message" style="display: none;">
+                <p>Herzlichen Glückwunsch! Du hast alle Karten in diesem Stapel gelernt.</p>
+                <button id="repeat-deck">Stapel wiederholen</button>
+            </div>
+        </div>
+        <div class="buttons" style="display: none;">
+            <button class="rating" data-value="skip" style="background-color: #64b5f6;">Skip</button>
+            <button class="rating" data-value="dontknow" style="background-color: #42a5f5;">Don't know yet</button>
+            <button class="rating" data-value="partial" style="background-color: #2196f3;">Partially recalled</button>
+            <button class="rating" data-value="stressful" style="background-color: #1e88e5;">Stressful</button>
+            <button class="rating" data-value="easy" style="background-color: #1976d2;">Easy</button>
+        </div>
+    </div>
+    <script src="Kartenabfrage.js"></script>
+</body>
+</html>
