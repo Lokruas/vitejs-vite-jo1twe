@@ -29,13 +29,18 @@
                 <button id="reset-progress">Fortschritt zurücksetzen</button>
                 <button id="edit-deck">Bearbeiten</button>
             </div>
-            <div id="counter">Stapel: ... Karten übrig</div>
+            <div id="counter">Stapel: - Karten übrig</div>
         </div>
         <div id="path">Pfad: </div>
-        <div class="card" style="display: none;">
-            <div id="question">Frage wird hier angezeigt</div>
+        <div class="card">
+            <div id="prompt">Bitte wähle einen Stapel aus, den du lernen willst.</div>
+            <div id="question" style="display: none;">Frage wird hier angezeigt</div>
             <div id="answer" style="display: none;">Antwort wird hier angezeigt</div>
-            <button id="show-answer">Antwort anzeigen</button>
+            <button id="show-answer" style="display: none;">Antwort anzeigen</button>
+            <div class="completion-message" style="display: none;">
+                <p>Herzlichen Glückwunsch! Du hast alle Karten in diesem Stapel gelernt.</p>
+                <button id="repeat-deck">Stapel wiederholen</button>
+            </div>
         </div>
         <div class="buttons" style="display: none;">
             <button class="rating" data-value="skip" style="background-color: #64b5f6;">Skip</button>
@@ -43,10 +48,6 @@
             <button class="rating" data-value="partial" style="background-color: #2196f3;">Partially recalled</button>
             <button class="rating" data-value="stressful" style="background-color: #1e88e5;">Stressful</button>
             <button class="rating" data-value="easy" style="background-color: #1976d2;">Easy</button>
-        </div>
-        <div class="completion-message" style="display: none;">
-            <p>Herzlichen Glückwunsch! Du hast alle Karten in diesem Stapel gelernt.</p>
-            <button id="repeat-deck">Stapel wiederholen</button>
         </div>
     </div>
     <script src="Kartenabfrage.js"></script>
