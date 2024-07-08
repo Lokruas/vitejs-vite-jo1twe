@@ -1,6 +1,6 @@
 body {
     background: linear-gradient(to bottom, #e0f7fa, #0288d1);
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,14 +43,37 @@ header h2 {
     margin: 0 10px;
 }
 
+#counter {
+    margin: 0 10px;
+    align-self: center;
+}
+
+#path {
+    margin: 20px 0;
+    font-size: 1.2em;
+    color: #0288d1;
+    background: #e1f5fe;
+    padding: 10px;
+    border-radius: 5px;
+}
+
 .card {
     background-color: #ffffff;
     border: 2px solid #0288d1;
     border-radius: 10px;
-    padding: 20px;
+    padding: 40px;
     margin: 20px 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    min-height: 200px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.card div {
+    font-size: 1.5em;
+    margin-bottom: 20px;
 }
 
 #show-answer {
@@ -61,6 +84,10 @@ header h2 {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .buttons {
