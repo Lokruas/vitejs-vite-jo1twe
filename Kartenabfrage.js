@@ -64,6 +64,8 @@ document.getElementById('subdeck-select').addEventListener('change', (e) => {
 
 document.getElementById('show-answer').addEventListener('click', () => {
     document.getElementById('answer').style.display = 'block';
+    document.getElementById('show-answer').style.display = 'none';
+    document.querySelector('.buttons').style.display = 'flex';
 });
 
 document.querySelectorAll('.rating').forEach(button => {
@@ -98,28 +100,30 @@ function updateCounter() {
 
 function loadCard() {
     if (cardQueue.length === 0) {
-        document.getElementById('question').innerText = 'Keine Karten mehr übrig!';
+        document.getElementById('question').innerText = 'Keine Karten mehr übrig';
         document.getElementById('answer').innerText = '';
+        document.getElementById('show-answer').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
+    } else {
+        document.getElementById('question').innerText = cardQueue[currentIndex].question;
+        document.getElementById('answer').innerText = cardQueue[currentIndex].answer;
         document.getElementById('answer').style.display = 'none';
-        return;
+        document.getElementById('show-answer').style.display = 'block';
+        document.querySelector('.buttons').style.display = 'none';
     }
-    const currentCard = cardQueue[currentIndex];
-    document.getElementById('question').innerText = currentCard.question;
-    document.getElementById('answer').innerText = currentCard.answer;
-    document.getElementById('answer').style.display = 'none';
 }
 
-function handleRating(value) {
-    if (value !== 'easy') {
-        cardQueue.push(cardQueue.splice(currentIndex, 1)[0]);
-    } else {
-        cardQueue.splice(currentIndex, 1);
+function handleRating(rating) {
+    const card = cardQueue.splice(currentIndex, 1)[0];
+    if (rating !== 'easy') {
+        cardQueue.push(card);
     }
     currentIndex = 0;
     updateCounter();
     loadCard();
 }
 
+// Initialisierung
 updateSubDeckOptions();
 updatePath();
 updateCounter();
