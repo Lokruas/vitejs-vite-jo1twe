@@ -46,6 +46,8 @@ document.getElementById('deck-select').addEventListener('change', (e) => {
     const value = e.target.value;
     if (value) {
         updateSubDeckOptions(value);
+    } else {
+        document.getElementById('subdeck-select').style.display = 'none';
     }
 });
 
@@ -73,6 +75,7 @@ document.getElementById('repeat-deck').addEventListener('click', () => {
     updateCounter();
     loadCard();
     document.querySelector('.completion-message').style.display = 'none';
+    document.querySelector('.card').style.display = 'block';
 });
 
 document.getElementById('reset-progress').addEventListener('click', () => {
@@ -112,12 +115,13 @@ function loadCards() {
 
 function loadCard() {
     if (cardQueue.length === 0) {
-        document.getElementById('question').innerText = 'Keine Karten mehr übrig';
+        document.getElementById('question').innerText = '';
         document.getElementById('answer').innerText = '';
-        document.getElementById('show-answer').style.display = 'none';
+        document.querySelector('.card').style.display = 'none';
         document.querySelector('.buttons').style.display = 'none';
         document.querySelector('.completion-message').style.display = 'block';
     } else {
+        document.querySelector('.card').style.display = 'block';
         currentIndex = 0;
         document.getElementById('question').innerText = cardQueue[currentIndex].question;
         document.getElementById('answer').innerText = cardQueue[currentIndex].answer;
@@ -142,6 +146,7 @@ function handleRating(rating) {
     if (initialCardCount === 0) {
         document.getElementById('counter').innerText = `Stapel: ${initialCardCount} Karten übrig`;
         document.querySelector('.completion-message').style.display = 'block';
+        document.querySelector('.card').style.display = 'none';
     } else {
         updateCounter();
         loadCard();
