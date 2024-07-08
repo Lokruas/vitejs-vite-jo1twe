@@ -39,7 +39,6 @@ const decks = {
 
 let currentDeck = 'innovation';
 let currentSubDeck = 'all';
-let currentIndex = 0;
 let cardQueue = [];
 let initialCardCount = 0;
 
@@ -50,40 +49,8 @@ document.getElementById('deck-select').addEventListener('change', (e) => {
     }
 });
 
-function updateSubDeckOptions(deck) {
-    const subDeckOptions = Object.keys(decks[deck]).filter(subDeck => subDeck !== 'all');
-    const subDeckSelect = document.getElementById('deck-select');
-
-    // Entferne alte Unterstapeloptionen
-    const options = subDeckSelect.options;
-    for (let i = options.length - 1; i >= 0; i--) {
-        if (options[i].classList.contains('subdeck')) {
-            subDeckSelect.remove(i);
-        }
-    }
-
-    // Füge neue Unterstapeloptionen hinzu
-    subDeckOptions.forEach(subDeck => {
-        const option = document.createElement('option');
-        option.value = subDeck;
-        option.innerText = `${deck} - ${subDeck}`;
-        option.classList.add('subdeck');
-        subDeckSelect.appendChild(option);
-    });
-
-    currentDeck = deck;
-    currentSubDeck = 'all';
-    updatePath();
-    loadCards();
-}
-
-document.getElementById('deck-select').addEventListener('change', (e) => {
-    const selectedOption = e.target.selectedOptions[0];
-    if (selectedOption.classList.contains('subdeck')) {
-        currentSubDeck = selectedOption.value;
-    } else {
-        currentSubDeck = 'all';
-    }
+document.getElementById('subdeck-select').addEventListener('change', (e) => {
+    currentSubDeck = e.target.value;
     updatePath();
     loadCards();
 });
@@ -107,6 +74,26 @@ document.getElementById('repeat-deck').addEventListener('click', () => {
     loadCard();
     document.querySelector('.completion-message').style.display = 'none';
 });
+
+document.getElementById('reset-progress').addEventListener('click', () => {
+    cardQueue = [...decks[currentDeck][currentSubDeck]];
+    initialCardCount = cardQueue.length;
+    updateCounter();
+    loadCard();
+});
+
+function updateSubDeckOptions(deck) {
+    currentDeck = deck;
+    currentSubDeck = 'all';
+    const subdeckSelect = document.getElementById('subdeck-select');
+    subdeckSelect.innerHTML = `
+        <option value="all">Ganzen Stapel lernen</option>
+        <option value="unterstapel1">Unterstapel 1</option>
+        <option value="unterstapel2">Unterstapel 2</option>
+    `;
+    subdeckSelect.style.display = 'block';
+    updatePath();
+}
 
 function updatePath() {
     document.getElementById('path').innerText = `Pfad: ${currentDeck} > ${currentSubDeck}`;
@@ -152,8 +139,13 @@ function handleRating(rating) {
             cardQueue.splice(currentIndex + 1, 0, card);
         }
     }
-    updateCounter();
-    loadCard();
+    if (initialCardCount === 0) {
+        document.getElementById('counter').innerText = `Stapel: ${initialCardCount} Karten übrig`;
+        document.querySelector('.completion-message').style.display = 'block';
+    } else {
+        updateCounter();
+        loadCard();
+    }
 }
 
 // Initialisierung
