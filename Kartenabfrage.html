@@ -21,6 +21,9 @@
                     <option value="strategie">Strategieentwicklung</option>
                     <option value="webapp">Web-Application</option>
                 </select>
+                <select id="subdeck-select" style="display: none;">
+                    <option value="all">Ganzen Stapel lernen</option>
+                </select>
             </div>
             <div id="counter">Stapel: ... Karten übrig</div>
         </div>
@@ -31,15 +34,19 @@
             <button id="show-answer">Antwort anzeigen</button>
         </div>
         <div class="buttons" style="display: none;">
-            <button class="rating" data-value="skip">Skip</button>
-            <button class="rating" data-value="dontknow">Don't know yet</button>
-            <button class="rating" data-value="partial">Partially recalled</button>
-            <button class="rating" data-value="stressful">Stressful</button>
-            <button class="rating" data-value="easy">Easy</button>
+            <button class="rating" data-value="skip" style="background-color: #f06292;">Skip</button>
+            <button class="rating" data-value="dontknow" style="background-color: #ba68c8;">Don't know yet</button>
+            <button class="rating" data-value="partial" style="background-color: #ffb74d;">Partially recalled</button>
+            <button class="rating" data-value="stressful" style="background-color: #4db6ac;">Stressful</button>
+            <button class="rating" data-value="easy" style="background-color: #81c784;">Easy</button>
         </div>
         <div class="completion-message" style="display: none;">
-            <p>Herzlichen Glückwunsch. Du hast den Stapel abgeschlossen.</p>
+            <p>Herzlichen Glückwunsch! Du hast alle Karten in diesem Stapel gelernt.</p>
             <button id="repeat-deck">Stapel wiederholen</button>
+        </div>
+        <div class="footer-controls">
+            <button id="reset-progress">Fortschritt zurücksetzen</button>
+            <button id="edit-deck">Bearbeiten</button>
         </div>
     </div>
     <script src="Kartenabfrage.js"></script>
