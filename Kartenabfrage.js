@@ -1,66 +1,48 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const cardContent = document.getElementById('card-content');
-    const showAnswerButton = document.getElementById('show-answer');
-    const answerButtons = document.getElementById('answer-buttons');
-    const knowItButton = document.getElementById('know-it');
-    const dontKnowItButton = document.getElementById('dont-know-it');
+const decks = {
+    innovation: [
+        { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." },
+        { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." },
+    ],
+    strategie: [
+        { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." },
+        { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." },
+    ],
+    webapp: [
+        { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." },
+        { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." },
+    ]
+};
 
-    let cards = [];
-    let currentIndex = 0;
-    let queue = [];
+let currentDeck = 'innovation';
+let currentIndex = 0;
+let currentCard = decks[currentDeck][currentIndex];
 
-    // Funktion zum Laden der Karten aus der Datenbank
-    async function loadCardsFromDatabase() {
-        try {
-            const response = await fetch('/api/cards');
-            cards = await response.json();
-            shuffleCards();
-            loadCard();
-        } catch (error) {
-            console.error('Fehler beim Laden der Karten:', error);
-        }
-    }
-
-    function shuffleCards() {
-        for (let i = cards.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [cards[i], cards[j]] = [cards[j], cards[i]];
-        }
-    }
-
-    function loadCard() {
-        if (currentIndex >= cards.length) {
-            currentIndex = 0;
-            shuffleCards();
-        }
-        if (queue.length > 0) {
-            cards.splice(currentIndex, 0, queue.shift());
-        }
-        cardContent.innerText = cards[currentIndex].front;
-        showAnswerButton.style.display = 'block';
-        answerButtons.style.display = 'none';
-    }
-
-    function showAnswer() {
-        cardContent.innerText = cards[currentIndex].back;
-        showAnswerButton.style.display = 'none';
-        answerButtons.style.display = 'block';
-    }
-
-    function knowIt() {
-        currentIndex++;
-        loadCard();
-    }
-
-    function dontKnowIt() {
-        queue.push(cards[currentIndex]);
-        currentIndex++;
-        loadCard();
-    }
-
-    showAnswerButton.addEventListener('click', showAnswer);
-    knowItButton.addEventListener('click', knowIt);
-    dontKnowItButton.addEventListener('click', dontKnowIt);
-
-    loadCardsFromDatabase();
+document.getElementById('deck-select').addEventListener('change', (e) => {
+    currentDeck = e.target.value;
+    currentIndex = 0;
+    loadCard();
 });
+
+document.getElementById('show-answer').addEventListener('click', () => {
+    document.getElementById('answer').style.display = 'block';
+});
+
+document.querySelectorAll('.rating').forEach(button => {
+    button.addEventListener('click', (e) => {
+        handleRating(e.target.dataset.value);
+    });
+});
+
+function loadCard() {
+    currentCard = decks[currentDeck][currentIndex];
+    document.getElementById('question').innerText = currentCard.question;
+    document.getElementById('answer').innerText = currentCard.answer;
+    document.getElementById('answer').style.display = 'none';
+}
+
+function handleRating(value) {
+    currentIndex = (currentIndex + 1) % decks[currentDeck].length;
+    loadCard();
+}
+
+loadCard();
