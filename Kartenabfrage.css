@@ -48,7 +48,12 @@ header h2 {
     align-items: center;
 }
 
-#counter, #reset-progress, #edit-deck {
+.header-buttons {
+    display: flex;
+    align-items: center;
+}
+
+#counter {
     font-size: 1.2em;
     color: #0288d1;
     background: #ffffff;
@@ -151,4 +156,5 @@ header h2 {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2em;
+    margin: 0 10px;
 }
