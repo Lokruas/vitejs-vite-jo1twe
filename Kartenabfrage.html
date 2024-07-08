@@ -21,7 +21,7 @@
                     <option value="webapp">Web-Application</option>
                 </select>
             </div>
-            <div class="dropdown" id="subdeck-dropdown">
+            <div class="dropdown" id="subdeck-dropdown" style="display: none;">
                 <label for="subdeck-select">Unterstapel:</label>
                 <select id="subdeck-select">
                     <option value="all">Ganzen Stapel lernen</option>
@@ -41,6 +41,10 @@
             <button class="rating" data-value="partial">Partially recalled</button>
             <button class="rating" data-value="stressful">Stressful</button>
             <button class="rating" data-value="easy">Easy</button>
+        </div>
+        <div class="completion-message" style="display: none;">
+            <p>Herzlichen Glückwunsch. Du hast den Stapel abgeschlossen.</p>
+            <button id="repeat-deck">Stapel wiederholen</button>
         </div>
     </div>
     <script src="Kartenabfrage.js"></script>
