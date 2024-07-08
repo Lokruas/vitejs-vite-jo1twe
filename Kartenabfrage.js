@@ -37,7 +37,7 @@ const decks = {
     }
 };
 
-let currentDeck = 'innovation';
+let currentDeck = '';
 let currentSubDeck = 'all';
 let cardQueue = [];
 let initialCardCount = 0;
@@ -46,8 +46,13 @@ document.getElementById('deck-select').addEventListener('change', (e) => {
     const value = e.target.value;
     if (value) {
         updateSubDeckOptions(value);
+        document.querySelector('.card').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
     } else {
         document.getElementById('subdeck-select').style.display = 'none';
+        document.querySelector('.card').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
+        document.querySelector('.completion-message').style.display = 'none';
     }
 });
 
@@ -76,6 +81,7 @@ document.getElementById('repeat-deck').addEventListener('click', () => {
     loadCard();
     document.querySelector('.completion-message').style.display = 'none';
     document.querySelector('.card').style.display = 'block';
+    document.querySelector('.buttons').style.display = 'none';
 });
 
 document.getElementById('reset-progress').addEventListener('click', () => {
@@ -83,6 +89,9 @@ document.getElementById('reset-progress').addEventListener('click', () => {
     initialCardCount = cardQueue.length;
     updateCounter();
     loadCard();
+    document.querySelector('.completion-message').style.display = 'none';
+    document.querySelector('.card').style.display = 'block';
+    document.querySelector('.buttons').style.display = 'none';
 });
 
 function updateSubDeckOptions(deck) {
@@ -147,6 +156,7 @@ function handleRating(rating) {
         document.getElementById('counter').innerText = `Stapel: ${initialCardCount} Karten übrig`;
         document.querySelector('.completion-message').style.display = 'block';
         document.querySelector('.card').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
     } else {
         updateCounter();
         loadCard();
