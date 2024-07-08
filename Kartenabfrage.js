@@ -47,11 +47,8 @@ document.getElementById('deck-select').addEventListener('change', (e) => {
     currentDeck = e.target.value;
     if (currentDeck) {
         updateSubDeckOptions(currentDeck);
-        document.querySelector('.card').style.display = 'none';
-        document.querySelector('.completion-message').style.display = 'none';
-        document.getElementById('prompt').style.display = 'block';
-        document.querySelector('.buttons').style.display = 'none';
-        document.getElementById('counter').innerText = 'Stapel: - Karten übrig';
+        document.getElementById('prompt').style.display = 'none';
+        loadCards();
     } else {
         document.getElementById('subdeck-select').style.display = 'none';
         document.querySelector('.card').style.display = 'none';
@@ -65,7 +62,6 @@ document.getElementById('deck-select').addEventListener('change', (e) => {
 document.getElementById('subdeck-select').addEventListener('change', (e) => {
     currentSubDeck = e.target.value;
     document.getElementById('prompt').style.display = 'none';
-    updatePath();
     loadCards();
 });
 
@@ -82,23 +78,11 @@ document.querySelectorAll('.rating').forEach(button => {
 });
 
 document.getElementById('repeat-deck').addEventListener('click', () => {
-    cardQueue = [...decks[currentDeck][currentSubDeck]];
-    initialCardCount = cardQueue.length;
-    updateCounter();
-    loadCard();
-    document.querySelector('.completion-message').style.display = 'none';
-    document.querySelector('.card').style.display = 'block';
-    document.querySelector('.buttons').style.display = 'none';
+    resetProgress();
 });
 
 document.getElementById('reset-progress').addEventListener('click', () => {
-    cardQueue = [...decks[currentDeck][currentSubDeck]];
-    initialCardCount = cardQueue.length;
-    updateCounter();
-    loadCard();
-    document.querySelector('.completion-message').style.display = 'none';
-    document.querySelector('.card').style.display = 'block';
-    document.querySelector('.buttons').style.display = 'none';
+    resetProgress();
 });
 
 function updateSubDeckOptions(deck) {
@@ -131,11 +115,12 @@ function loadCards() {
 
 function loadCard() {
     if (cardQueue.length === 0) {
+        document.querySelector('.completion-message').style.display = 'block';
+        document.querySelector('.card').style.display = 'block';
         document.getElementById('question').style.display = 'none';
         document.getElementById('answer').style.display = 'none';
         document.getElementById('show-answer').style.display = 'none';
         document.querySelector('.buttons').style.display = 'none';
-        document.querySelector('.completion-message').style.display = 'block';
     } else {
         document.querySelector('.card').style.display = 'block';
         currentIndex = 0;
@@ -171,6 +156,16 @@ function handleRating(rating) {
         updateCounter();
         loadCard();
     }
+}
+
+function resetProgress() {
+    cardQueue = [...decks[currentDeck][currentSubDeck]];
+    initialCardCount = cardQueue.length;
+    updateCounter();
+    loadCard();
+    document.querySelector('.completion-message').style.display = 'none';
+    document.querySelector('.card').style.display = 'block';
+    document.querySelector('.buttons').style.display = 'none';
 }
 
 // Initialisierung
