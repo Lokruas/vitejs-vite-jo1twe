@@ -41,16 +41,12 @@ let currentDeck = 'innovation';
 let currentSubDeck = 'all';
 let currentIndex = 0;
 let cardQueue = [...decks[currentDeck][currentSubDeck]];
+let initialCardCount = cardQueue.length;
 
 document.getElementById('deck-select').addEventListener('change', (e) => {
     currentDeck = e.target.value;
     updateSubDeckOptions();
-    currentSubDeck = 'all';
-    updatePath();
-    currentIndex = 0;
-    cardQueue = [...decks[currentDeck][currentSubDeck]];
-    updateCounter();
-    loadCard();
+    document.getElementById('subdeck-dropdown').style.display = 'block';
 });
 
 document.getElementById('subdeck-select').addEventListener('change', (e) => {
@@ -58,6 +54,7 @@ document.getElementById('subdeck-select').addEventListener('change', (e) => {
     updatePath();
     currentIndex = 0;
     cardQueue = [...decks[currentDeck][currentSubDeck]];
+    initialCardCount = cardQueue.length;
     updateCounter();
     loadCard();
 });
@@ -74,28 +71,34 @@ document.querySelectorAll('.rating').forEach(button => {
     });
 });
 
+document.getElementById('repeat-deck').addEventListener('click', () => {
+    cardQueue = [...decks[currentDeck][currentSubDeck]];
+    initialCardCount = cardQueue.length;
+    currentIndex = 0;
+    updateCounter();
+    loadCard();
+    document.querySelector('.completion-message').style.display = 'none';
+});
+
 function updateSubDeckOptions() {
     const subDeckSelect = document.getElementById('subdeck-select');
-    subDeckSelect.innerHTML = `<option value="all">Ganzen Stapel lernen</option>`;
-    const subDecks = Object.keys(decks[currentDeck]);
-    subDecks.forEach(subDeck => {
+    subDeckSelect.innerHTML = '<option value="all">Ganzen Stapel lernen</option>';
+    for (const subDeck in decks[currentDeck]) {
         if (subDeck !== 'all') {
             const option = document.createElement('option');
             option.value = subDeck;
-            option.innerText = `Unterstapel ${subDeck}`;
+            option.innerText = subDeck.charAt(0).toUpperCase() + subDeck.slice(1);
             subDeckSelect.appendChild(option);
         }
-    });
+    }
 }
 
 function updatePath() {
-    const path = `Pfad: ${currentDeck} > ${currentSubDeck === 'all' ? 'Ganzen Stapel lernen' : `Unterstapel ${currentSubDeck}`}`;
-    document.getElementById('path').innerText = path;
+    document.getElementById('path').innerText = `Pfad: ${currentDeck} > ${currentSubDeck}`;
 }
 
 function updateCounter() {
-    const counter = `Stapel: ${cardQueue.length} Karten übrig`;
-    document.getElementById('counter').innerText = counter;
+    document.getElementById('counter').innerText = `Stapel: ${cardQueue.length} Karten übrig`;
 }
 
 function loadCard() {
@@ -104,6 +107,7 @@ function loadCard() {
         document.getElementById('answer').innerText = '';
         document.getElementById('show-answer').style.display = 'none';
         document.querySelector('.buttons').style.display = 'none';
+        document.querySelector('.completion-message').style.display = 'block';
     } else {
         document.getElementById('question').innerText = cardQueue[currentIndex].question;
         document.getElementById('answer').innerText = cardQueue[currentIndex].answer;
@@ -115,10 +119,16 @@ function loadCard() {
 
 function handleRating(rating) {
     const card = cardQueue.splice(currentIndex, 1)[0];
-    if (rating !== 'easy') {
+    if (rating === 'skip' || rating === 'dontknow') {
         cardQueue.push(card);
+    } else {
+        if (rating === 'easy') {
+            cardQueue.push(card);
+        } else {
+            cardQueue.splice(currentIndex + 1, 0, card);
+        }
+        initialCardCount--;
     }
-    currentIndex = 0;
     updateCounter();
     loadCard();
 }
