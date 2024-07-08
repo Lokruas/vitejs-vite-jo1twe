@@ -30,23 +30,30 @@ header h2 {
 .container {
     text-align: center;
     width: 80%;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
-.dropdowns {
+.header-controls {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    background: #e1f5fe;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .dropdown {
-    flex: 1;
-    margin: 0 10px;
+    margin-right: 20px;
 }
 
 #counter {
-    margin: 0 10px;
-    align-self: center;
+    font-size: 1.2em;
+    color: #0288d1;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #0288d1;
 }
 
 #path {
