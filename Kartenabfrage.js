@@ -122,9 +122,11 @@ function loadCard() {
         document.getElementById('show-answer').style.display = 'none';
         document.querySelector('.buttons').style.display = 'none';
     } else {
+        document.querySelector('.completion-message').style.display = 'none'; // Hide completion message
         document.querySelector('.card').style.display = 'block';
         currentIndex = 0;
         document.getElementById('question').innerText = cardQueue[currentIndex].question;
+        document.getElementById('question').style.display = 'block'; // Ensure the question is visible
         document.getElementById('answer').innerText = cardQueue[currentIndex].answer;
         document.getElementById('answer').style.display = 'none';
         document.getElementById('show-answer').style.display = 'block';
