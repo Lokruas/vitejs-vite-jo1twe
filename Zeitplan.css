@@ -84,15 +84,6 @@ button.animated-btn:hover {
     border-radius: 5px;
 }
 
-.progress-bar .timer {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.9em;
-    color: black;
-}
-
 .modal {
     display: none;
     position: fixed;
