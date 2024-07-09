@@ -123,7 +123,7 @@ button.animated-btn:hover {
     font-weight: bold;
 }
 
-close:hover,
+.close:hover,
 .close:focus {
     color: #000;
     text-decoration: none;
