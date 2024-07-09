@@ -3,64 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karten hinzufügen</title>
-    <link rel="stylesheet" href="Kartenhinzufuegen.css">
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
+    <link rel="stylesheet" href="Kartenhinzufügen.css">
+    <style>
+        .card-side-container {
+            position: relative;
+        }
+        .card-side {
+            position: relative;
+            z-index: 10;
+            padding: 10px;
+            background: white;
+        }
+        .drawCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-    <header>
+    <div class="header">
         <h1>Memorify</h1>
-        <h2>Dein Kompass im Labyrinth des Lernens</h2>
-    </header>
-    <div class="container">
-        <div class="header-controls">
-            <div class="dropdown">
-                <label for="deck-select">Stapel:</label>
-                <select id="deck-select">
-                    <option value="">-- Wähle einen Stapel --</option>
-                    <option value="innovation">Innovation und Projektmanagement</option>
-                    <option value="strategie">Strategieentwicklung</option>
-                    <option value="webapp">Web-Application</option>
-                </select>
-                <select id="subdeck-select" style="display: none;">
-                    <option value="all">Ganzen Stapel lernen</option>
-                    <option value="unterstapel1">Unterstapel 1</option>
-                    <option value="unterstapel2">Unterstapel 2</option>
-                </select>
+        <p>Dein Kompass im Labyrinth des Lernens</p>
+    </div>
+
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="color-tools">
+                <div class="color-picker">
+                    <label for="textColor">Textfarbe</label>
+                    <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
+                </div>
+                <div class="color-picker">
+                    <label for="highlightColor">Hintergrundfarbe</label>
+                    <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
+                </div>
             </div>
-            <button id="reset-progress">Fortschritt zurücksetzen</button>
-            <div id="counter">Stapel: - Karten übrig</div>
+            <button onclick="execCmd('bold')"><b>B</b></button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
+                <option value="1">8pt</option>
+                <option value="2">10pt</option>
+                <option value="3" selected>12pt</option>
+                <option value="4">14pt</option>
+                <option value="5">18pt</option>
+                <option value="6">24pt</option>
+                <option value="7">36pt</option>
+            </select>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
+            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button onclick="execCmd('removeFormat')">Format entfernen</button>
+            <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImages(this)">
+            <button onclick="toggleDrawMode()">Stift</button>
+            <button onclick="toggleEraserMode()">Radiergummi</button>
+            <button onclick="execCmd('indent')">Einschub</button>
+            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
         </div>
-        <div id="path">Pfad: </div>
-        <div class="card">
-            <div id="prompt">Bitte wähle einen Stapel aus, den du lernen willst.</div>
-            <div id="question" style="display: none;">Frage wird hier angezeigt</div>
-            <div id="answer" style="display: none;">Antwort wird hier angezeigt</div>
-            <button id="show-answer" style="display: none;">Antwort anzeigen</button>
-            <div class="completion-message" style="display: none;">
-                <p>Herzlichen Glückwunsch! Du hast alle Karten in diesem Stapel gelernt.</p>
-                <button id="repeat-deck">Stapel wiederholen</button>
-            </div>
-        </div>
-        <div class="buttons" style="display: none;">
-            <button class="rating" data-value="skip" style="background-color: #64b5f6;">Skip</button>
-            <button class="rating" data-value="dontknow" style="background-color: #42a5f5;">Don't know yet</button>
-            <button class="rating" data-value="partial" style="background-color: #2196f3;">Partially recalled</button>
-            <button class="rating" data-value="stressful" style="background-color: #1e88e5;">Stressful</button>
-            <button class="rating" data-value="easy" style="background-color: #1976d2;">Easy</button>
-        </div>
-        <div class="add-card">
-            <h3>Neue Karte hinzufügen</h3>
-            <label for="new-question">Frage:</label>
-            <input type="text" id="new-question">
-            <label for="new-answer">Antwort:</label>
-            <input type="text" id="new-answer">
-            <button id="add-card">Karte hinzufügen</button>
-        </div>
-        <div class="card-history">
-            <h3>Kartenhistorie</h3>
-            <div id="card-history-container"></div>
+        <div class="toolbar-center">
+            <select id="stackSelect">
+                <option value="default">Stapelwahl</option>
+                <!-- Weitere Optionen können hier hinzugefügt werden -->
+            </select>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
+            <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
         </div>
     </div>
-    <script src="Kartenhinzufuegen.js"></script>
+
+    <div class="container">
+        <div class="card-editor">
+            <div class="card-side-container" id="frontContainer">
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
+                <canvas class="drawCanvas" id="frontCanvas"></canvas>
+            </div>
+            <div class="card-side-container" id="backContainer">
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
+                <canvas class="drawCanvas" id="backCanvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="history-scroll-container" id="historyContainer">
+            <!-- Karten werden hier dynamisch eingefügt -->
+        </div>
+    </div>
+
+    <div class="color-selector" id="colorSelector">
+        <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
+        <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
+        <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
+        <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
+    </div>
+
+    <script src="Kartenhinzufügen.js"
+        ></script>
 </body>
 </html>
