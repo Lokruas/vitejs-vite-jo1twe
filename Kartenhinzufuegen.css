@@ -95,12 +95,11 @@ body {
     border: 1px solid #ccc;
     padding: 10px;
     background-color: white;
-    overflow: auto;
+    overflow-y: auto;
     height: 100%;
-}
-
-.card-side:focus {
-    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: text;
+    font-size: 16px;
 }
 
 .card-side.placeholder {
@@ -117,50 +116,58 @@ body {
 }
 
 .history-scroll-container {
-    display: none;
+    display: flex;
+    overflow-x: auto;
     width: 100%;
     max-width: 800px;
-    max-height: 300px;
-    overflow-y: auto;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
+    padding-bottom: 10px;
 }
 
 .history-card {
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 10px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
     cursor: pointer;
-    background-color: #f9f9f9;
     position: relative;
+    flex-shrink: 0;
+    width: 150px;
+    text-align: center;
 }
 
 .history-card .delete-button {
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: red;
-    border: none;
+    background: red;
     color: white;
-    font-size: 12px;
+    border: none;
     cursor: pointer;
+    font-size: 16px;
+}
+
+.front-preview {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
 }
 
 .color-selector {
     display: flex;
     justify-content: center;
-    padding: 10px;
+    margin-top: 20px;
 }
 
 .color-selector button {
     width: 30px;
     height: 30px;
     border: none;
-    margin: 0 5px;
     cursor: pointer;
+    margin: 0 5px;
 }
 
-.placeholder {
-    color: #999;
+.color-tools {
+    display: flex;
+    align-items: center;
 }
