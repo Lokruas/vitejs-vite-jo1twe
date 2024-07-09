@@ -70,10 +70,26 @@ button.animated-btn:hover {
     border-radius: 5px;
     margin: 5px 0;
     padding: 5px;
+    position: relative;
 }
 
 .progress-bar span {
     font-size: 1em;
+    color: black;
+}
+
+.progress-bar .progress {
+    height: 10px;
+    background: #0052a3;
+    border-radius: 5px;
+}
+
+.progress-bar .timer {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
     color: black;
 }
 
@@ -107,7 +123,7 @@ button.animated-btn:hover {
     font-weight: bold;
 }
 
-.close:hover,
+close:hover,
 .close:focus {
     color: #000;
     text-decoration: none;
@@ -121,7 +137,8 @@ label {
 }
 
 input[type="text"],
-select {
+select,
+input[type="date"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -143,6 +160,13 @@ select {
 .fc .fc-daygrid-day-number,
 .fc .fc-daygrid-day-events {
     color: black;
+}
+
+.fc-event-start,
+.fc-event-end,
+.fc-event-milestone {
+    background-color: #0052a3;
+    border-color: #0052a3;
 }
 
 #date-range,
