@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayDailyCards(dailyCards) {
         const start = new Date(startDate);
+        calendar.removeAllEvents();
         dailyCards.forEach((cards, index) => {
             const date = new Date(start);
             date.setDate(start.getDate() + index);
@@ -129,8 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.onclick = function(event) {
         if (event.target == createModal) {
-            createModal.style.display = 'none';
-            resetForm();
+            if (confirm("Möchtest du wirklich abbrechen? Alle neuen Änderungen gehen verloren.")) {
+                createModal.style.display = 'none';
+                resetForm();
+            }
         }
         if (event.target == editModal) {
             editModal.style.display = 'none';
@@ -159,8 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     cancelPlanBtn.onclick = function() {
-        createModal.style.display = 'none';
-        resetForm();
+        if (confirm("Möchtest du wirklich abbrechen? Alle neuen Änderungen gehen verloren.")) {
+            createModal.style.display = 'none';
+            resetForm();
+        }
     };
 
     setMilestoneBtn.onclick = function() {
