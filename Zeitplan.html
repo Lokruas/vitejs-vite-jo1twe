@@ -22,9 +22,9 @@
             <span class="close">&times;</span>
             <label for="stack-select">Wähle einen Stapel:</label>
             <select id="stack-select">
-                <option value="innovation-projektmanagement">Innovation und Projektmanagement (30 Karten)</option>
-                <option value="strategieentwicklung">Strategieentwicklung (40 Karten)</option>
-                <option value="web-app">Web-App (50 Karten)</option>
+                <option value="innovation-projektmanagement">Innovation und Projektmanagement</option>
+                <option value="strategieentwicklung">Strategieentwicklung</option>
+                <option value="web-app">Web-App</option>
             </select>
             <h3>Wähle den Zeitraum für deinen Zeitplan:</h3>
             <div id="calendar"></div>
@@ -42,14 +42,10 @@
             <span class="close">&times;</span>
             <label for="select-plan">Wähle einen Zeitplan:</label>
             <select id="select-plan"></select>
+            <button id="edit-selected-plan-btn">Zeitplan bearbeiten</button>
             <div id="edit-options" class="hidden">
                 <label for="edit-plan-name">Zeitplan Name:</label>
                 <input type="text" id="edit-plan-name">
-                <label for="edit-start-date">Neuer Startzeitpunkt:</label>
-                <input type="date" id="edit-start-date">
-                <label for="edit-end-date">Neuer Endzeitpunkt:</label>
-                <input type="date" id="edit-end-date">
-                <button class="edit-option" data-action="edit">Zeitplan bearbeiten</button>
                 <button class="edit-option" data-action="copy">Zeitplan kopieren</button>
                 <button class="edit-option" data-action="reset">Fortschritt zurücksetzen</button>
                 <button class="edit-option delete" data-action="delete">Löschen</button>
