@@ -1,45 +1,166 @@
-/* Allgemeine Layout-Einstellungen */
-.container {
-    width: 80%;
-    margin: 0 auto;
+/* Reset Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-.header-controls, .card, .add-card, .card-history {
-    margin-bottom: 20px;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
 }
 
-.dropdown {
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1a73e8;
+    color: white;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.header p {
+    margin: 5px 0 0;
+    font-size: 16px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #1a73e8;
+    color: white;
+}
+
+.toolbar-left {
     display: flex;
     align-items: center;
 }
 
-.dropdown label {
+.color-picker {
     margin-right: 10px;
 }
 
-.dropdown select {
-    margin-right: 20px;
+.toolbar button {
+    background-color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.buttons button {
-    margin: 5px;
+.toolbar select {
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 16px;
 }
 
-/* Kartenhistorie spezifische Einstellungen */
-.card-history {
-    overflow-x: auto;
-    white-space: nowrap;
+.toolbar .toolbar-add-button {
+    background-color: #fbbc05;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-#card-history-container {
+.container {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-.card-history-item {
-    margin: 5px;
-    padding: 10px;
+.card-editor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.card-side-container {
+    position: relative;
+    margin: 10px;
+    width: 100%;
+    max-width: 350px;
+    height: 200px;
+}
+
+.card-side {
     border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+}
+
+.card-side:focus {
+    outline: none;
+}
+
+.card-side.placeholder {
+    color: #999;
+}
+
+.drawCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.history-scroll-container {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.history-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
     background-color: #f9f9f9;
+    position: relative;
+}
+
+.history-card .delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    border: none;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.color-selector {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.color-selector button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.placeholder {
+    color: #999;
 }
