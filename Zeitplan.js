@@ -98,6 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayDailyCards(dailyCards) {
         const start = new Date(startDate);
         calendar.removeAllEvents();
+        addCalendarEvent(startDate, 'Startzeitpunkt', 'event-start');
+        addCalendarEvent(endDate, 'Endzeitpunkt', 'event-end');
+        milestones.forEach(milestone => {
+            addCalendarEvent(milestone.date, 'Zwischenziel', 'event-milestone');
+        });
         dailyCards.forEach((cards, index) => {
             const date = new Date(start);
             date.setDate(start.getDate() + index);
@@ -122,9 +127,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeButtons.forEach(function(button) {
         button.onclick = function() {
-            createModal.style.display = 'none';
-            editModal.style.display = 'none';
-            resetForm();
+            if (button.closest('#create-modal')) {
+                if (confirm("Möchtest du wirklich abbrechen? Alle neuen Änderungen gehen verloren.")) {
+                    createModal.style.display = 'none';
+                    resetForm();
+                }
+            } else {
+                editModal.style.display = 'none';
+            }
         }
     });
 
@@ -216,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             progress.classList.add('progress');
             progress.style.width = `${progressPercent}%`;
             progressBar.appendChild(progress);
+
             progressContainer.appendChild(progressBar);
         }
     }
