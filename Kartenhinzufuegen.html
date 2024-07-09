@@ -22,6 +22,14 @@
             z-index: 5;
             pointer-events: none;
         }
+        .history-scroll-container {
+            display: flex;
+            overflow-x: auto;
+        }
+        .history-card {
+            flex: 0 0 auto;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -70,7 +78,7 @@
             <button onclick="toggleDrawMode()">Stift</button>
             <button onclick="toggleEraserMode()">Radiergummi</button>
             <button onclick="execCmd('indent')">Einschub</button>
-            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
+            <button onclick="execCmd('outdent')">Rückschub</button>
         </div>
         <div class="toolbar-center">
             <select id="stackSelect" onchange="updateSubstackOptions()">
