@@ -3,120 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
+    <title>Karten Hinzufügen</title>
     <link rel="stylesheet" href="Kartenhinzufuegen.css">
-    <style>
-        .card-side-container {
-            position: relative;
-        }
-        .card-side {
-            position: relative;
-            z-index: 10;
-            padding: 10px;
-            background: white;
-        }
-        .drawCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 5;
-            pointer-events: none;
-        }
-        .history-scroll-container {
-            display: flex;
-            overflow-x: auto;
-        }
-        .history-card {
-            flex: 0 0 auto;
-            margin-right: 10px;
-        }
-    </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Memorify</h1>
-        <p>Dein Kompass im Labyrinth des Lernens</p>
-    </div>
-
+    <header class="header">
+        <h1>Karten Hinzufügen</h1>
+        <p>Erstellen und bearbeiten Sie Ihre Lernkarten</p>
+    </header>
     <div class="toolbar">
         <div class="toolbar-left">
-            <div class="color-tools">
-                <div class="color-picker">
-                    <label for="textColor">Textfarbe</label>
-                    <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
-                </div>
-                <div class="color-picker">
-                    <label for="highlightColor">Hintergrundfarbe</label>
-                    <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
-                </div>
-            </div>
-            <button onclick="execCmd('bold')"><b>B</b></button>
-            <button onclick="execCmd('italic')"><i>I</i></button>
-            <button onclick="execCmd('underline')"><u>U</u></button>
-            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
-                <option value="Arial">Arial</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Verdana">Verdana</option>
-            </select>
-            <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
-                <option value="1">8pt</option>
-                <option value="2">10pt</option>
-                <option value="3" selected>12pt</option>
-                <option value="4">14pt</option>
-                <option value="5">18pt</option>
-                <option value="6">24pt</option>
-                <option value="7">36pt</option>
-            </select>
-            <button onclick="execCmd('insertOrderedList')">1.</button>
-            <button onclick="execCmd('insertUnorderedList')">•</button>
-            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
-            <button onclick="execCmd('removeFormat')">Format entfernen</button>
-            <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
-            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImages(this)">
-            <button onclick="toggleDrawMode()">Stift</button>
-            <button onclick="toggleEraserMode()">Radiergummi</button>
-            <button onclick="execCmd('indent')">Einschub</button>
-            <button onclick="execCmd('outdent')">Rückschub</button>
-        </div>
-        <div class="toolbar-center">
             <select id="stackSelect" onchange="updateSubstackOptions()">
-                <option value="default">Stapelwahl</option>
-                <option value="innovation">Innovation und Projektmanagement</option>
-                <option value="strategie">Strategieentwicklung</option>
+                <option value="">Stapel auswählen</option>
+                <option value="innovation">Innovation</option>
+                <option value="strategie">Strategie</option>
                 <option value="webapp">Web-App</option>
             </select>
             <select id="substackSelect" style="display: none;"></select>
-            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
-            <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
+        </div>
+        <div class="toolbar-center">
+            <button class="toolbar-add-button" onclick="addCard()">Karte hinzufügen</button>
         </div>
     </div>
-
     <div class="container">
         <div class="card-editor">
-            <div class="card-side-container" id="frontContainer">
-                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
-                <canvas class="drawCanvas" id="frontCanvas"></canvas>
+            <div class="card-side-container">
+                <div class="card-side" contenteditable="true" data-placeholder="Vorderseite der Karte"></div>
             </div>
-            <div class="card-side-container" id="backContainer">
-                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
-                <canvas class="drawCanvas" id="backCanvas"></canvas>
+            <div class="card-side-container">
+                <div class="card-side" contenteditable="true" data-placeholder="Rückseite der Karte"></div>
             </div>
         </div>
-        
-        <div class="history-scroll-container" id="historyContainer">
-            <!-- Karten werden hier dynamisch eingefügt -->
-        </div>
+        <div class="history-scroll-container" id="historyContainer"></div>
     </div>
-
-    <div class="color-selector" id="colorSelector">
-        <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
-        <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
-        <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
-        <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
-    </div>
-
     <script src="Kartenhinzufuegen.js"></script>
 </body>
 </html>
