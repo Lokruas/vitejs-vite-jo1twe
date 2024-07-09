@@ -1,4 +1,4 @@
-/* Add your CSS styles here */
+/* Allgemeine Layout-Einstellungen */
 .container {
     width: 80%;
     margin: 0 auto;
@@ -25,12 +25,21 @@
     margin: 5px;
 }
 
+/* Kartenhistorie spezifische Einstellungen */
 .card-history {
     overflow-x: auto;
+    white-space: nowrap;
 }
 
 #card-history-container {
     display: flex;
     flex-direction: row-reverse;
-    white-space: nowrap;
+}
+
+.card-history-item {
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
 }
