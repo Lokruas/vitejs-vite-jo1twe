@@ -1,158 +1,105 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom right, #88B6E0, #6F9BBE);
-    color: white;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
-.header {
+header {
+    background: #007BFF;
+    color: #fff;
     text-align: center;
-    padding: 20px 0;
-    background: url('header-background.png') no-repeat center center;
-    background-size: cover;
-    color: white;
-    border-bottom: 4px solid #004a86;
-}
-
-.header h1 {
-    font-size: 48px;
-    margin: 0;
-}
-
-.header p {
-    font-size: 18px;
-    margin: 10px 0 0 0;
-}
-
-.toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #003e73;
-    margin: 20px auto;
-    width: 80%;
-    border-radius: 8px;
-}
-
-.toolbar-left {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
-.color-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.toolbar-center {
-    flex-grow: 1;
-    text-align: center;
-}
-
-.toolbar button,
-.toolbar .toolbar-add-button,
-.toolbar select {
-    margin: 5px;
-    padding: 8px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.toolbar .toolbar-add-button {
-    background: linear-gradient(to bottom, #0066cc, #004a99);
-    font-size: 14px;
-    padding: 10px 20px;
-}
-
-.color-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.color-picker label {
-    font-size: 10px;
-    color: #000;
+    padding: 10px 0;
 }
 
 .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dropdown {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background: #fafafa;
 }
 
 .card-editor {
     display: flex;
-    justify-content: space-between;
-    width: 70%;
-    margin-bottom: 20px;
-}
-
-.card-side-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 48%;
-    color: black;
-    margin: 10px;
-}
-
-.card-side {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    color: black;
-    min-height: 200px;
-    overflow: auto;
-    position: relative;
-}
-
-.card-side.placeholder::before {
-    content: attr(data-placeholder);
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #888;
-    pointer-events: none;
-}
-
-.history-scroll-container {
-    width: 70%;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.color-selector {
-    display: flex;
     gap: 10px;
-    justify-content: center;
+    flex-direction: column;
     margin-top: 20px;
 }
 
-.color-selector button {
-    width: 30px;
-    height: 30px;
+.card-side {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 100px;
+    background: #fff;
+    overflow: auto;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.rating {
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 50%;
+    color: #fff;
     cursor: pointer;
+}
+
+#counter, #path {
+    margin: 10px 0;
+}
+
+.history-scroll-container {
+    width: 100%;
+    max-height: 200px;
+    overflow-x: auto;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.card-history {
+    min-width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
