@@ -1,0 +1,36 @@
+/* Add your CSS styles here */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.header-controls, .card, .add-card, .card-history {
+    margin-bottom: 20px;
+}
+
+.dropdown {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown label {
+    margin-right: 10px;
+}
+
+.dropdown select {
+    margin-right: 20px;
+}
+
+.buttons button {
+    margin: 5px;
+}
+
+.card-history {
+    overflow-x: auto;
+}
+
+#card-history-container {
+    display: flex;
+    flex-direction: row-reverse;
+    white-space: nowrap;
+}
