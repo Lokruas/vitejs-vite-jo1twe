@@ -1,191 +1,327 @@
-const decks = {
-    innovation: {
-        all: [
-            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." },
-            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
-        ],
-        unterstapel1: [
-            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." }
-        ],
-        unterstapel2: [
-            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
-        ]
-    },
-    strategie: {
-        all: [
-            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." },
-            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
-        ],
-        unterstapel1: [
-            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." }
-        ],
-        unterstapel2: [
-            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
-        ]
-    },
-    webapp: {
-        all: [
-            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." },
-            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
-        ],
-        unterstapel1: [
-            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." }
-        ],
-        unterstapel2: [
-            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
-        ]
-    }
-};
-
-let currentDeck = '';
-let currentSubDeck = 'all';
-let cardQueue = [];
-let currentIndex = 0;
-let initialCardCount = 0;
-
-document.getElementById('deck-select').addEventListener('change', (e) => {
-    currentDeck = e.target.value;
-    if (currentDeck) {
-        updateSubDeckOptions(currentDeck);
-        document.getElementById('prompt').style.display = 'none';
-        loadCards();
-        updateCardHistory();
-    } else {
-        document.getElementById('subdeck-select').style.display = 'none';
-        document.querySelector('.card').style.display = 'none';
-        document.querySelector('.buttons').style.display = 'none';
-        document.querySelector('.completion-message').style.display = 'none';
-        document.getElementById('prompt').style.display = 'block';
-        document.getElementById('counter').innerText = 'Stapel: - Karten übrig';
-    }
-});
-
-document.getElementById('subdeck-select').addEventListener('change', (e) => {
-    currentSubDeck = e.target.value;
-    document.getElementById('prompt').style.display = 'none';
-    loadCards();
-    updateCardHistory();
-});
-
-document.getElementById('show-answer').addEventListener('click', () => {
-    document.getElementById('answer').style.display = 'block';
-    document.getElementById('show-answer').style.display = 'none';
-    document.querySelector('.buttons').style.display = 'flex';
-});
-
-document.querySelectorAll('.rating').forEach(button => {
-    button.addEventListener('click', (e) => {
-        handleRating(e.target.getAttribute('data-value'));
+document.addEventListener('DOMContentLoaded', function () {
+    const cardSides = document.querySelectorAll('.card-side');
+    cardSides.forEach(side => {
+        side.addEventListener('focus', removePlaceholder);
+        side.addEventListener('blur', addPlaceholder);
     });
+
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let isErasing = false;
+    let drawColor = 'black';
+
+    // Initialisieren des Canvas zum Zeichnen
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    document.getElementById('colorSelector').addEventListener('click', function (event) {
+        if (event.target.tagName === 'BUTTON') {
+            changeDrawColor(event.target.style.backgroundColor);
+        }
+    });
+
+    document.getElementById('imageUpload').addEventListener('change', function () {
+        uploadImages(this);
+    });
+
+    loadHistory(); // Historie beim Laden der Seite laden
+    window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
+
+    // Toolbar-Buttons initialisieren
+    initializeToolbarButtons();
 });
 
-document.getElementById('repeat-deck').addEventListener('click', () => {
-    resetProgress();
-});
-
-document.getElementById('reset-progress').addEventListener('click', () => {
-    resetProgress();
-});
-
-document.getElementById('add-card').addEventListener('click', () => {
-    addCard();
-});
-
-function updateSubDeckOptions(deck) {
-    currentDeck = deck;
-    currentSubDeck = 'all';
-    const subdeckSelect = document.getElementById('subdeck-select');
-    subdeckSelect.innerHTML = `
-        <option value="all">Ganzen Stapel lernen</option>
-        <option value="unterstapel1">Unterstapel 1</option>
-        <option value="unterstapel2">Unterstapel 2</option>
-    `;
-    subdeckSelect.style.display = 'block';
-}
-
-function loadCards() {
-    if (!currentDeck) return;
-    cardQueue = JSON.parse(JSON.stringify(decks[currentDeck][currentSubDeck]));
-    initialCardCount = cardQueue.length;
-    currentIndex = 0;
-    if (cardQueue.length > 0) {
-        displayNextCard();
-    } else {
-        displayCompletionMessage();
-    }
-    updateCounter();
-    updatePath();
-}
-
-function displayNextCard() {
-    if (currentIndex < cardQueue.length) {
-        document.getElementById('question').innerText = cardQueue[currentIndex].question;
-        document.getElementById('answer').innerText = cardQueue[currentIndex].answer;
-        document.getElementById('question').style.display = 'block';
-        document.getElementById('answer').style.display = 'none';
-        document.getElementById('show-answer').style.display = 'block';
-        document.querySelector('.buttons').style.display = 'none';
-        document.querySelector('.completion-message').style.display = 'none';
-    } else {
-        displayCompletionMessage();
-    }
-}
-
-function handleRating(rating) {
-    currentIndex++;
-    if (currentIndex < cardQueue.length) {
-        displayNextCard();
-    } else {
-        displayCompletionMessage();
-    }
-}
-
-function displayCompletionMessage() {
-    document.querySelector('.completion-message').style.display = 'block';
-    document.getElementById('question').style.display = 'none';
-    document.getElementById('answer').style.display = 'none';
-    document.getElementById('show-answer').style.display = 'none';
-    document.querySelector('.buttons').style.display = 'none';
-    updateCounter();
-}
-
-function resetProgress() {
-    loadCards();
-    updateCardHistory();
+// HTML-Funktionen
+function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
 }
 
 function addCard() {
-    const question = document.getElementById('new-question').value;
-    const answer = document.getElementById('new-answer').value;
-    if (question && answer) {
-        const newCard = { question, answer };
-        decks[currentDeck][currentSubDeck].push(newCard);
-        loadCards();
-        updateCardHistory();
-        document.getElementById('new-question').value = '';
-        document.getElementById('new-answer').value = '';
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+
+    let newCard = {
+        front: frontContent,
+        back: backContent
+    };
+
+    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
+    renderHistory(); // Historie rendern
+
+    // Inhalt der Textfelder zurücksetzen
+    document.getElementById('front').innerHTML = '';
+    document.getElementById('back').innerHTML = '';
+}
+
+function renderHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+    history.forEach((entry, index) => {
+        const historyCard = document.createElement('div');
+        historyCard.className = 'history-card';
+        historyCard.innerHTML = 
+            <div><strong>Karte ${index + 1}</strong></div>
+            <div class="front-preview">${entry.front}</div>
+            <button class="delete-button" onclick="deleteCard(event, this)">×</button>
+        ;
+        historyCard.onclick = function() {
+            document.getElementById('front').innerHTML = entry.front;
+            document.getElementById('back').innerHTML = entry.back;
+            checkPlaceholders();
+        };
+
+        historyContainer.appendChild(historyCard);
+    });
+
+    updateHistoryScroll();
+    updateHistoryVisibility();
+}
+
+function toggleHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
+}
+
+function removePlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === target.dataset.placeholder) {
+        target.classList.remove('placeholder');
+        target.textContent = '';
     }
 }
 
-function updateCardHistory() {
-    const historyContainer = document.getElementById('card-history-container');
-    historyContainer.innerHTML = '';
-    decks[currentDeck][currentSubDeck].forEach(card => {
-        const cardElement = document.createElement('div');
-        cardElement.classList.add('card-history-item');
-        cardElement.innerHTML = `
-            <div><strong>Frage:</strong> ${card.question}</div>
-            <div><strong>Antwort:</strong> ${card.answer}</div>
-        `;
-        historyContainer.appendChild(cardElement);
+function addPlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === '') {
+        target.classList.add('placeholder');
+        target.textContent = target.dataset.placeholder;
+    }
+}
+
+function uploadImages(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.draggable = false;
+            img.style.resize = 'both';
+            img.style.overflow = 'auto';
+            document.getElementById('front').appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+let drawMode = false;
+
+function toggleDrawMode() {
+    drawMode = !drawMode;
+    const canvas = document.getElementById('drawCanvas');
+    canvas.style.pointerEvents = drawMode ? 'auto' : 'none';
+    isErasing = false;
+    canvas.style.zIndex = drawMode ? 1 : -1;
+}
+
+function toggleEraserMode() {
+    isErasing = !isErasing;
+    const canvas = document.getElementById('drawCanvas');
+    canvas.style.pointerEvents = isErasing ? 'auto' : 'none';
+    canvas.style.zIndex = isErasing ? 1 : -1;
+    drawMode = false;
+}
+
+function changeDrawColor(color) {
+    drawColor = color;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = drawColor;
+}
+
+function startDrawing(event) {
+    if (drawMode || isErasing) {
+        isDrawing = true;
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    }
+}
+
+function draw(event) {
+    if (!isDrawing) return;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    if (drawMode) {
+        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        ctx.stroke();
+    } else if (isErasing) {
+        ctx.clearRect(event.clientX - canvas.offsetLeft - 10, event.clientY - canvas.offsetTop - 10, 20, 20);
+    }
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.closePath();
+}
+
+function resizeCanvas() {
+    const canvas = document.getElementById('drawCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+// Vorhandene Kartenhistorie
+let history = [];
+
+function saveToHistory() {
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
+    history.push({ front: frontContent, back: backContent });
+    renderHistory();
+}
+
+function updateHistoryScroll() {
+    const historyContainer = document.getElementById('historyContainer');
+    if (historyContainer.scrollWidth > historyContainer.clientWidth) {
+        historyContainer.style.overflowX = 'scroll';
+    } else {
+        historyContainer.style.overflowX = 'hidden';
+    }
+}
+
+function saveHistory() {
+    localStorage.setItem('cardsHistory', JSON.stringify(history));
+}
+
+function loadHistory() {
+    const savedHistory = localStorage.getItem('cardsHistory');
+    if (savedHistory) {
+        history = JSON.parse(savedHistory);
+        renderHistory();
+    }
+}
+
+function deleteCard(event, button) {
+    event.stopPropagation();
+    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
+    if (confirmed) {
+        const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
+        history.splice(cardIndex, 1);
+        renderHistory();
+    }
+}
+
+function initializeToolbarButtons() {
+    document.querySelector('.toolbar').insertAdjacentHTML('beforeend', 
+        <button data-command="justifyLeft">Links</button>
+        <button data-command="justifyCenter">Zentrieren</button>
+        <button data-command="justifyRight">Rechts</button>
+        <button data-command="justifyFull">Blocksatz</button>
+        <button data-command="insertImage">Bild</button>
+        <button data-command="justifyLeft" class="indent-button">Einzug verkleinern</button>
+    );
+
+    document.querySelector('.toolbar').addEventListener('click', function (event) {
+        const command = event.target.getAttribute('data-command');
+        if (command === 'justifyLeft') {
+            event.preventDefault();
+            document.execCommand('outdent'); // Einzug verkleinern
+        } else {
+            execCmd(command);
+        }
     });
 }
 
-function updateCounter() {
-    document.getElementById('counter').innerText = `Stapel: ${initialCardCount - currentIndex} Karten übrig`;
+function checkPlaceholders() {
+    const front = document.getElementById('front');
+    const back = document.getElementById('back');
+
+    if (front.textContent === '') {
+        front.classList.add('placeholder');
+        front.textContent = front.dataset.placeholder;
+    }
+
+    if (back.textContent === '') {
+        back.classList.add('placeholder');
+        back.textContent = back.dataset.placeholder;
+    }
 }
 
-function updatePath() {
-    document.getElementById('path').innerText = `Pfad: ${currentDeck} - ${currentSubDeck}`;
+function updateHistoryVisibility() {
+    const historyContainer = document.getElementById('historyContainer');
+    if (history.length === 0) {
+        historyContainer.style.display = 'none';
+    } else {
+        historyContainer.style.display = 'block';
+    }
 }
+document.addEventListener("DOMContentLoaded", function () {
+    let db;
+    let request = indexedDB.open("memorifyDB", 1);
 
+    request.onupgradeneeded = function (event) {
+        db = event.target.result;
+        let userStore = db.createObjectStore("users", { keyPath: "username" });
+        userStore.createIndex("email", "email", { unique: true });
+        let cardStore = db.createObjectStore("cards", { keyPath: "id", autoIncrement: true });
+        cardStore.createIndex("username", "username", { unique: false });
+    };
+
+    request.onsuccess = function (event) {
+        db = event.target.result;
+        console.log("Database opened successfully");
+    };
+
+    request.onerror = function (event) {
+        console.error("Database error: ", event.target.errorCode);
+    };
+
+    document.getElementById("add-card-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let category = document.getElementById("category").value;
+        let question = document.getElementById("question").value;
+        let answer = document.getElementById("answer").value;
+        let hint = document.getElementById("hint").value;
+        let username = getCurrentUsername();  // Funktion, um den aktuellen Benutzernamen zu bekommen
+
+        let newCard = {
+            category: category,
+            question: question,
+            answer: answer,
+            hint: hint,
+            username: username,
+        };
+
+        let transaction = db.transaction(["cards"], "readwrite");
+        let cardStore = transaction.objectStore("cards");
+
+        let request = cardStore.add(newCard);
+
+        request.onsuccess = function () {
+            console.log("Card has been added to your database.");
+            document.getElementById("add-card-form").reset();
+        };
+
+        request.onerror = function () {
+            console.error("Error adding card: ", request.error);
+        };
+    });
+
+    function getCurrentUsername() {
+        // Beispiel: Implementieren Sie diese Funktion entsprechend Ihrem Authentifizierungssystem
+        // Es könnte Cookies, LocalStorage oder eine andere Methode verwenden
+        return localStorage.getItem("username");
+    }
+});
