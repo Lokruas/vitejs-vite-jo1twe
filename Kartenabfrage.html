@@ -23,6 +23,8 @@
                 </select>
                 <select id="subdeck-select" style="display: none;">
                     <option value="all">Ganzen Stapel lernen</option>
+                    <option value="unterstapel1">Unterstapel 1</option>
+                    <option value="unterstapel2">Unterstapel 2</option>
                 </select>
             </div>
             <div class="header-buttons">
@@ -49,6 +51,12 @@
             <button class="rating" data-value="stressful" style="background-color: #1e88e5;">Stressful</button>
             <button class="rating" data-value="easy" style="background-color: #1976d2;">Easy</button>
         </div>
+        <div class="card-editor" style="display: none;">
+            <div contenteditable="true" id="front" class="card-side"></div>
+            <div contenteditable="true" id="back" class="card-side"></div>
+            <button onclick="addCard()">Karte hinzufügen</button>
+        </div>
+        <div class="history-scroll-container" id="historyContainer"></div>
     </div>
     <script src="Kartenabfrage.js"></script>
 </body>
