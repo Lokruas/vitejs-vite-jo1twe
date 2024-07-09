@@ -64,11 +64,11 @@ function renderHistory() {
     history.forEach((entry, index) => {
         const historyCard = document.createElement('div');
         historyCard.className = 'history-card';
-        historyCard.innerHTML = 
+        historyCard.innerHTML = `
             <div><strong>Karte ${index + 1}</strong></div>
             <div class="front-preview">${entry.front}</div>
             <button class="delete-button" onclick="deleteCard(event, this)">×</button>
-        ;
+        `;
         historyCard.onclick = function() {
             document.getElementById('front').innerHTML = entry.front;
             document.getElementById('back').innerHTML = entry.back;
@@ -105,223 +105,148 @@ function addPlaceholder(event) {
 
 function uploadImages(input) {
     const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = new Image();
-            img.src = e.target.result;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.draggable = false;
-            img.style.resize = 'both';
-            img.style.overflow = 'auto';
-            document.getElementById('front').appendChild(img);
-        }
-        reader.readAsDataURL(file);
-    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.maxWidth = '100%';
+        const selectedSide = document.querySelector('.card-side:focus');
+        selectedSide.appendChild(img);
+    };
+    reader.readAsDataURL(file);
 }
 
-let drawMode = false;
-
+// Canvas-Zeichenfunktionen
 function toggleDrawMode() {
-    drawMode = !drawMode;
-    const canvas = document.getElementById('drawCanvas');
-    canvas.style.pointerEvents = drawMode ? 'auto' : 'none';
-    isErasing = false;
-    canvas.style.zIndex = drawMode ? 1 : -1;
+    isDrawing = !isDrawing;
+    isErasing = false; // Deaktiviere Radiermodus, wenn Zeichnen aktiviert wird
+    document.querySelectorAll('.drawCanvas').forEach(canvas => canvas.style.pointerEvents = isDrawing ? 'auto' : 'none');
 }
 
 function toggleEraserMode() {
     isErasing = !isErasing;
-    const canvas = document.getElementById('drawCanvas');
-    canvas.style.pointerEvents = isErasing ? 'auto' : 'none';
-    canvas.style.zIndex = isErasing ? 1 : -1;
-    drawMode = false;
+    isDrawing = false; // Deaktiviere Zeichnen, wenn Radiermodus aktiviert wird
+    document.querySelectorAll('.drawCanvas').forEach(canvas => canvas.style.pointerEvents = isErasing ? 'auto' : 'none');
 }
 
 function changeDrawColor(color) {
     drawColor = color;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = drawColor;
 }
 
 function startDrawing(event) {
-    if (drawMode || isErasing) {
-        isDrawing = true;
-        const canvas = document.getElementById('drawCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-    }
+    isDrawing = true;
+    draw(event);
 }
 
 function draw(event) {
     if (!isDrawing) return;
-    const canvas = document.getElementById('drawCanvas');
+    const canvas = event.target;
     const ctx = canvas.getContext('2d');
-    if (drawMode) {
-        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-        ctx.stroke();
-    } else if (isErasing) {
-        ctx.clearRect(event.clientX - canvas.offsetLeft - 10, event.clientY - canvas.offsetTop - 10, 20, 20);
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = drawColor;
+
+    if (isErasing) {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+        ctx.globalCompositeOperation = 'source-over';
     }
+
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(event.clientX - rect.left, event.clientY - rect.top);
+    ctx.lineTo(event.clientX - rect.left, event.clientY - rect.top);
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function stopDrawing() {
     isDrawing = false;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.closePath();
 }
 
 function resizeCanvas() {
-    const canvas = document.getElementById('drawCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-// Vorhandene Kartenhistorie
-let history = [];
-
-function saveToHistory() {
-    const frontContent = document.getElementById('front').innerHTML;
-    const backContent = document.getElementById('back').innerHTML;
-    history.push({ front: frontContent, back: backContent });
-    renderHistory();
-}
-
-function updateHistoryScroll() {
-    const historyContainer = document.getElementById('historyContainer');
-    if (historyContainer.scrollWidth > historyContainer.clientWidth) {
-        historyContainer.style.overflowX = 'scroll';
-    } else {
-        historyContainer.style.overflowX = 'hidden';
-    }
-}
-
-function saveHistory() {
-    localStorage.setItem('cardsHistory', JSON.stringify(history));
-}
-
-function loadHistory() {
-    const savedHistory = localStorage.getItem('cardsHistory');
-    if (savedHistory) {
-        history = JSON.parse(savedHistory);
-        renderHistory();
-    }
-}
-
-function deleteCard(event, button) {
-    event.stopPropagation();
-    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
-    if (confirmed) {
-        const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
-        history.splice(cardIndex, 1);
-        renderHistory();
-    }
-}
-
-function initializeToolbarButtons() {
-    document.querySelector('.toolbar').insertAdjacentHTML('beforeend', 
-        <button data-command="justifyLeft">Links</button>
-        <button data-command="justifyCenter">Zentrieren</button>
-        <button data-command="justifyRight">Rechts</button>
-        <button data-command="justifyFull">Blocksatz</button>
-        <button data-command="insertImage">Bild</button>
-        <button data-command="justifyLeft" class="indent-button">Einzug verkleinern</button>
-    );
-
-    document.querySelector('.toolbar').addEventListener('click', function (event) {
-        const command = event.target.getAttribute('data-command');
-        if (command === 'justifyLeft') {
-            event.preventDefault();
-            document.execCommand('outdent'); // Einzug verkleinern
-        } else {
-            execCmd(command);
-        }
+    const canvases = document.querySelectorAll('.drawCanvas');
+    canvases.forEach(canvas => {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
     });
 }
 
-function checkPlaceholders() {
-    const front = document.getElementById('front');
-    const back = document.getElementById('back');
+// Funktion zum initialisieren der Toolbar-Buttons
+function initializeToolbarButtons() {
+    document.getElementById('fontSelect').addEventListener('change', function() {
+        execCmd('fontName', this.value);
+    });
+    document.getElementById('fontSizeSelect').addEventListener('change', function() {
+        execCmd('fontSize', this.value);
+    });
+}
 
-    if (front.textContent === '') {
-        front.classList.add('placeholder');
-        front.textContent = front.dataset.placeholder;
-    }
+// Funktion um die Historie zu speichern
+function saveHistory() {
+    localStorage.setItem('cardHistory', JSON.stringify(history));
+}
 
-    if (back.textContent === '') {
-        back.classList.add('placeholder');
-        back.textContent = back.dataset.placeholder;
+// Funktion um die Historie zu laden
+function loadHistory() {
+    const storedHistory = localStorage.getItem('cardHistory');
+    if (storedHistory) {
+        history = JSON.parse(storedHistory);
+        renderHistory();
     }
+}
+
+// Funktion um Karten aus der Historie zu löschen
+function deleteCard(event, button) {
+    event.stopPropagation();
+    const index = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
+    history.splice(index, 1);
+    renderHistory();
+}
+
+// Initialisierung
+let history = [];
+function updateHistoryScroll() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.scrollTop = 0;
 }
 
 function updateHistoryVisibility() {
     const historyContainer = document.getElementById('historyContainer');
-    if (history.length === 0) {
-        historyContainer.style.display = 'none';
-    } else {
-        historyContainer.style.display = 'block';
+    historyContainer.style.display = history.length > 0 ? 'block' : 'none';
+}
+
+function updateSubstackOptions() {
+    const stackSelect = document.getElementById('stackSelect');
+    const substackSelect = document.getElementById('substackSelect');
+    substackSelect.innerHTML = ''; // Alte Optionen löschen
+
+    switch (stackSelect.value) {
+        case 'innovation':
+            substackSelect.style.display = 'inline-block';
+            addSubstackOption('Innovationsmanagement');
+            addSubstackOption('Projektentwicklung');
+            break;
+        case 'strategie':
+            substackSelect.style.display = 'inline-block';
+            addSubstackOption('Geschäftsstrategie');
+            addSubstackOption('Marktanalyse');
+            break;
+        case 'webapp':
+            substackSelect.style.display = 'inline-block';
+            addSubstackOption('Frontend-Entwicklung');
+            addSubstackOption('Backend-Entwicklung');
+            break;
+        default:
+            substackSelect.style.display = 'none';
+            break;
     }
 }
-document.addEventListener("DOMContentLoaded", function () {
-    let db;
-    let request = indexedDB.open("memorifyDB", 1);
 
-    request.onupgradeneeded = function (event) {
-        db = event.target.result;
-        let userStore = db.createObjectStore("users", { keyPath: "username" });
-        userStore.createIndex("email", "email", { unique: true });
-        let cardStore = db.createObjectStore("cards", { keyPath: "id", autoIncrement: true });
-        cardStore.createIndex("username", "username", { unique: false });
-    };
-
-    request.onsuccess = function (event) {
-        db = event.target.result;
-        console.log("Database opened successfully");
-    };
-
-    request.onerror = function (event) {
-        console.error("Database error: ", event.target.errorCode);
-    };
-
-    document.getElementById("add-card-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        let category = document.getElementById("category").value;
-        let question = document.getElementById("question").value;
-        let answer = document.getElementById("answer").value;
-        let hint = document.getElementById("hint").value;
-        let username = getCurrentUsername();  // Funktion, um den aktuellen Benutzernamen zu bekommen
-
-        let newCard = {
-            category: category,
-            question: question,
-            answer: answer,
-            hint: hint,
-            username: username,
-        };
-
-        let transaction = db.transaction(["cards"], "readwrite");
-        let cardStore = transaction.objectStore("cards");
-
-        let request = cardStore.add(newCard);
-
-        request.onsuccess = function () {
-            console.log("Card has been added to your database.");
-            document.getElementById("add-card-form").reset();
-        };
-
-        request.onerror = function () {
-            console.error("Error adding card: ", request.error);
-        };
-    });
-
-    function getCurrentUsername() {
-        // Beispiel: Implementieren Sie diese Funktion entsprechend Ihrem Authentifizierungssystem
-        // Es könnte Cookies, LocalStorage oder eine andere Methode verwenden
-        return localStorage.getItem("username");
-    }
-});
+function addSubstackOption(text) {
+    const option = document.createElement('option');
+    option.value = text.toLowerCase().replace(/\s+/g, '');
+    option.text = text;
+    document.getElementById('substackSelect').appendChild(option);
+}
