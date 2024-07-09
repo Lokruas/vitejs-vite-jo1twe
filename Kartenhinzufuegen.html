@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartenabfrage</title>
-    <link rel="stylesheet" href="Kartenabfrage.css">
+    <title>Karten hinzufügen</title>
+    <link rel="stylesheet" href="Kartenhinzufuegen.css">
 </head>
 <body>
     <header>
@@ -27,10 +27,7 @@
                     <option value="unterstapel2">Unterstapel 2</option>
                 </select>
             </div>
-            <div class="header-buttons">
-                <button id="reset-progress">Fortschritt zurücksetzen</button>
-                <button id="edit-deck">Bearbeiten</button>
-            </div>
+            <button id="reset-progress">Fortschritt zurücksetzen</button>
             <div id="counter">Stapel: - Karten übrig</div>
         </div>
         <div id="path">Pfad: </div>
@@ -51,13 +48,19 @@
             <button class="rating" data-value="stressful" style="background-color: #1e88e5;">Stressful</button>
             <button class="rating" data-value="easy" style="background-color: #1976d2;">Easy</button>
         </div>
-        <div class="card-editor" style="display: none;">
-            <div contenteditable="true" id="front" class="card-side"></div>
-            <div contenteditable="true" id="back" class="card-side"></div>
-            <button onclick="addCard()">Karte hinzufügen</button>
+        <div class="add-card">
+            <h3>Neue Karte hinzufügen</h3>
+            <label for="new-question">Frage:</label>
+            <input type="text" id="new-question">
+            <label for="new-answer">Antwort:</label>
+            <input type="text" id="new-answer">
+            <button id="add-card">Karte hinzufügen</button>
         </div>
-        <div class="history-scroll-container" id="historyContainer"></div>
+        <div class="card-history">
+            <h3>Kartenhistorie</h3>
+            <div id="card-history-container"></div>
+        </div>
     </div>
-    <script src="Kartenabfrage.js"></script>
+    <script src="Kartenhinzufuegen.js"></script>
 </body>
 </html>
