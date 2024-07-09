@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'de',
+        firstDay: 1,
+        selectable: true,
+        select: function(info) {
+            document.getElementById('date-range').innerText = `Gewählter Zeitraum: ${info.startStr} bis ${info.endStr}`;
+        },
+        events: []
+    });
+    calendar.render();
+
     const createScheduleBtn = document.getElementById('create-schedule-btn');
     const editScheduleBtn = document.getElementById('edit-schedule-btn');
     const createModal = document.getElementById('create-modal');
@@ -7,191 +20,101 @@ document.addEventListener('DOMContentLoaded', function() {
     const savePlanBtn = document.getElementById('save-plan-btn');
     const cancelPlanBtn = document.getElementById('cancel-plan-btn');
     const setMilestoneBtn = document.getElementById('set-milestone-btn');
-    const dateRange = document.getElementById('date-range');
-    const selectPlan = document.getElementById('select-plan');
-    const editOptions = document.getElementById('edit-options');
     const progressContainer = document.getElementById('progress-container');
-    let calendar;
-    let isSettingMilestone = false;
-    let startDate = null;
-    let endDate = null;
-    let milestones = [];
-    let plans = {};
-
-    function renderCalendar() {
-        const calendarEl = document.getElementById('calendar');
-        calendarEl.innerHTML = ''; // Kalender zurücksetzen
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            height: 'auto',
-            selectable: true,
-            select: function(info) {
-                if (!startDate) {
-                    startDate = info.startStr;
-                    dateRange.innerHTML = `Startzeitpunkt: ${startDate}`;
-                } else if (!endDate) {
-                    endDate = info.startStr;
-                    dateRange.innerHTML += `, Endzeitpunkt: ${endDate}`;
-                    calendar.unselect();
-                } else if (isSettingMilestone) {
-                    milestones.push(info.startStr);
-                    document.getElementById('milestone-date').innerHTML = `Zwischenziel: ${info.startStr}`;
-                    isSettingMilestone = false;
-                }
-            }
-        });
-        calendar.render();
-    }
+    let milestoneDate = null;
 
     createScheduleBtn.onclick = function() {
-        editModal.style.display = 'none';  // Schließt das Bearbeitungsfenster
         createModal.style.display = 'block';
-        renderCalendar();
     };
 
     editScheduleBtn.onclick = function() {
-        createModal.style.display = 'none'; // Schließt das Erstellungsfenster
         editModal.style.display = 'block';
-        populatePlans();
     };
 
-    closeButtons.forEach(function(button) {
+    closeButtons.forEach(button => {
         button.onclick = function() {
             createModal.style.display = 'none';
             editModal.style.display = 'none';
-            resetForm();
-        }
+        };
     });
 
-    window.onclick = function(event) {
-        if (event.target == createModal) {
-            createModal.style.display = 'none';
-            resetForm();
-        }
-        if (event.target == editModal) {
-            editModal.style.display = 'none';
-        }
-    };
-
     savePlanBtn.onclick = function() {
+        const stackSelect = document.getElementById('stack-select').value;
         const planName = document.getElementById('plan-name').value;
-        if (!planName || !startDate || !endDate) {
-            alert('Bitte füllen Sie alle Felder aus und wählen Sie die Daten.');
+        const selectedDates = calendar.getSelection();
+        if (selectedDates.length === 0) {
+            alert('Bitte wählen Sie einen Zeitraum aus.');
             return;
         }
-        plans[planName] = { startDate, endDate, milestones: [...milestones] };
-        updateProgressDisplay();
-        resetForm();
+        const startDate = selectedDates[0].start;
+        const endDate = selectedDates[0].end;
+
+        const totalDays = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
+        const cards = {
+            'innovation-projektmanagement': 30,
+            'strategieentwicklung': 40,
+            'web-app': 50
+        }[stackSelect];
+        const cardsPerDay = Math.ceil(cards / totalDays);
+
+        addProgressBar(planName, totalDays, cardsPerDay, startDate, endDate);
         createModal.style.display = 'none';
     };
 
     cancelPlanBtn.onclick = function() {
         createModal.style.display = 'none';
-        resetForm();
     };
 
     setMilestoneBtn.onclick = function() {
-        isSettingMilestone = true;
+        const selectedDates = calendar.getSelection();
+        if (selectedDates.length === 0) {
+            alert('Bitte wählen Sie ein Datum für das Zwischenziel aus.');
+            return;
+        }
+        milestoneDate = selectedDates[0].startStr;
+        document.getElementById('milestone-date').innerText = `Zwischenziel: ${milestoneDate}`;
     };
 
-    function resetForm() {
-        document.getElementById('plan-name').value = '';
-        startDate = null;
-        endDate = null;
-        milestones = [];
-        dateRange.innerHTML = '';
-        document.getElementById('milestone-date').innerHTML = '';
-        isSettingMilestone = false;
-        if (calendar) {
-            calendar.unselect();
-        }
-    }
+    function addProgressBar(planName, totalDays, cardsPerDay, startDate, endDate) {
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.innerHTML = `
+            <span>${planName}</span>
+            <div class="progress"></div>
+            <span class="timer"></span>
+        `;
+        progressContainer.appendChild(progressBar);
 
-    function populatePlans() {
-        const select = document.getElementById('select-plan');
-        select.innerHTML = '';
-        for (const planName in plans) {
-            const option = document.createElement('option');
-            option.value = planName;
-            option.textContent = planName;
-            select.appendChild(option);
-        }
-        editOptions.classList.remove('hidden');
-    }
+        const progress = progressBar.querySelector('.progress');
+        const timer = progressBar.querySelector('.timer');
+        const interval = setInterval(function() {
+            const now = new Date();
+            const timeDiff = new Date(endDate) - now;
+            const daysElapsed = (now - new Date(startDate)) / (1000 * 60 * 60 * 24);
+            const percentage = (daysElapsed / totalDays) * 100;
+            progress.style.width = `${percentage}%`;
+            timer.innerText = `${Math.floor(timeDiff / (1000 * 60 * 60)) % 24}h ${Math.floor(timeDiff / (1000 * 60)) % 60}m ${Math.floor(timeDiff / 1000) % 60}s`;
 
-    function updateProgressDisplay() {
-        progressContainer.innerHTML = '';
-        for (const planName in plans) {
-            const progressBar = document.createElement('div');
-            progressBar.classList.add('progress-bar');
-            const progressText = document.createElement('span');
-            progressText.textContent = `${planName}: ${plans[planName].startDate} - ${plans[planName].endDate}`;
-            progressBar.appendChild(progressText);
-            progressContainer.appendChild(progressBar);
-        }
-    }
+            if (timeDiff <= 0) {
+                clearInterval(interval);
+                timer.innerText = 'Zeit abgelaufen';
+            }
+        }, 1000);
 
-    selectPlan.onchange = function() {
-        const selectedPlan = selectPlan.value;
-        const plan = plans[selectedPlan];
-        if (plan) {
-            startDate = plan.startDate;
-            endDate = plan.endDate;
-            milestones = plan.milestones;
-            renderCalendar();
+        calendar.addEvent({
+            title: planName,
+            start: startDate,
+            end: endDate,
+            display: 'background'
+        });
+
+        if (milestoneDate) {
             calendar.addEvent({
-                start: startDate,
-                end: endDate,
-                title: selectedPlan
-            });
-            plan.milestones.forEach(milestone => {
-                calendar.addEvent({
-                    start: milestone,
-                    title: 'Zwischenziel'
-                });
+                title: 'Zwischenziel',
+                start: milestoneDate,
+                end: milestoneDate,
+                classNames: ['fc-event-milestone']
             });
         }
-    };
-
-    editOptions.addEventListener('click', function(event) {
-        const action = event.target.getAttribute('data-action');
-        if (!action) return;
-
-        const selectedPlan = selectPlan.value;
-        if (!plans[selectedPlan]) return;
-
-        switch (action) {
-            case 'edit':
-                createModal.style.display = 'block';
-                editModal.style.display = 'none';  // Schließt das Bearbeitungsfenster
-                const plan = plans[selectedPlan];
-                document.getElementById('plan-name').value = selectedPlan;
-                startDate = plan.startDate;
-                endDate = plan.endDate;
-                milestones = plan.milestones;
-                renderCalendar();
-                break;
-            case 'copy':
-                const copyName = prompt('Name für die Kopie des Zeitplans:', `${selectedPlan} - Kopie`);
-                if (copyName) {
-                    plans[copyName] = { ...plans[selectedPlan], milestones: [...plans[selectedPlan].milestones] };
-                    updateProgressDisplay();
-                    populatePlans();
-                }
-                break;
-            case 'reset':
-                if (confirm('Sind Sie sicher, dass Sie den Fortschritt dieses Zeitplans zurücksetzen möchten?')) {
-                    plans[selectedPlan].milestones = [];
-                    updateProgressDisplay();
-                }
-                break;
-            case 'delete':
-                if (confirm(`Möchten Sie den Zeitplan '${selectedPlan}' wirklich löschen?`)) {
-                    delete plans[selectedPlan];
-                    updateProgressDisplay();
-                    populatePlans();
-                }
-                break;
-        }
-    });
+    }
 });
