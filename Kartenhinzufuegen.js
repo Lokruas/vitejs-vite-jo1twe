@@ -5,19 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
         side.addEventListener('blur', addPlaceholder);
     });
 
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let isErasing = false;
-    let drawColor = 'black';
-
-    // Initialisieren des Canvas zum Zeichnen
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    initializeCanvas();
 
     document.getElementById('colorSelector').addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
@@ -32,8 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     loadHistory(); // Historie beim Laden der Seite laden
     window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
 
-    // Toolbar-Buttons initialisieren
     initializeToolbarButtons();
+
+    loadDummyQuestions(); // Dummy-Fragen laden
 });
 
 // HTML-Funktionen
@@ -84,7 +73,7 @@ function renderHistory() {
 
 function toggleHistory() {
     const historyContainer = document.getElementById('historyContainer');
-    historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
+    historyContainer.style.display = historyContainer.style.display === 'none' ? 'flex' : 'none';
 }
 
 function removePlaceholder(event) {
@@ -214,7 +203,7 @@ function updateHistoryScroll() {
 
 function updateHistoryVisibility() {
     const historyContainer = document.getElementById('historyContainer');
-    historyContainer.style.display = history.length > 0 ? 'block' : 'none';
+    historyContainer.style.display = history.length > 0 ? 'flex' : 'none';
 }
 
 function updateSubstackOptions() {
@@ -242,6 +231,8 @@ function updateSubstackOptions() {
             substackSelect.style.display = 'none';
             break;
     }
+
+    loadDummyQuestions(); // Dummy-Fragen je nach Stapel laden
 }
 
 function addSubstackOption(text) {
@@ -249,4 +240,66 @@ function addSubstackOption(text) {
     option.value = text.toLowerCase().replace(/\s+/g, '');
     option.text = text;
     document.getElementById('substackSelect').appendChild(option);
+}
+
+// Dummy-Fragen
+const dummyQuestions = {
+    innovation: {
+        all: [
+            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." },
+            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
+        ],
+        unterstapel1: [
+            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." }
+        ],
+        unterstapel2: [
+            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
+        ]
+    },
+    strategie: {
+        all: [
+            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." },
+            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
+        ],
+        unterstapel1: [
+            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." }
+        ],
+        unterstapel2: [
+            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
+        ]
+    },
+    webapp: {
+        all: [
+            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." },
+            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
+        ],
+        unterstapel1: [
+            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." }
+        ],
+        unterstapel2: [
+            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
+        ]
+    }
+};
+
+// Funktion um Dummy-Fragen zu laden
+function loadDummyQuestions() {
+    const stackSelect = document.getElementById('stackSelect').value;
+    const substackSelect = document.getElementById('substackSelect').value;
+
+    let questionsToLoad = [];
+
+    if (stackSelect && dummyQuestions[stackSelect]) {
+        questionsToLoad = dummyQuestions[stackSelect].all;
+        if (substackSelect && dummyQuestions[stackSelect][substackSelect]) {
+            questionsToLoad = dummyQuestions[stackSelect][substackSelect];
+        }
+    }
+
+    history = questionsToLoad.map(question => ({
+        front: question.question,
+        back: question.answer
+    }));
+
+    renderHistory();
 }
