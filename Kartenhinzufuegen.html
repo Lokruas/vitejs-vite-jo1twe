@@ -1,235 +1,114 @@
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom right, #88B6E0, #6F9BBE);
-    color: white;
-    margin: 0;
-    padding: 0;
-}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
+    <link rel="stylesheet" href="Kartenhinzufuegen.css">
+    <style>
+        .card-side-container {
+            position: relative;
+        }
+        .card-side {
+            position: relative;
+            z-index: 10;
+            padding: 10px;
+            background: white;
+        }
+        .drawCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Memorify</h1>
+        <p>Dein Kompass im Labyrinth des Lernens</p>
+    </div>
 
-.header {
-    text-align: center;
-    padding: 20px 0;
-    background: url('header-background.png') no-repeat center center;
-    background-size: cover;
-    color: white;
-    border-bottom: 4px solid #004a86;
-}
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="color-tools">
+                <div class="color-picker">
+                    <label for="textColor">Textfarbe</label>
+                    <input type="color" id="textColor" onchange="execCmd('foreColor', this.value)">
+                </div>
+                <div class="color-picker">
+                    <label for="highlightColor">Hintergrundfarbe</label>
+                    <input type="color" id="highlightColor" onchange="execCmd('hiliteColor', this.value)">
+                </div>
+            </div>
+            <button onclick="execCmd('bold')"><b>B</b></button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <select id="fontSelect" onchange="execCmd('fontName', this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <select id="fontSizeSelect" onchange="execCmd('fontSize', this.value)">
+                <option value="1">8pt</option>
+                <option value="2">10pt</option>
+                <option value="3" selected>12pt</option>
+                <option value="4">14pt</option>
+                <option value="5">18pt</option>
+                <option value="6">24pt</option>
+                <option value="7">36pt</option>
+            </select>
+            <button onclick="execCmd('insertOrderedList')">1.</button>
+            <button onclick="execCmd('insertUnorderedList')">•</button>
+            <button onclick="execCmd('createLink', prompt('Enter a URL:', 'http://'))">Link</button>
+            <button onclick="execCmd('removeFormat')">Format entfernen</button>
+            <button onclick="document.getElementById('imageUpload').click()">Bild hochladen</button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="uploadImages(this)">
+            <button onclick="toggleDrawMode()">Stift</button>
+            <button onclick="toggleEraserMode()">Radiergummi</button>
+            <button onclick="execCmd('indent')">Einschub</button>
+            <button onclick="execCmd('outdent')">Rückschub</button> <!-- Neuer Button -->
+        </div>
+        <div class="toolbar-center">
+            <select id="stackSelect" onchange="updateSubstackOptions()">
+                <option value="default">Stapelwahl</option>
+                <option value="innovation">Innovation und Projektmanagement</option>
+                <option value="strategie">Strategieentwicklung</option>
+                <option value="webapp">Web-App</option>
+            </select>
+            <select id="substackSelect" style="display: none;"></select>
+            <button class="toolbar-add-button" onclick="addCard()">Hinzufügen</button>
+            <button class="toolbar-add-button" onclick="toggleHistory()">Karten-Historie</button>
+        </div>
+    </div>
 
-.header h1 {
-    font-size: 48px;
-    margin: 0;
-}
+    <div class="container">
+        <div class="card-editor">
+            <div class="card-side-container" id="frontContainer">
+                <div class="card-side" contenteditable="true" id="front" data-placeholder="Vorderseite">Vorderseite</div>
+                <canvas class="drawCanvas" id="frontCanvas"></canvas>
+            </div>
+            <div class="card-side-container" id="backContainer">
+                <div class="card-side" contenteditable="true" id="back" data-placeholder="Rückseite">Rückseite</div>
+                <canvas class="drawCanvas" id="backCanvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="history-scroll-container" id="historyContainer">
+            <!-- Karten werden hier dynamisch eingefügt -->
+        </div>
+    </div>
 
-.header p {
-    font-size: 18px;
-    margin: 10px 0 0 0;
-}
+    <div class="color-selector" id="colorSelector">
+        <button onclick="changeDrawColor('red')" style="background-color: red;"></button>
+        <button onclick="changeDrawColor('blue')" style="background-color: blue;"></button>
+        <button onclick="changeDrawColor('green')" style="background-color: green;"></button>
+        <button onclick="changeDrawColor('black')" style="background-color: black;"></button>
+    </div>
 
-.toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #003e73;
-    margin: 20px auto;
-    width: 80%;
-    border-radius: 8px;
-}
-
-.toolbar-left {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
-.color-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.toolbar-center {
-    flex-grow: 1;
-    text-align: center;
-}
-
-.toolbar button,
-.toolbar .toolbar-add-button,
-.toolbar select {
-    margin: 5px;
-    padding: 8px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.toolbar .toolbar-add-button {
-    background: linear-gradient(to bottom, #0066cc, #004a99);
-    font-size: 14px;
-    padding: 10px 20px;
-}
-
-.color-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff;
-    padding: 5px;
-    border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.color-picker label {
-    font-size: 10px;
-    color: #000;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.card-editor {
-    display: flex;
-    justify-content: space-between;
-    width: 70%;
-    margin-bottom: 20px;
-}
-
-.card-side-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 48%;
-    color: black;
-    margin: 10px;
-}
-
-.card-side {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    color: black;
-    min-height: 200px;
-    overflow: auto;
-    position: relative;
-}
-
-.card-side.placeholder::before {
-    content: attr(data-placeholder);
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: gray;
-    pointer-events: none;
-    font-size: 14px;
-}
-
-.history-scroll-container {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    max-width: 100%;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.history-card {
-    min-width: 150px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 10px 5px;
-    color: black;
-}
-
-.history-card:hover {
-    transform: scale(1.05);
-}
-
-.history-card .front-preview {
-    font-size: 14px;
-}
-
-.history-card .delete-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    line-height: 20px;
-    text-align: center;
-}
-
-.card-side-container {
-    position: relative;
-}
-
-.card-side {
-    position: relative;
-    z-index: 10;
-    padding: 10px;
-    background: white;
-}
-
-.drawCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 5;
-    pointer-events: none;
-}
-
-#drawCanvas {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.color-selector {
-    display: none;
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.color-selector button {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin: 5px;
-    border: none;
-    cursor: pointer;
-}
-
+    <script src="Kartenhinzufuegen.js"></script>
+</body>
+</html>
