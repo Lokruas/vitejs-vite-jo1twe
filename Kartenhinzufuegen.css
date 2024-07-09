@@ -1,173 +1,184 @@
-/* Reset Styles */
-* {
-    box-sizing: border-box;
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #88B6E0, #6F9BBE);
+    color: white;
     margin: 0;
     padding: 0;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-}
-
 .header {
     text-align: center;
-    padding: 20px;
-    background-color: #1a73e8;
+    padding: 20px 0;
+    background: url('header-background.png') no-repeat center center;
+    background-size: cover;
     color: white;
+    border-bottom: 4px solid #004a86;
 }
 
 .header h1 {
+    font-size: 48px;
     margin: 0;
-    font-size: 36px;
 }
 
 .header p {
-    margin: 5px 0 0;
-    font-size: 16px;
+    font-size: 18px;
+    margin: 10px 0 0 0;
 }
 
 .toolbar {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 10px;
-    background-color: #1a73e8;
-    color: white;
+    background-color: #003e73;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 8px;
 }
 
 .toolbar-left {
     display: flex;
-    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
 }
 
-.color-picker {
-    margin-right: 10px;
+.color-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.toolbar button {
-    background-color: white;
-    border: none;
-    padding: 5px 10px;
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 16px;
+.toolbar-center {
+    flex-grow: 1;
+    text-align: center;
 }
 
+.toolbar button,
+.toolbar .toolbar-add-button,
 .toolbar select {
-    padding: 5px;
-    margin: 0 5px;
-    font-size: 16px;
+    margin: 5px;
+    padding: 8px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
 }
 
 .toolbar .toolbar-add-button {
-    background-color: #fbbc05;
-    border: none;
-    padding: 5px 15px;
-    cursor: pointer;
-    font-size: 16px;
+    background: linear-gradient(to bottom, #0066cc, #004a99);
+    font-size: 14px;
+    padding: 10px 20px;
+}
+
+.color-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker label {
+    font-size: 10px;
+    color: #000;
 }
 
 .container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 20px;
+    margin-top: 20px;
 }
 
 .card-editor {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    width: 70%;
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 800px;
 }
 
 .card-side-container {
-    position: relative;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 48%;
+    color: black;
     margin: 10px;
-    width: 100%;
-    max-width: 350px;
-    height: 200px;
 }
 
 .card-side {
-    border: 1px solid #ccc;
+    background-color: #f9f9f9;
     padding: 10px;
-    background-color: white;
-    overflow-y: auto;
-    height: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: text;
-    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: black;
+    min-height: 200px;
+    overflow: auto;
+    position: relative;
 }
 
-.card-side.placeholder {
-    color: #999;
-}
-
-.drawCanvas {
+.card-side.placeholder::before {
+    content: attr(data-placeholder);
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 10px;
+    left: 10px;
+    color: gray;
     pointer-events: none;
+    font-size: 14px;
 }
 
 .history-scroll-container {
     display: flex;
+    flex-direction: row;
     overflow-x: auto;
-    width: 100%;
-    max-width: 800px;
-    padding-bottom: 10px;
+    max-width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 .history-card {
-    border: 1px solid #ccc;
+    min-width: 150px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     padding: 10px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-right: 10px;
-    cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
-    width: 150px;
     text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 10px 5px;
+    color: black;
+}
+
+.history-card:hover {
+    transform: scale(1.05);
+}
+
+.history-card .front-preview {
+    font-size: 14px;
 }
 
 .history-card .delete-button {
     position: absolute;
     top: 5px;
     right: 5px;
-    background: red;
+    background-color: red;
     color: white;
     border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    font-size: 16px;
-}
-
-.front-preview {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #666;
-}
-
-.color-selector {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.color-selector button {
-    width: 30px;
-    height: 30px;
-    border: none;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-.color-tools {
-    display: flex;
-    align-items: center;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
 }
