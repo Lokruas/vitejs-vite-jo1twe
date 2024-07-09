@@ -1,85 +1,61 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const cardSides = document.querySelectorAll('.card-side');
-    cardSides.forEach(side => {
-        side.addEventListener('focus', removePlaceholder);
-        side.addEventListener('blur', addPlaceholder);
-    });
+let drawColor = 'black';
+let drawMode = false;
+let eraserMode = false;
 
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let isErasing = false;
-    let drawColor = 'black';
-
-    // Initialisieren des Canvas zum Zeichnen
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    document.getElementById('colorSelector').addEventListener('click', function (event) {
-        if (event.target.tagName === 'BUTTON') {
-            changeDrawColor(event.target.style.backgroundColor);
-        }
-    });
-
-    document.getElementById('imageUpload').addEventListener('change', function () {
-        uploadImages(this);
-    });
-
-    loadHistory(); // Historie beim Laden der Seite laden
-    window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
-
-    // Toolbar-Buttons initialisieren
-    initializeToolbarButtons();
-});
-
-// HTML-Funktionen
 function execCmd(command, value = null) {
     document.execCommand(command, false, value);
+}
+
+function toggleDrawMode() {
+    drawMode = !drawMode;
+    if (drawMode) {
+        eraserMode = false;
+    }
+}
+
+function toggleEraserMode() {
+    eraserMode = !eraserMode;
+    if (eraserMode) {
+        drawMode = false;
+    }
+}
+
+function changeDrawColor(color) {
+    drawColor = color;
+}
+
+function uploadImages(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            execCmd('insertImage', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 function addCard() {
     const frontContent = document.getElementById('front').innerHTML;
     const backContent = document.getElementById('back').innerHTML;
 
-    let newCard = {
-        front: frontContent,
-        back: backContent
-    };
+    const historyContainer = document.getElementById('historyContainer');
+    const cardHistory = document.createElement('div');
+    cardHistory.classList.add('card-history');
 
-    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
-    renderHistory(); // Historie rendern
+    const frontHistory = document.createElement('div');
+    frontHistory.classList.add('card-side');
+    frontHistory.innerHTML = frontContent;
 
-    // Inhalt der Textfelder zurücksetzen
+    const backHistory = document.createElement('div');
+    backHistory.classList.add('card-side');
+    backHistory.innerHTML = backContent;
+
+    cardHistory.appendChild(frontHistory);
+    cardHistory.appendChild(backHistory);
+    historyContainer.appendChild(cardHistory);
+
     document.getElementById('front').innerHTML = '';
     document.getElementById('back').innerHTML = '';
-}
-
-function renderHistory() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = '';
-    history.forEach((entry, index) => {
-        const historyCard = document.createElement('div');
-        historyCard.className = 'history-card';
-        historyCard.innerHTML = `
-            <div><strong>Karte ${index + 1}</strong></div>
-            <div class="front-preview">${entry.front}</div>
-            <button class="delete-button" onclick="deleteCard(event, this)">×</button>
-        `;
-        historyCard.onclick = function() {
-            document.getElementById('front').innerHTML = entry.front;
-            document.getElementById('back').innerHTML = entry.back;
-            checkPlaceholders();
-        };
-
-        historyContainer.appendChild(historyCard);
-    });
-
-    updateHistoryScroll();
-    updateHistoryVisibility();
 }
 
 function toggleHistory() {
@@ -87,241 +63,32 @@ function toggleHistory() {
     historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
 }
 
-function removePlaceholder(event) {
-    const target = event.target;
-    if (target.textContent === target.dataset.placeholder) {
-        target.classList.remove('placeholder');
-        target.textContent = '';
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const frontCanvas = document.getElementById('frontCanvas');
+    const backCanvas = document.getElementById('backCanvas');
 
-function addPlaceholder(event) {
-    const target = event.target;
-    if (target.textContent === '') {
-        target.classList.add('placeholder');
-        target.textContent = target.dataset.placeholder;
-    }
-}
+    [frontCanvas, backCanvas].forEach(canvas => {
+        const context = canvas.getContext('2d');
+        let drawing = false;
 
-function uploadImages(input) {
-    const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = new Image();
-            img.src = e.target.result;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.draggable = false;
-            img.style.resize = 'both';
-            img.style.overflow = 'auto';
-            document.getElementById('front').appendChild(img);
-        }
-        reader.readAsDataURL(file);
-    }
-}
+        canvas.addEventListener('mousedown', () => {
+            drawing = true;
+        });
 
-let drawMode = false;
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+            context.beginPath();
+        });
 
-function toggleDrawMode() {
-    drawMode = !drawMode;
-    const canvas = document.getElementById('drawCanvas');
-    canvas.style.pointerEvents = drawMode ? 'auto' : 'none';
-    isErasing = false;
-    canvas.style.zIndex = drawMode ? 1 : -1;
-}
-
-function toggleEraserMode() {
-    isErasing = !isErasing;
-    const canvas = document.getElementById('drawCanvas');
-    canvas.style.pointerEvents = isErasing ? 'auto' : 'none';
-    canvas.style.zIndex = isErasing ? 1 : -1;
-    drawMode = false;
-}
-
-function changeDrawColor(color) {
-    drawColor = color;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = drawColor;
-}
-
-function startDrawing(event) {
-    if (drawMode || isErasing) {
-        isDrawing = true;
-        const canvas = document.getElementById('drawCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-    }
-}
-
-function draw(event) {
-    if (!isDrawing) return;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    if (drawMode) {
-        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-        ctx.stroke();
-    } else if (isErasing) {
-        ctx.clearRect(event.clientX - canvas.offsetLeft - 10, event.clientY - canvas.offsetTop - 10, 20, 20);
-    }
-}
-
-function stopDrawing() {
-    isDrawing = false;
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.closePath();
-}
-
-function resizeCanvas() {
-    const canvas = document.getElementById('drawCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-// Vorhandene Kartenhistorie
-let history = [];
-
-function saveToHistory() {
-    const frontContent = document.getElementById('front').innerHTML;
-    const backContent = document.getElementById('back').innerHTML;
-    history.push({ front: frontContent, back: backContent });
-    renderHistory();
-}
-
-function updateHistoryScroll() {
-    const historyContainer = document.getElementById('historyContainer');
-    if (historyContainer.scrollWidth > historyContainer.clientWidth) {
-        historyContainer.style.overflowX = 'scroll';
-    } else {
-        historyContainer.style.overflowX = 'hidden';
-    }
-}
-
-function saveHistory() {
-    localStorage.setItem('cardsHistory', JSON.stringify(history));
-}
-
-function loadHistory() {
-    const savedHistory = localStorage.getItem('cardsHistory');
-    if (savedHistory) {
-        history = JSON.parse(savedHistory);
-        renderHistory();
-    }
-}
-
-function deleteCard(event, button) {
-    event.stopPropagation();
-    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
-    if (confirmed) {
-        const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
-        history.splice(cardIndex, 1);
-        renderHistory();
-    }
-}
-
-function initializeToolbarButtons() {
-    document.querySelector('.toolbar').insertAdjacentHTML('beforeend', `
-        <button data-command="justifyLeft">Links</button>
-        <button data-command="justifyCenter">Zentrieren</button>
-        <button data-command="justifyRight">Rechts</button>
-        <button data-command="justifyFull">Blocksatz</button>
-        <button data-command="insertImage">Bild</button>
-        <button data-command="justifyLeft" class="indent-button">Einzug verkleinern</button>
-    `);
-
-    document.querySelector('.toolbar').addEventListener('click', function (event) {
-        const command = event.target.getAttribute('data-command');
-        if (command === 'justifyLeft') {
-            event.preventDefault();
-            document.execCommand('outdent'); // Einzug verkleinern
-        } else {
-            execCmd(command);
-        }
+        canvas.addEventListener('mousemove', (event) => {
+            if (!drawing) return;
+            context.lineWidth = eraserMode ? 10 : 2;
+            context.lineCap = 'round';
+            context.strokeStyle = eraserMode ? 'white' : drawColor;
+            context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        });
     });
-}
-
-function checkPlaceholders() {
-    const front = document.getElementById('front');
-    const back = document.getElementById('back');
-
-    if (front.textContent === '') {
-        front.classList.add('placeholder');
-        front.textContent = front.dataset.placeholder;
-    }
-
-    if (back.textContent === '') {
-        back.classList.add('placeholder');
-        back.textContent = back.dataset.placeholder;
-    }
-}
-
-function updateHistoryVisibility() {
-    const historyContainer = document.getElementById('historyContainer');
-    if (history.length === 0) {
-        historyContainer.style.display = 'none';
-    } else {
-        historyContainer.style.display = 'block';
-    }
-}
-document.addEventListener("DOMContentLoaded", function () {
-    let db;
-    let request = indexedDB.open("memorifyDB", 1);
-
-    request.onupgradeneeded = function (event) {
-        db = event.target.result;
-        let userStore = db.createObjectStore("users", { keyPath: "username" });
-        userStore.createIndex("email", "email", { unique: true });
-        let cardStore = db.createObjectStore("cards", { keyPath: "id", autoIncrement: true });
-        cardStore.createIndex("username", "username", { unique: false });
-    };
-
-    request.onsuccess = function (event) {
-        db = event.target.result;
-        console.log("Database opened successfully");
-    };
-
-    request.onerror = function (event) {
-        console.error("Database error: ", event.target.errorCode);
-    };
-
-    document.getElementById("add-card-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        let category = document.getElementById("category").value;
-        let question = document.getElementById("question").value;
-        let answer = document.getElementById("answer").value;
-        let hint = document.getElementById("hint").value;
-        let username = getCurrentUsername();  // Funktion, um den aktuellen Benutzernamen zu bekommen
-
-        let newCard = {
-            category: category,
-            question: question,
-            answer: answer,
-            hint: hint,
-            username: username,
-        };
-
-        let transaction = db.transaction(["cards"], "readwrite");
-        let cardStore = transaction.objectStore("cards");
-
-        let request = cardStore.add(newCard);
-
-        request.onsuccess = function () {
-            console.log("Card has been added to your database.");
-            document.getElementById("add-card-form").reset();
-        };
-
-        request.onerror = function () {
-            console.error("Error adding card: ", request.error);
-        };
-    });
-
-    function getCurrentUsername() {
-        // Beispiel: Implementieren Sie diese Funktion entsprechend Ihrem Authentifizierungssystem
-        // Es könnte Cookies, LocalStorage oder eine andere Methode verwenden
-        return localStorage.getItem("username");
-    }
 });
