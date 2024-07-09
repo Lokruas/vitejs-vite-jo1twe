@@ -1,63 +1,96 @@
-// Dummy-Fragen
-const dummyQuestions = {
-    innovation: {
-        all: [
-            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." },
-            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
-        ],
-        unterstapel1: [
-            { question: "Was ist Innovationsmanagement?", answer: "Die Verwaltung und Kontrolle von Innovationsprozessen." }
-        ],
-        unterstapel2: [
-            { question: "Nennen Sie eine Methode des Projektmanagements.", answer: "Agiles Projektmanagement." }
-        ]
-    },
-    strategie: {
-        all: [
-            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." },
-            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
-        ],
-        unterstapel1: [
-            { question: "Was ist eine SWOT-Analyse?", answer: "Ein strategisches Planungswerkzeug zur Bewertung von Stärken, Schwächen, Chancen und Risiken." }
-        ],
-        unterstapel2: [
-            { question: "Was bedeutet 'Blue Ocean Strategy'?", answer: "Die Erschaffung eines neuen Marktraums ohne Konkurrenz." }
-        ]
-    },
-    webapp: {
-        all: [
-            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." },
-            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
-        ],
-        unterstapel1: [
-            { question: "Was ist eine Web-Application?", answer: "Eine Software-Anwendung, die über einen Webbrowser bedient wird." }
-        ],
-        unterstapel2: [
-            { question: "Nennen Sie ein Framework für Web-Apps.", answer: "React.js." }
-        ]
+document.addEventListener('DOMContentLoaded', function () {
+    const cardSides = document.querySelectorAll('.card-side');
+    cardSides.forEach(side => {
+        side.addEventListener('focus', removePlaceholder);
+        side.addEventListener('blur', addPlaceholder);
+    });
+
+    loadHistory(); // Historie beim Laden der Seite laden
+    window.addEventListener('beforeunload', saveHistory); // Historie beim Verlassen der Seite speichern
+});
+
+// Funktion um Platzhalter zu entfernen
+function removePlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === target.dataset.placeholder) {
+        target.classList.remove('placeholder');
+        target.textContent = '';
     }
-};
+}
 
-// Funktion um Dummy-Fragen zu laden
-function loadDummyQuestions() {
-    const stackSelect = document.getElementById('stackSelect').value;
-    const substackSelect = document.getElementById('substackSelect').value;
-
-    let questionsToLoad = [];
-
-    if (stackSelect && dummyQuestions[stackSelect]) {
-        questionsToLoad = dummyQuestions[stackSelect].all;
-        if (substackSelect && dummyQuestions[stackSelect][substackSelect]) {
-            questionsToLoad = dummyQuestions[stackSelect][substackSelect];
-        }
+// Funktion um Platzhalter hinzuzufügen
+function addPlaceholder(event) {
+    const target = event.target;
+    if (target.textContent === '') {
+        target.classList.add('placeholder');
+        target.textContent = target.dataset.placeholder;
     }
+}
 
-    history = questionsToLoad.map(question => ({
-        front: question.question,
-        back: question.answer
-    }));
+// Funktion um eine Karte hinzuzufügen
+function addCard() {
+    const frontContent = document.getElementById('front').innerHTML;
+    const backContent = document.getElementById('back').innerHTML;
 
-    renderHistory();
+    let newCard = {
+        front: frontContent,
+        back: backContent
+    };
+
+    history.unshift(newCard); // Neue Karte zur Historie hinzufügen
+    renderHistory(); // Historie rendern
+
+    // Inhalt der Textfelder zurücksetzen
+    document.getElementById('front').innerHTML = '';
+    document.getElementById('back').innerHTML = '';
+}
+
+// Funktion um die Historie zu rendern
+function renderHistory() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.innerHTML = '';
+    history.forEach((entry, index) => {
+        const historyCard = document.createElement('div');
+        historyCard.className = 'history-card';
+        historyCard.innerHTML = `
+            <div><strong>Karte ${index + 1}</strong></div>
+            <div class="front-preview">${entry.front}</div>
+            <button class="delete-button" onclick="deleteCard(event, this)">×</button>
+        `;
+        historyCard.onclick = function() {
+            document.getElementById('front').innerHTML = entry.front;
+            document.getElementById('back').innerHTML = entry.back;
+            checkPlaceholders();
+        };
+
+        historyContainer.appendChild(historyCard);
+    });
+
+    updateHistoryScroll();
+    updateHistoryVisibility();
+}
+
+// Funktion um Karten zu löschen
+function deleteCard(event, button) {
+    event.stopPropagation();
+    const confirmed = confirm('Möchten Sie diese Karte wirklich löschen?');
+    if (confirmed) {
+        const cardIndex = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
+        history.splice(cardIndex, 1);
+        renderHistory();
+    }
+}
+
+// Funktion um die Sichtbarkeit der Historie zu aktualisieren
+function updateHistoryVisibility() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.style.display = history.length > 0 ? 'flex' : 'none';
+}
+
+// Funktion um das Scrollen der Historie zu aktualisieren
+function updateHistoryScroll() {
+    const historyContainer = document.getElementById('historyContainer');
+    historyContainer.scrollTop = 0;
 }
 
 // Funktion um die Historie zu speichern
@@ -72,43 +105,6 @@ function loadHistory() {
         history = JSON.parse(storedHistory);
         renderHistory();
     }
-}
-
-// Funktion um Karten aus der Historie zu löschen
-function deleteCard(event, button) {
-    event.stopPropagation();
-    const index = Array.from(button.parentElement.parentElement.children).indexOf(button.parentElement);
-    history.splice(index, 1);
-    renderHistory();
-}
-
-// Funktion um die Historie zu rendern
-function renderHistory() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.innerHTML = '';
-    history.forEach(card => {
-        const cardElement = document.createElement('div');
-        cardElement.classList.add('history-card');
-        cardElement.innerHTML = `
-            <div class="front-preview">${card.front}</div>
-            <button class="delete-button" onclick="deleteCard(event, this)">×</button>
-        `;
-        historyContainer.appendChild(cardElement);
-    });
-    updateHistoryVisibility();
-    updateHistoryScroll();
-}
-
-// Funktion um die Sichtbarkeit der Historie zu aktualisieren
-function updateHistoryVisibility() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.style.display = history.length > 0 ? 'flex' : 'none';
-}
-
-// Funktion um das Scrollen der Historie zu aktualisieren
-function updateHistoryScroll() {
-    const historyContainer = document.getElementById('historyContainer');
-    historyContainer.scrollTop = 0;
 }
 
 // Funktion um die Substapel-Optionen zu aktualisieren
@@ -137,8 +133,6 @@ function updateSubstackOptions() {
             substackSelect.style.display = 'none';
             break;
     }
-
-    loadDummyQuestions(); // Dummy-Fragen je nach Stapel laden
 }
 
 // Funktion um Substapel-Optionen hinzuzufügen
@@ -147,6 +141,22 @@ function addSubstackOption(text) {
     option.value = text.toLowerCase().replace(/\s+/g, '');
     option.text = text;
     document.getElementById('substackSelect').appendChild(option);
+}
+
+// Funktion um Platzhalter zu überprüfen
+function checkPlaceholders() {
+    const front = document.getElementById('front');
+    const back = document.getElementById('back');
+
+    if (front.textContent === '') {
+        front.classList.add('placeholder');
+        front.textContent = front.dataset.placeholder;
+    }
+
+    if (back.textContent === '') {
+        back.classList.add('placeholder');
+        back.textContent = back.dataset.placeholder;
+    }
 }
 
 // Initialisierung
