@@ -101,19 +101,11 @@ function updateSubDeckOptions(deck) {
         <option value="unterstapel2">Unterstapel 2</option>
     `;
     subdeckSelect.style.display = 'block';
-    updatePath();
-}
-
-function updatePath() {
-    document.getElementById('path').innerText = `Pfad: ${currentDeck} > ${currentSubDeck}`;
-}
-
-function updateCounter() {
-    document.getElementById('counter').innerText = `Stapel: ${initialCardCount} Karten übrig`;
 }
 
 function loadCards() {
-    cardQueue = [...decks[currentDeck][currentSubDeck]];
+    if (!currentDeck) return;
+    cardQueue = JSON.parse(JSON.stringify(decks[currentDeck][currentSubDeck]));
     initialCardCount = cardQueue.length;
     currentIndex = 0;
     if (cardQueue.length > 0) {
@@ -188,3 +180,12 @@ function updateCardHistory() {
         historyContainer.appendChild(cardElement);
     });
 }
+
+function updateCounter() {
+    document.getElementById('counter').innerText = `Stapel: ${initialCardCount - currentIndex} Karten übrig`;
+}
+
+function updatePath() {
+    document.getElementById('path').innerText = `Pfad: ${currentDeck} - ${currentSubDeck}`;
+}
+
