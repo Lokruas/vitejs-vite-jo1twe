@@ -236,37 +236,23 @@ button.blue-btn {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    z-index: 2;
-    align-items: center;
+    z-index: 10;
     justify-content: center;
+    padding-top: 60px;
 }
 
 .hover-calendar-content {
-    background: #fff;
+    background: white;
     padding: 20px;
     border-radius: 10px;
-    position: relative;
+    width: 80%;
+    max-width: 600px;
 }
 
 .hover-calendar-close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
     cursor: pointer;
-    color: #000;
-}
-#hover-calendar-modal {
-    display: none;
-    position: absolute;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 10px;
-}
-
-#hover-calendar {
-    background-color: white;
-    padding: 10px;
 }
