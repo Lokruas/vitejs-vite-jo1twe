@@ -28,8 +28,25 @@ body {
 }
 
 .container {
-    text-align: center;
-    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.left-side {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.right-side {
+    width: 45%;
+    background: rgba(173, 216, 230, 0.5); /* Heller verblasster Blauton */
+    border-radius: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 80vh;
 }
 
 button {
@@ -41,6 +58,8 @@ button {
     border-radius: 5px;
     color: white;
     transition: all 0.3s ease;
+    width: 80%;
+    text-align: center;
 }
 
 button.animated-btn:hover {
@@ -56,11 +75,8 @@ button.animated-btn:hover {
 }
 
 #progress-container {
-    margin-top: 20px;
-    padding: 10px;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .progress-bar {
@@ -70,9 +86,9 @@ button.animated-btn:hover {
     margin: 5px 0;
     padding: 10px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .progress-bar span {
@@ -84,7 +100,14 @@ button.animated-btn:hover {
     height: 10px;
     background: #0052a3;
     border-radius: 5px;
-    width: 50%;
+    width: 100%;
+}
+
+.progress-bar .percentage {
+    font-weight: bold;
+    color: #0052a3;
+    text-align: right;
+    margin-top: 5px;
 }
 
 .modal {
@@ -200,34 +223,6 @@ button.blue-btn {
     background: #ff4d4d;
 }
 
-.schedule-container {
-    margin-top: 50px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.schedule-item {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #e6f7ff;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    background: linear-gradient(to right, #e6f7ff, #ccefff);
-}
-
-.schedule-item .progress {
-    width: 70%;
-}
-
 .cards-today-container {
     margin-top: 20px;
     padding: 10px;
@@ -235,8 +230,7 @@ button.blue-btn {
     border-radius: 10px;
     text-align: center;
     width: 80%;
-    margin: 0 auto;
-    margin-top: 20px;
+    margin: 20px auto;
 }
 
 #cards-today-text {
