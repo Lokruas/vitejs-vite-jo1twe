@@ -284,18 +284,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const progressText = document.createElement('span');
             const plan = plans[planName];
             const now = new Date();
-            const totalTime = (new Date(plan.endDate) - new Date(plan.startDate)) / (1000 * 60 * 60 * 24);
-            const elapsedTime = (now - new Date(plan.startDate)) / (1000 * 60 * 60 * 24);
-            const progressPercent = Math.min((elapsedTime / totalTime) * 100, 100).toFixed(2);
-            const timeDiff = new Date(plan.endDate) - now;
+            const startTime = new Date(plan.startDate);
+            const totalTime = (new Date(plan.endDate) - startTime) / (1000 * 60 * 60 * 24);
+            const elapsedTime = (now - startTime) / (1000 * 60 * 60 * 24);
+            const timeDiff = Math.ceil((startTime - now) / (1000 * 60 * 60 * 24));
 
-            progressText.textContent = `${planName}: ${plan.startDate} - ${plan.endDate} (${progressPercent}%)`;
+            if (elapsedTime < 0) {
+                progressText.textContent = `Plan "${planName}" startet in ${timeDiff} Tagen`;
+            } else {
+                const progressPercent = Math.min((elapsedTime / totalTime) * 100, 100).toFixed(2);
+                progressText.textContent = `${planName}: ${plan.startDate} - ${plan.endDate} (${progressPercent}%)`;
+                const progress = document.createElement('div');
+                progress.classList.add('progress');
+                progress.style.width = `${progressPercent}%`;
+                progressBar.appendChild(progress);
+            }
+
             progressBar.appendChild(progressText);
-            const progress = document.createElement('div');
-            progress.classList.add('progress');
-            progress.style.width = `${progressPercent}%`;
-            progressBar.appendChild(progress);
-
             progressContainer.appendChild(progressBar);
 
             progressBar.onmouseover = function () {
