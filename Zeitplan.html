@@ -3,63 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memorify - Dein Kompass im Labyrinth des Lernens</title>
-    <link rel="stylesheet" href="Zeitplan.css">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <title>Planer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Memorify</h1>
-        <h2>Dein Kompass im Labyrinth des Lernens</h2>
-    </div>
-    <div class="container">
-        <button id="create-schedule-btn" class="animated-btn">Zeitplan erstellen</button>
-        <button id="edit-schedule-btn" class="animated-btn">Zeitpläne bearbeiten</button>
-        <div id="progress-container"></div>
-    </div>
-    <div id="create-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <label for="stack-select">Wähle einen Stapel:</label>
-            <select id="stack-select">
-                <option value="innovation-projektmanagement">Innovation und Projektmanagement</option>
-                <option value="strategieentwicklung">Strategieentwicklung</option>
-                <option value="web-app">Web-App</option>
-            </select>
-            <h3>Wähle den Zeitraum für deinen Zeitplan:</h3>
-            <div id="calendar"></div>
-            <label for="plan-name">Zeitplan Name:</label>
-            <input type="text" id="plan-name">
-            <button id="set-milestone-btn" class="blue-btn">Zwischenziel festlegen</button>
-            <button id="save-plan-btn" class="blue-btn">Speichern</button>
-            <button id="cancel-plan-btn" class="cancel">Abbrechen</button>
-            <div id="date-range"></div>
-            <div id="milestone-date"></div>
-        </div>
-    </div>
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <label for="select-plan">Wähle einen Zeitplan:</label>
-            <select id="select-plan"></select>
-            <div id="edit-options">
-                <button id="edit-selected-plan-btn" class="edit-option">Zeitplan bearbeiten</button>
-                <button class="edit-option" data-action="copy">Zeitplan kopieren</button>
-                <button class="edit-option" data-action="reset">Fortschritt zurücksetzen</button>
-                <button class="edit-option delete" data-action="delete">Löschen</button>
+    <div id="app">
+        <button id="create-schedule-btn">Zeitplan erstellen</button>
+        <button id="edit-schedule-btn">Zeitpläne bearbeiten</button>
+
+        <div id="create-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Zeitplan erstellen</h2>
+                <label for="plan-name">Name des Zeitplans:</label>
+                <input type="text" id="plan-name">
+                <label for="stack-select">Thema:</label>
+                <select id="stack-select">
+                    <option value="innovation-projektmanagement">Innovation Projektmanagement</option>
+                    <option value="strategieentwicklung">Strategieentwicklung</option>
+                    <option value="web-app">Web-App</option>
+                </select>
+                <div id="date-range"></div>
+                <div id="milestone-date"></div>
+                <button id="set-milestone-btn">Zwischenziel erstellen</button>
+                <div id="calendar"></div>
+                <button id="save-plan-btn" style="background-color: #4CAF50; color: white;">Speichern</button>
+                <button id="cancel-plan-btn">Abbrechen</button>
             </div>
         </div>
-    </div>
-    <div id="schedule-container" class="schedule-container">
-        <!-- Hier werden die Zeitpläne mit Fortschritt angezeigt -->
-    </div>
-    <div id="hover-calendar" class="hover-calendar">
-        <div id="hover-calendar-content">
-            <div id="hover-calendar-close" class="hover-calendar-close">&times;</div>
-            <div id="hover-calendar-view"></div>
+
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Zeitpläne bearbeiten</h2>
+                <label for="select-plan">Zeitplan auswählen:</label>
+                <select id="select-plan"></select>
+                <div id="edit-options" class="hidden">
+                    <button id="edit-selected-plan-btn">Zeitplan bearbeiten</button>
+                    <button data-action="copy">Zeitplan kopieren</button>
+                    <button data-action="reset">Zeitplan zurücksetzen</button>
+                    <button data-action="delete">Zeitplan löschen</button>
+                </div>
+            </div>
         </div>
+
+        <div id="hover-calendar-modal" class="modal">
+            <div class="modal-content">
+                <div id="hover-calendar"></div>
+            </div>
+        </div>
+
+        <div id="progress-container"></div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-    <script src="Zeitplan.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
