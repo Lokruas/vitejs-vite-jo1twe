@@ -216,6 +216,7 @@ button.blue-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 .schedule-item:hover {
@@ -228,7 +229,7 @@ button.blue-btn {
 }
 
 .schedule-item .schedule-name:hover::after {
-    content: attr(data-cards-left) " Karten zu lernen";
+    content: attr(data-cards-today) " Karten heute";
     display: block;
     background-color: #ffffff;
     padding: 5px;
