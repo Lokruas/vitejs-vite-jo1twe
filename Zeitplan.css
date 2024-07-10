@@ -1,10 +1,11 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-image: url('background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    color: #333;
 }
 
 .header {
@@ -57,8 +58,6 @@ button.animated-btn:hover {
 #progress-container {
     margin-top: 20px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,19 +68,23 @@ button.animated-btn:hover {
     background: #e6f7ff;
     border-radius: 5px;
     margin: 5px 0;
-    padding: 5px;
-    position: relative;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar span {
-    font-size: 1em;
-    color: black;
+    font-size: 1.2em;
+    color: #333;
 }
 
 .progress-bar .progress {
     height: 10px;
     background: #0052a3;
     border-radius: 5px;
+    width: 50%;
 }
 
 .modal {
@@ -216,7 +219,7 @@ button.blue-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .schedule-item:hover {
@@ -228,41 +231,9 @@ button.blue-btn {
     width: 70%;
 }
 
-.hover-calendar {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 10;
-    justify-content: center;
-    padding-top: 60px;
-}
-
-.hover-calendar-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-}
-
-.hover-calendar-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-}
-
 .cards-today-container {
     margin-top: 20px;
     padding: 10px;
-    background: rgba(173, 216, 230, 0.5); /* Heller verblasster Blauton */
-    border-radius: 10px;
     text-align: center;
 }
 
