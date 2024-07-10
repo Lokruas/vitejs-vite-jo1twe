@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         calculateDailyCards();
                     }
                 }
+            },
+            eventClick: function(info) {
+                if (info.event.title === 'Zwischenziel') {
+                    if (confirm('Möchten Sie dieses Zwischenziel wirklich entfernen?')) {
+                        milestones = milestones.filter(milestone => milestone.date !== info.event.startStr);
+                        info.event.remove();
+                        calculateDailyCards();
+                    }
+                }
             }
         });
         calendar.render();
@@ -278,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateProgressDisplay() {
         progressContainer.innerHTML = '';
+        const today = new Date().toISOString().split('T')[0];
         for (const planName in plans) {
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress-bar');
@@ -288,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalTime = (new Date(plan.endDate) - startTime) / (1000 * 60 * 60 * 24);
             const elapsedTime = (now - startTime) / (1000 * 60 * 60 * 24);
             const timeDiff = Math.ceil((startTime - now) / (1000 * 60 * 60 * 24));
+            const dailyCards = calculateDailyCardsForDate(plan, today);
 
             if (elapsedTime < 0) {
                 progressText.textContent = `Plan "${planName}" startet in ${timeDiff} Tagen`;
@@ -303,15 +314,65 @@ document.addEventListener('DOMContentLoaded', function () {
             progressBar.appendChild(progressText);
             progressContainer.appendChild(progressBar);
 
-            progressBar.onmouseover = function () {
+            const scheduleItem = document.createElement('div');
+            scheduleItem.classList.add('schedule-item');
+            scheduleItem.setAttribute('data-cards-today', dailyCards);
+            const scheduleName = document.createElement('span');
+            scheduleName.classList.add('schedule-name');
+            scheduleName.textContent = planName;
+            scheduleItem.appendChild(scheduleName);
+            progressContainer.appendChild(scheduleItem);
+
+            scheduleItem.onmouseover = function () {
                 displayHoverCalendar(plan);
                 hoverCalendarModal.style.display = 'block';
             };
 
-            progressBar.onmouseout = function () {
+            scheduleItem.onmouseout = function () {
                 hoverCalendarModal.style.display = 'none';
             };
         }
+    }
+
+    function calculateDailyCardsForDate(plan, date) {
+        const stackSelect = plan.stackSelect;
+        const cardCounts = {
+            'innovation-projektmanagement': 30,
+            'strategieentwicklung': 40,
+            'web-app': 50
+        };
+        const totalCards = cardCounts[stackSelect];
+        const totalDays = (new Date(plan.endDate) - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
+        let remainingCards = totalCards;
+        let remainingDays = totalDays;
+        let dailyCards = [];
+        let result = 0;
+
+        plan.milestones.forEach((milestone, index) => {
+            const milestoneDate = new Date(milestone.date);
+            const milestoneDays = (milestoneDate - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
+            const cardsForMilestone = Math.ceil((milestone.cards - (dailyCards.reduce((a, b) => a + b, 0))) / milestoneDays);
+
+            for (let i = 0; i < milestoneDays; i++) {
+                dailyCards.push(cardsForMilestone);
+                if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
+                    result = cardsForMilestone;
+                }
+            }
+
+            remainingCards -= milestone.cards;
+            remainingDays -= milestoneDays;
+        });
+
+        const cardsForRemainingDays = Math.ceil(remainingCards / remainingDays);
+        for (let i = 0; i < remainingDays; i++) {
+            dailyCards.push(cardsForRemainingDays);
+            if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
+                result = cardsForRemainingDays;
+            }
+        }
+
+        return result;
     }
 
     selectPlan.onchange = function () {
@@ -347,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedPlan = selectPlan.value;
         const plan = plans[selectedPlan];
         if (plan) {
-            document.getElementById('edit-plan-name').value = selectedPlan;
+            document.getElementById('plan-name').value = selectedPlan;
             startDate = plan.startDate;
             endDate = plan.endDate;
             milestones = plan.milestones;
