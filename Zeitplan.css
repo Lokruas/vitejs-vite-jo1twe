@@ -237,3 +237,12 @@ button.blue-btn {
     font-size: 1.5em;
     color: #004a86;
 }
+
+#confirmation-modal .modal-content {
+    text-align: center;
+}
+
+#confirmation-modal button {
+    width: auto;
+    margin: 10px;
+}
