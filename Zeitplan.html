@@ -13,9 +13,16 @@
         <h2>Dein Kompass im Labyrinth des Lernens</h2>
     </div>
     <div class="container">
-        <button id="create-schedule-btn" class="animated-btn">Zeitplan erstellen</button>
-        <button id="edit-schedule-btn" class="animated-btn">Zeitpläne bearbeiten</button>
-        <div id="progress-container"></div>
+        <div class="left-side">
+            <button id="create-schedule-btn" class="animated-btn">Zeitplan erstellen</button>
+            <button id="edit-schedule-btn" class="animated-btn">Zeitpläne bearbeiten</button>
+            <div id="cards-today-container" class="cards-today-container">
+                <p id="cards-today-text">Du hast heute noch - Karten zu lernen</p>
+            </div>
+        </div>
+        <div class="right-side">
+            <div id="progress-container"></div>
+        </div>
     </div>
     <div id="create-modal" class="modal">
         <div class="modal-content">
@@ -50,17 +57,11 @@
             </div>
         </div>
     </div>
-    <div id="schedule-container" class="schedule-container">
-        <!-- Hier werden die Zeitpläne mit Fortschritt angezeigt -->
-    </div>
     <div id="hover-calendar" class="hover-calendar">
         <div id="hover-calendar-content">
             <div id="hover-calendar-close" class="hover-calendar-close">&times;</div>
             <div id="hover-calendar-view"></div>
         </div>
-    </div>
-    <div id="cards-today-container" class="cards-today-container">
-        <p id="cards-today-text">Du hast heute noch - Karten zu lernen</p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="Zeitplan.js"></script>
