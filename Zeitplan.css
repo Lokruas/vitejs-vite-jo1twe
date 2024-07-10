@@ -228,19 +228,6 @@ button.blue-btn {
     width: 70%;
 }
 
-.schedule-item .schedule-name:hover::after {
-    content: attr(data-cards-today) " Karten heute";
-    display: block;
-    background-color: #ffffff;
-    padding: 5px;
-    border-radius: 5px;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    white-space: nowrap;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
 .hover-calendar {
     display: none;
     position: fixed;
@@ -269,4 +256,17 @@ button.blue-btn {
     right: 20px;
     font-size: 28px;
     cursor: pointer;
+}
+
+.cards-today-container {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(173, 216, 230, 0.5); /* Heller verblasster Blauton */
+    border-radius: 10px;
+    text-align: center;
+}
+
+#cards-today-text {
+    font-size: 1.5em;
+    color: #004a86;
 }
