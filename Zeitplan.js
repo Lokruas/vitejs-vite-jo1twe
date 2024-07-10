@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const editOptions = document.getElementById('edit-options');
     const editSelectedPlanBtn = document.getElementById('edit-selected-plan-btn');
     const progressContainer = document.getElementById('progress-container');
-    const cardsTodayContainer = document.getElementById('cards-today-container');
     const cardsTodayText = document.getElementById('cards-today-text');
     let calendar;
     let isSettingMilestone = false;
