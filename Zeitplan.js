@@ -436,7 +436,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'reset':
                 if (confirm('Sind Sie sicher, dass Sie den Fortschritt dieses Zeitplans zurücksetzen möchten?')) {
-                    plans[selectedPlan].milestones = [];
+                    const plan = plans[selectedPlan];
+                    plan.milestones = [];
+                    startDate = plan.startDate;
+                    endDate = plan.endDate;
+                    milestones = plan.milestones;
+                    renderCalendar();
+                    calendar.addEvent({
+                        start: startDate,
+                        end: endDate,
+                        title: 'Startzeitpunkt',
+                        classNames: ['event-start']
+                    });
+                    plan.milestones.forEach(milestone => {
+                        calendar.addEvent({
+                            start: milestone.date,
+                            title: 'Zwischenziel',
+                            classNames: ['event-milestone'],
+                            extendedProps: {
+                                cards: milestone.cards,
+                                note: milestone.note
+                            }
+                        });
+                    });
+                    calculateDailyCards();
                     updateProgressDisplay();
                 }
                 break;
