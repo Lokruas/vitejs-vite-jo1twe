@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const today = new Date();
         const start = new Date(startDate);
         const daysSinceStart = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-        const cardsToday = daysSinceStart >= 0 && daysSinceStart < dailyCards.length ? dailyCards[daysSinceStart] : '-';
+        const cardsToday = daysSinceStart >= 0 && daysSinceStart < dailyCards.length ? dailyCards[daysSinceStart] : 0;
         cardsTodayText.textContent = `Du hast heute noch ${cardsToday} Karten zu lernen`;
     }
 
@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateProgressDisplay();
         resetForm();
         createModal.style.display = 'none';
+        updateCardsTodayFromAllPlans();
     };
 
     cancelPlanBtn.onclick = function () {
@@ -247,10 +248,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 progressText.textContent = `Plan "${planName}" startet in ${timeDiff} Tagen`;
             } else {
                 const progressPercent = Math.min((elapsedTime / totalTime) * 100, 100).toFixed(2);
-                progressText.textContent = `${planName}: ${plan.startDate} - ${plan.endDate} (${progressPercent}%)`;
+                progressText.innerHTML = `${planName}: ${plan.startDate} - ${plan.endDate} <strong>${progressPercent}%</strong>`;
                 const progress = document.createElement('div');
                 progress.classList.add('progress');
                 progress.style.width = `${progressPercent}%`;
+                progress.style.background = `linear-gradient(to right, #4facfe ${progressPercent}%, #00f2fe)`;
                 progressBar.appendChild(progress);
             }
 
@@ -260,6 +262,16 @@ document.addEventListener('DOMContentLoaded', function () {
             totalCardsToday += dailyCards;
         }
 
+        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
+    }
+
+    function updateCardsTodayFromAllPlans() {
+        let totalCardsToday = 0;
+        const today = new Date().toISOString().split('T')[0];
+        for (const planName in plans) {
+            const dailyCards = calculateDailyCardsForDate(plans[planName], today);
+            totalCardsToday += dailyCards;
+        }
         cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
     }
 
