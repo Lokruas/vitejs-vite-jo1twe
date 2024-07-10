@@ -437,10 +437,12 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'reset':
                 if (confirm('Sind Sie sicher, dass Sie den Fortschritt dieses Zeitplans zurücksetzen möchten?')) {
                     const plan = plans[selectedPlan];
-                    plan.milestones = [];
+                    const newStartDate = new Date().toISOString().split('T')[0];
+                    plan.startDate = newStartDate;
+                    milestones = plan.milestones;
                     startDate = plan.startDate;
                     endDate = plan.endDate;
-                    milestones = plan.milestones;
+                    plan.milestones = milestones;
                     renderCalendar();
                     calendar.addEvent({
                         start: startDate,
