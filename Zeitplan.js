@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        plans[planName] = { startDate, endDate, milestones: [...milestones], totalCards, stackSelect };
+        plans[planName] = { name: planName, startDate, endDate, milestones: [...milestones], totalCards, stackSelect };
         updateProgressDisplay();
         resetForm();
         createModal.style.display = 'none';
@@ -377,6 +377,18 @@ document.addEventListener('DOMContentLoaded', function () {
             calculateDailyCards();
         }
     };
+
+    calendar.on('dateClick', function(info) {
+        if (info.dateStr === startDate || info.dateStr === endDate) {
+            if (confirm('Möchten Sie die aktuelle Zeitlinie durch eine neue ersetzen?')) {
+                startDate = null;
+                endDate = null;
+                milestones = [];
+                dateRange.innerHTML = '';
+                calendar.unselect();
+            }
+        }
+    });
 
     editOptions.addEventListener('click', function (event) {
         const action = event.target.getAttribute('data-action');
