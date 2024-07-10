@@ -12,10 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const editOptions = document.getElementById('edit-options');
     const editSelectedPlanBtn = document.getElementById('edit-selected-plan-btn');
     const progressContainer = document.getElementById('progress-container');
-    const hoverCalendarModal = document.getElementById('hover-calendar');
-    const hoverCalendarClose = document.getElementById('hover-calendar-close');
+    const cardsTodayContainer = document.getElementById('cards-today-container');
+    const cardsTodayText = document.getElementById('cards-today-text');
     let calendar;
-    let hoverCalendar;
     let isSettingMilestone = false;
     let startDate = null;
     let endDate = null;
@@ -65,26 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
         calendar.render();
     }
 
-    function renderHoverCalendar() {
-        const hoverCalendarEl = document.getElementById('hover-calendar-view');
-        hoverCalendarEl.innerHTML = ''; // Kalender zurücksetzen
-        hoverCalendar = new FullCalendar.Calendar(hoverCalendarEl, {
-            initialView: 'dayGridMonth',
-            height: 'auto'
-        });
-        hoverCalendar.render();
-    }
-
     function addCalendarEvent(date, title, className) {
         calendar.addEvent({
-            start: date,
-            title: title,
-            classNames: [className]
-        });
-    }
-
-    function addHoverCalendarEvent(date, title, className) {
-        hoverCalendar.addEvent({
             start: date,
             title: title,
             classNames: [className]
@@ -141,54 +122,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: `${cards} Karten`
             });
         });
+
+        updateCardsToday(dailyCards);
     }
 
-    function displayHoverCalendar(plan) {
-        renderHoverCalendar();
-        addHoverCalendarEvent(plan.startDate, 'Startzeitpunkt', 'event-start');
-        addHoverCalendarEvent(plan.endDate, 'Endzeitpunkt', 'event-end');
-        plan.milestones.forEach(milestone => {
-            addHoverCalendarEvent(milestone.date, 'Zwischenziel', 'event-milestone');
-        });
-        const stackSelect = plan.stackSelect;
-        const cardCounts = {
-            'innovation-projektmanagement': 30,
-            'strategieentwicklung': 40,
-            'web-app': 50
-        };
-        const totalCards = cardCounts[stackSelect];
-        const totalDays = (new Date(plan.endDate) - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
-        let remainingCards = totalCards;
-        let remainingDays = totalDays;
-        let dailyCards = [];
-
-        plan.milestones.forEach((milestone, index) => {
-            const milestoneDate = new Date(milestone.date);
-            const milestoneDays = (milestoneDate - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
-            const cardsForMilestone = Math.ceil((milestone.cards - (dailyCards.reduce((a, b) => a + b, 0))) / milestoneDays);
-
-            for (let i = 0; i < milestoneDays; i++) {
-                dailyCards.push(cardsForMilestone);
-            }
-
-            remainingCards -= milestone.cards;
-            remainingDays -= milestoneDays;
-        });
-
-        const cardsForRemainingDays = Math.ceil(remainingCards / remainingDays);
-        for (let i = 0; i < remainingDays; i++) {
-            dailyCards.push(cardsForRemainingDays);
-        }
-
-        const start = new Date(plan.startDate);
-        dailyCards.forEach((cards, index) => {
-            const date = new Date(start);
-            date.setDate(start.getDate() + index);
-            hoverCalendar.addEvent({
-                start: date,
-                title: `${cards} Karten`
-            });
-        });
+    function updateCardsToday(dailyCards) {
+        const today = new Date();
+        const start = new Date(startDate);
+        const daysSinceStart = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+        const cardsToday = daysSinceStart >= 0 && daysSinceStart < dailyCards.length ? dailyCards[daysSinceStart] : '-';
+        cardsTodayText.textContent = `Du hast heute noch ${cardsToday} Karten zu lernen`;
     }
 
     createScheduleBtn.onclick = function () {
@@ -288,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateProgressDisplay() {
         progressContainer.innerHTML = '';
         const today = new Date().toISOString().split('T')[0];
+        let totalCardsToday = 0;
         for (const planName in plans) {
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress-bar');
@@ -314,24 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
             progressBar.appendChild(progressText);
             progressContainer.appendChild(progressBar);
 
-            const scheduleItem = document.createElement('div');
-            scheduleItem.classList.add('schedule-item');
-            scheduleItem.setAttribute('data-cards-today', dailyCards);
-            const scheduleName = document.createElement('span');
-            scheduleName.classList.add('schedule-name');
-            scheduleName.textContent = planName;
-            scheduleItem.appendChild(scheduleName);
-            progressContainer.appendChild(scheduleItem);
-
-            scheduleItem.onmouseover = function () {
-                displayHoverCalendar(plan);
-                hoverCalendarModal.style.display = 'block';
-            };
-
-            scheduleItem.onmouseout = function () {
-                hoverCalendarModal.style.display = 'none';
-            };
+            totalCardsToday += dailyCards;
         }
+
+        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
     }
 
     function calculateDailyCardsForDate(plan, date) {
