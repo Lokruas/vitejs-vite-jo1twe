@@ -170,6 +170,10 @@ button.cancel {
     background: #ff4d4d;
 }
 
+button.blue-btn {
+    background: linear-gradient(to right, #004080, #00aaff);
+}
+
 .hidden {
     display: none;
 }
@@ -190,4 +194,51 @@ button.cancel {
 
 .edit-option.delete {
     background: #ff4d4d;
+}
+
+.schedule-container {
+    margin-top: 50px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.schedule-item {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #e6f7ff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.schedule-item:hover {
+    background: #d0efff;
+}
+
+.hover-calendar {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #888;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.hover-calendar-content {
+    position: relative;
+}
+
+.hover-calendar-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
 }
