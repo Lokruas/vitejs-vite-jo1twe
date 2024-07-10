@@ -13,12 +13,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const editSelectedPlanBtn = document.getElementById('edit-selected-plan-btn');
     const progressContainer = document.getElementById('progress-container');
     const cardsTodayText = document.getElementById('cards-today-text');
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmYesBtn = document.getElementById('confirm-yes-btn');
+    const confirmNoBtn = document.getElementById('confirm-no-btn');
     let calendar;
     let isSettingMilestone = false;
     let startDate = null;
     let endDate = null;
     let milestones = [];
     let plans = {};
+    let isEditing = false;
+    let planBeingEdited = null;
 
     function renderCalendar() {
         const calendarEl = document.getElementById('calendar');
@@ -56,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         milestones = milestones.filter(milestone => milestone.date !== info.event.startStr);
                         info.event.remove();
                         calculateDailyCards();
+                    }
+                } else if (info.event.title === 'Startzeitpunkt' || info.event.title === 'Endzeitpunkt') {
+                    if (isEditing) {
+                        confirmationModal.style.display = 'block';
                     }
                 }
             }
@@ -185,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     createScheduleBtn.onclick = function () {
+        isEditing = false;
         editModal.style.display = 'none';
         createModal.style.display = 'block';
         renderCalendar();
@@ -205,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } else {
                 editModal.style.display = 'none';
+                confirmationModal.style.display = 'none';
             }
         }
     });
@@ -216,8 +227,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 resetForm();
             }
         }
-        if (event.target == editModal) {
+        if (event.target == editModal || event.target == confirmationModal) {
             editModal.style.display = 'none';
+            confirmationModal.style.display = 'none';
         }
     };
 
@@ -236,11 +248,18 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        plans[planName] = { name: planName, startDate, endDate, milestones: [...milestones], totalCards, stackSelect };
+        if (isEditing && planBeingEdited) {
+            plans[planBeingEdited] = { name: planName, startDate, endDate, milestones: [...milestones], totalCards, stackSelect };
+        } else {
+            plans[planName] = { name: planName, startDate, endDate, milestones: [...milestones], totalCards, stackSelect };
+        }
+
         updateProgressDisplay();
         resetForm();
         createModal.style.display = 'none';
         updateCardsTodayFromAllPlans();
+        isEditing = false;
+        planBeingEdited = null;
     };
 
     cancelPlanBtn.onclick = function () {
@@ -252,6 +271,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setMilestoneBtn.onclick = function () {
         isSettingMilestone = true;
+    };
+
+    confirmYesBtn.onclick = function () {
+        startDate = null;
+        endDate = null;
+        milestones = [];
+        dateRange.innerHTML = '';
+        document.getElementById('milestone-date').innerHTML = '';
+        confirmationModal.style.display = 'none';
+        renderCalendar();
+    };
+
+    confirmNoBtn.onclick = function () {
+        confirmationModal.style.display = 'none';
     };
 
     function resetForm() {
@@ -321,14 +354,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedPlan = selectPlan.value;
         const plan = plans[selectedPlan];
         if (plan) {
+            isEditing = true;
+            planBeingEdited = selectedPlan;
+            document.getElementById('plan-name').value = plan.name;
             startDate = plan.startDate;
             endDate = plan.endDate;
             milestones = plan.milestones;
+            createModal.style.display = 'block';
+            editModal.style.display = 'none';
             renderCalendar();
             calendar.addEvent({
                 start: startDate,
                 end: endDate,
-                title: selectedPlan,
+                title: 'Startzeitpunkt',
                 classNames: ['event-start']
             });
             plan.milestones.forEach(milestone => {
@@ -350,7 +388,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedPlan = selectPlan.value;
         const plan = plans[selectedPlan];
         if (plan) {
-            document.getElementById('plan-name').value = selectedPlan;
+            isEditing = true;
+            planBeingEdited = selectedPlan;
+            document.getElementById('plan-name').value = plan.name;
             startDate = plan.startDate;
             endDate = plan.endDate;
             milestones = plan.milestones;
@@ -360,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function () {
             calendar.addEvent({
                 start: startDate,
                 end: endDate,
-                title: selectedPlan,
+                title: 'Startzeitpunkt',
                 classNames: ['event-start']
             });
             plan.milestones.forEach(milestone => {
@@ -377,18 +417,6 @@ document.addEventListener('DOMContentLoaded', function () {
             calculateDailyCards();
         }
     };
-
-    calendar.on('dateClick', function(info) {
-        if (info.dateStr === startDate || info.dateStr === endDate) {
-            if (confirm('Möchten Sie die aktuelle Zeitlinie durch eine neue ersetzen?')) {
-                startDate = null;
-                endDate = null;
-                milestones = [];
-                dateRange.innerHTML = '';
-                calendar.unselect();
-            }
-        }
-    });
 
     editOptions.addEventListener('click', function (event) {
         const action = event.target.getAttribute('data-action');
