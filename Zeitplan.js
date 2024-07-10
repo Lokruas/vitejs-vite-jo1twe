@@ -133,6 +133,57 @@ document.addEventListener('DOMContentLoaded', function () {
         cardsTodayText.textContent = `Du hast heute noch ${cardsToday} Karten zu lernen`;
     }
 
+    function updateCardsTodayFromAllPlans() {
+        let totalCardsToday = 0;
+        const today = new Date().toISOString().split('T')[0];
+        for (const planName in plans) {
+            const dailyCards = calculateDailyCardsForDate(plans[planName], today);
+            totalCardsToday += dailyCards;
+        }
+        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
+    }
+
+    function calculateDailyCardsForDate(plan, date) {
+        const stackSelect = plan.stackSelect;
+        const cardCounts = {
+            'innovation-projektmanagement': 30,
+            'strategieentwicklung': 40,
+            'web-app': 50
+        };
+        const totalCards = cardCounts[stackSelect];
+        const totalDays = (new Date(plan.endDate) - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
+        let remainingCards = totalCards;
+        let remainingDays = totalDays;
+        let dailyCards = [];
+        let result = 0;
+
+        plan.milestones.forEach((milestone, index) => {
+            const milestoneDate = new Date(milestone.date);
+            const milestoneDays = (milestoneDate - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
+            const cardsForMilestone = Math.ceil((milestone.cards - (dailyCards.reduce((a, b) => a + b, 0))) / milestoneDays);
+
+            for (let i = 0; i < milestoneDays; i++) {
+                dailyCards.push(cardsForMilestone);
+                if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
+                    result = cardsForMilestone;
+                }
+            }
+
+            remainingCards -= milestone.cards;
+            remainingDays -= milestoneDays;
+        });
+
+        const cardsForRemainingDays = Math.ceil(remainingCards / remainingDays);
+        for (let i = 0; i < remainingDays; i++) {
+            dailyCards.push(cardsForRemainingDays);
+            if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
+                result = cardsForRemainingDays;
+            }
+        }
+
+        return result;
+    }
+
     createScheduleBtn.onclick = function () {
         editModal.style.display = 'none';
         createModal.style.display = 'block';
@@ -232,11 +283,11 @@ document.addEventListener('DOMContentLoaded', function () {
         progressContainer.innerHTML = '';
         const today = new Date().toISOString().split('T')[0];
         let totalCardsToday = 0;
-        for (const planName in plans) {
+        const sortedPlans = Object.values(plans).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+        sortedPlans.forEach(plan => {
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress-bar');
             const progressText = document.createElement('span');
-            const plan = plans[planName];
             const now = new Date();
             const startTime = new Date(plan.startDate);
             const totalTime = (new Date(plan.endDate) - startTime) / (1000 * 60 * 60 * 24);
@@ -245,75 +296,25 @@ document.addEventListener('DOMContentLoaded', function () {
             const dailyCards = calculateDailyCardsForDate(plan, today);
 
             if (elapsedTime < 0) {
-                progressText.textContent = `Plan "${planName}" startet in ${timeDiff} Tagen`;
+                progressText.textContent = `Plan "${plan.name}" startet in ${timeDiff} Tagen`;
+                progressText.style.textAlign = 'center';
+                progressBar.appendChild(progressText);
             } else {
                 const progressPercent = Math.min((elapsedTime / totalTime) * 100, 100).toFixed(2);
-                progressText.innerHTML = `${planName}: ${plan.startDate} - ${plan.endDate} <strong>${progressPercent}%</strong>`;
+                progressText.innerHTML = `${plan.name}: ${plan.startDate} - ${plan.endDate} <div class="percentage">${progressPercent}%</div>`;
                 const progress = document.createElement('div');
                 progress.classList.add('progress');
                 progress.style.width = `${progressPercent}%`;
                 progress.style.background = `linear-gradient(to right, #4facfe ${progressPercent}%, #00f2fe)`;
                 progressBar.appendChild(progress);
+                progressBar.appendChild(progressText);
             }
 
-            progressBar.appendChild(progressText);
             progressContainer.appendChild(progressBar);
-
             totalCardsToday += dailyCards;
-        }
-
-        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
-    }
-
-    function updateCardsTodayFromAllPlans() {
-        let totalCardsToday = 0;
-        const today = new Date().toISOString().split('T')[0];
-        for (const planName in plans) {
-            const dailyCards = calculateDailyCardsForDate(plans[planName], today);
-            totalCardsToday += dailyCards;
-        }
-        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
-    }
-
-    function calculateDailyCardsForDate(plan, date) {
-        const stackSelect = plan.stackSelect;
-        const cardCounts = {
-            'innovation-projektmanagement': 30,
-            'strategieentwicklung': 40,
-            'web-app': 50
-        };
-        const totalCards = cardCounts[stackSelect];
-        const totalDays = (new Date(plan.endDate) - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
-        let remainingCards = totalCards;
-        let remainingDays = totalDays;
-        let dailyCards = [];
-        let result = 0;
-
-        plan.milestones.forEach((milestone, index) => {
-            const milestoneDate = new Date(milestone.date);
-            const milestoneDays = (milestoneDate - new Date(plan.startDate)) / (1000 * 60 * 60 * 24) + 1;
-            const cardsForMilestone = Math.ceil((milestone.cards - (dailyCards.reduce((a, b) => a + b, 0))) / milestoneDays);
-
-            for (let i = 0; i < milestoneDays; i++) {
-                dailyCards.push(cardsForMilestone);
-                if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
-                    result = cardsForMilestone;
-                }
-            }
-
-            remainingCards -= milestone.cards;
-            remainingDays -= milestoneDays;
         });
 
-        const cardsForRemainingDays = Math.ceil(remainingCards / remainingDays);
-        for (let i = 0; i < remainingDays; i++) {
-            dailyCards.push(cardsForRemainingDays);
-            if (new Date(plan.startDate).setDate(new Date(plan.startDate).getDate() + i) === new Date(date)) {
-                result = cardsForRemainingDays;
-            }
-        }
-
-        return result;
+        cardsTodayText.textContent = `Du hast heute noch ${totalCardsToday > 0 ? totalCardsToday : '-'} Karten zu lernen`;
     }
 
     selectPlan.onchange = function () {
