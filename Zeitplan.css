@@ -227,6 +227,19 @@ button.blue-btn {
     width: 70%;
 }
 
+.schedule-item .schedule-name:hover::after {
+    content: attr(data-cards-left) " Karten zu lernen";
+    display: block;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
 .hover-calendar {
     display: none;
     position: fixed;
